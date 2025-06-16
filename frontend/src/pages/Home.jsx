@@ -4,6 +4,7 @@ import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import AboutIntro from "../Section/AboutIntro"
 import Features from "../Section/Features"
+import HomeProjectSlider from "../Section/HomeProjectSlider"
 import Service from "../Section/Service"
 import WhyChooseUs from "../Section/WhyChooseUs"
 import WorkingProcess from "../Section/WorkingProcess"
@@ -14,6 +15,7 @@ function Home() {
       <Background />
       <Navbar />
       <Banner />
+      <HomeProjectSlider/>
       <AboutIntro />
       <Service limit={3} Button={true} />
       <Features />

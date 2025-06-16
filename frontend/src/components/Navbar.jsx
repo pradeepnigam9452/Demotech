@@ -17,7 +17,7 @@ const Navbar = () => {
     return (
         <>
             <nav className="bg-[#f5f5f5ea] text-[#016386] shadow-md sticky top-0 z-50" style={{ fontFamily: "Roboto" }}>
-                <div className="max-w-full mx-20 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-full mx-17 px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center h-24">
                         {/* Logo */}
                         <div className="flex-shrink-0 rounded-xl">
