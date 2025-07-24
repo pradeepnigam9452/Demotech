@@ -1,6 +1,8 @@
 // components/Projects.jsx
 import React, { useState } from "react";
 import Card from "../components/Card"; // Adjust path if needed
+import { motion } from 'framer-motion';
+
 
 const cardsData = [
   {
@@ -150,18 +152,55 @@ const handleNext = () => {
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2 },
+    },
+  };
 
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
   return (
     <>
-      <div className=" bg-white text-center pb-5">
-        <h2
-          className="text-5xl font-bold text-center text-gray-800 mt-10 inline-block after:block after:w-40 after:h-1 after:bg-blue-900 after:mt-3 after:mx-auto"
-          id="projects"
+                  {/* ✅ Small Animated Banner */}
+      <section className="relative py-16 sm:py-20 md:py-20 bg-gradient-to-br from-gray-700 to-gray-900 text-white overflow-hidden">
+        {/* Blurred background blobs */}
+        <motion.div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#378bf977] rounded-full blur-3xl opacity-30"
+          animate={{ scale: [1, 1.05, 1], rotate: [0, 10, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-3xl opacity-30"
+          animate={{ scale: [1, 0.95, 1], rotate: [0, -10, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        <motion.div
+          className="relative z-10 text-center px-4 sm:px-6"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          Our Projects
-        </h2>
-      </div>
+          <motion.h1
+            variants={itemVariants}
+            className="text-3xl sm:text-4xl md:text-5xl font-bold"
+          >
+            Our <span className="text-[#5a9efa]">Projects</span>
+          </motion.h1>
+          <motion.p
+            variants={itemVariants}
+            className="mt-4 max-w-2xl mx-auto text-gray-300 text-base sm:text-lg"
+          >
+            Explore our diverse portfolio of projects that showcase our expertise in delivering innovative and impactful solutions.
+          </motion.p>
+        </motion.div>
+      </section>
 
       <section className="px-2 md:px-6 py-12 flex justify-center">
         <div className="grid grid-cols-1 gap-8 md:w-4/5">

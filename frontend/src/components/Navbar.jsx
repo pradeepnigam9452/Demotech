@@ -10,7 +10,7 @@ const Navbar = () => {
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   const navLinkStyle =
-    "relative text-md font-semibold text-[#016386] hover:text-gray-800 transition duration-300 before:absolute before:left-0 before:bottom-0 before:h-0.5 before:w-full before:scale-x-0 before:bg-[#016386] before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100";
+    "relative text-lg font-semibold text-[#5a9efa] hover:text-gray-800 transition duration-300 before:absolute before:left-0 before:bottom-0 before:h-0.5 before:w-full before:scale-x-0 before:bg-[#016386] before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100";
 
   return (
     <>
@@ -32,7 +32,7 @@ const Navbar = () => {
               <NavLink to="/projects" className={navLinkStyle}>Projects</NavLink>
               <button
                 onClick={toggleModal}
-                className="bg-[#016386] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#014f59] transition duration-300"
+                className="bg-[#5a9efa] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#5a9dfac5] transition duration-300"
               >
                 Enquiry
               </button>
@@ -42,13 +42,13 @@ const Navbar = () => {
             <div className="md:hidden">
               <button onClick={toggleMobileMenu} className="focus:outline-none">
                 {mobileMenuOpen ? (
-                  <svg className="h-6 w-6 text-[#016386]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  <svg className="h-6 w-6 text-[#5a9efa]" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                       d="M6 18L18 6M6 6l12 12" />
                   </svg>
                 ) : (
-                  <svg className="h-6 w-6 text-[#016386]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                  <svg className="h-6 w-6 text-[#5a9efa]" xmlns="http://www.w3.org/2000/svg" fill="none"
                     viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
                       d="M4 6h16M4 12h16M4 18h16" />
