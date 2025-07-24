@@ -6,17 +6,19 @@ const AboutIntro = () => {
             <section className="max-w-[88%] mx-auto px-2 sm:px-5 py-10 grid grid-cols-1 md:grid-cols-2  items-center">
                 {/* Text Content */}
                 <div className="md:pr-10">
-                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold mb-5 relative inline-block">
+                    <h2 className="text-xl sm:text-4xl md:text-5xl font-extrabold mb-5 relative inline-block">
                         About Binarylogix
                     </h2>
-                    <p className="text-gray-700 mb-4 text-base sm:text-lg md:text-xl text-justify leading-relaxed">
-                        With over 5 years of experience, Binarylogix provides innovative software development
-                        and digital marketing solutions tailored to your business needs. We empower businesses
-                        with technology that drives growth, streamlines operations, and elevates digital presence.
+                    <p>
+                        With over a year of industry experience, <strong>Binarylogix Technologies LLP</strong> specializes in delivering innovative and results-driven solutions in <strong>website development, mobile application development, software development,</strong> and <strong>digital marketing.</strong>
                     </p>
-                    <p className="text-gray-700 text-sm sm:text-base md:text-lg">
-                        Our expert team is committed to delivering customized strategies and powerful results—ensuring
-                        your vision turns into scalable success.
+                    <p>
+                         We are dedicated to helping businesses grow by leveraging technology that enhances digital presence, streamlines processes, and drives real impact. Whether you need a responsive website, a custom mobile app, or a complete digital marketing strategy — we tailor every solution to your specific business goals.
+                    </p>
+                    <p>
+                        Our team of experts focuses on quality, creativity, and performance to transform your ideas into scalable, user-friendly digital products that stand out in today’s competitive market.
+
+                        Let Binarylogix be your trusted partner in digital transformation.
                     </p>
                 </div>
 

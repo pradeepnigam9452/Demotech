@@ -3,119 +3,96 @@ import { NavLink } from "react-router-dom";
 import EnquiryModal from "./EnquiryModal";
 
 const Navbar = () => {
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const toggleMobileMenu = () => {
-        setMobileMenuOpen(!mobileMenuOpen);
-    };
+  const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
+  const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-    const toggleModal = () => {
-        setIsModalOpen(!isModalOpen);
-    };
+  const navLinkStyle =
+    "relative text-md font-semibold text-[#016386] hover:text-gray-800 transition duration-300 before:absolute before:left-0 before:bottom-0 before:h-0.5 before:w-full before:scale-x-0 before:bg-[#016386] before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100";
 
-    return (
-        <>
-            <nav className="bg-[#f5f5f5ea] text-[#016386] shadow-md sticky top-0 z-50" style={{ fontFamily: "Roboto" }}>
-                <div className="max-w-full mx-17 px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center h-24">
-                        {/* Logo */}
-                        <div className="flex-shrink-0 rounded-xl">
-                            <NavLink to="https://binarylogix.in">
-                                <img className="w-50 rounded-xl" src="logo.png" alt="Binarylogix Logo" />
-                            </NavLink>
-                        </div>
+  return (
+    <>
+      <nav className="bg-white/90 backdrop-blur-md shadow-md sticky top-0 z-50" style={{ fontFamily: "Roboto" }}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-20">
+            {/* Logo */}
+            <div className="flex-shrink-0 px-2">
+              <NavLink to="https://binarylogix.in">
+                <img className="w-32 md:w-40 rounded-xl" src="logo.png" alt="Binarylogix Logo" />
+              </NavLink>
+            </div>
 
-                        {/* Desktop Menu */}
-                        <div className="hidden md:flex space-x-8 items-center">
-                            <NavLink
-                                to="/"
-                                className="relative text-xl font-semibold text-[#016386] hover:text-gray-800
-                                before:absolute before:left-0 before:bottom-0 before:h-1 before:w-full
-                                before:scale-x-0 before:bg-[#016386] before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100"
-                            >
-                                Home
-                            </NavLink>
-                            <NavLink
-                                to="/aboutUs"
-                                className="relative text-xl font-semibold text-[#016386] hover:text-gray-800
-                                before:absolute before:left-0 before:bottom-0 before:h-1 before:w-full
-                                before:scale-x-0 before:bg-[#016386] before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100"
-                            >
-                                About Us
-                            </NavLink>
-                            <NavLink
-                                to="/services"
-                                className="relative text-xl font-semibold text-[#016386] hover:text-gray-800
-                                before:absolute before:left-0 before:bottom-0 before:h-1 before:w-full
-                                before:scale-x-0 before:bg-[#016386] before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100"
-                            >
-                                Services
-                            </NavLink>
-                            <NavLink
-                                to="/projects"
-                                className="relative text-xl font-semibold text-[#016386] hover:text-gray-800
-                                before:absolute before:left-0 before:bottom-0 before:h-1 before:w-full
-                                before:scale-x-0 before:bg-[#016386] before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100"
-                            >
-                                Projects
-                            </NavLink>
-                            <button
-                                onClick={toggleModal}
-                                className="bg-[#016386] text-white px-4 py-2 rounded-lg text-lg hover:bg-[#014f59] transition"
-                            >
-                                Enquiry
-                            </button>
-                        </div>
+            {/* Desktop Menu */}
+            <div className="hidden md:flex space-x-8 items-center">
+              <NavLink to="/" className={navLinkStyle}>Home</NavLink>
+              <NavLink to="/aboutUs" className={navLinkStyle}>About Us</NavLink>
+              <NavLink to="/services" className={navLinkStyle}>Services</NavLink>
+              <NavLink to="/projects" className={navLinkStyle}>Projects</NavLink>
+              <button
+                onClick={toggleModal}
+                className="bg-[#016386] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#014f59] transition duration-300"
+              >
+                Enquiry
+              </button>
+            </div>
 
-                        {/* Mobile Menu Button */}
-                        <div className="md:hidden ">
-                            <button
-                                onClick={toggleMobileMenu}
-                                className="focus:outline-none"
-                                aria-label="Toggle menu"
-                            >
-                                {mobileMenuOpen ? (
-                                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                            d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                ) : (
-                                    <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                        viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                            d="M4 6h16M4 12h16M4 18h16" />
-                                    </svg>
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Mobile Menu */}
-                {mobileMenuOpen && (
-                    <div className="md:hidden bg-[#016386] px-4 pb-4 text-white">
-                        <NavLink to="/" className="block py-2 border-b border-gray-600 hover:bg-[#014f59]">Home</NavLink>
-                        <NavLink to="/aboutUs" className="block py-2 border-b border-gray-600 hover:bg-[#014f59]">About Us</NavLink>
-                        <NavLink to="/services" className="block py-2 border-b border-gray-600 hover:bg-[#014f59]">Our Services</NavLink>
-                        <NavLink to="/projects" className="block py-2 border-b border-gray-600 hover:bg-[#014f59]">Our projects</NavLink>
-                        <button
-                            onClick={toggleModal}
-                            className="w-full text-left py-2 mt-2 bg-[#016386] rounded hover:bg-gray-100"
-                        >
-                            Enquiry
-                        </button>
-                    </div>
+            {/* Mobile Menu Button */}
+            <div className="md:hidden">
+              <button onClick={toggleMobileMenu} className="focus:outline-none">
+                {mobileMenuOpen ? (
+                  <svg className="h-6 w-6 text-[#016386]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                      d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                ) : (
+                  <svg className="h-6 w-6 text-[#016386]" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                      d="M4 6h16M4 12h16M4 18h16" />
+                  </svg>
                 )}
-            </nav>
+              </button>
+            </div>
+          </div>
+        </div>
 
-            {/* Enquiry Modal */}
-            <EnquiryModal isOpen={isModalOpen} onClose={toggleModal} />
+       {/* Mobile Menu - Slide Down */}
+<div
+  className={`md:hidden absolute top-20 left-0 w-full bg-white shadow-md text-[#016386] transition-transform duration-600 ease-in-out z-40 ${
+    mobileMenuOpen ? "translate-y-0 opacity-100 visible" : "-translate-y-4 opacity-0 invisible"
+  }`}
+>
+  <div className="flex flex-col px-4 pt-2 pb-4">
+    <NavLink to="/" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
+      Home
+    </NavLink>
+    <NavLink to="/aboutUs" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
+      About Us
+    </NavLink>
+    <NavLink to="/services" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
+      Services
+    </NavLink>
+    <NavLink to="/projects" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
+      Projects
+    </NavLink>
+    <button
+      onClick={toggleModal}
+      className="w-full text-left px-4 py-2 mt-2 bg-[#016386] text-white rounded hover:bg-[#014f59] transition"
+    >
+      Enquiry
+    </button>
+  </div>
+</div>
 
+      </nav>
 
-        </>
-    );
+      {/* Enquiry Modal */}
+      <EnquiryModal isOpen={isModalOpen} onClose={toggleModal} />
+    </>
+  );
 };
 
 export default Navbar;
