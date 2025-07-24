@@ -163,8 +163,8 @@ const handleNext = () => {
         </h2>
       </div>
 
-      <section className="px-6 py-12 flex justify-center">
-        <div className="grid grid-cols-1 gap-8 w-4/5">
+      <section className="px-2 md:px-6 py-12 flex justify-center">
+        <div className="grid grid-cols-1 gap-8 md:w-4/5">
           {currentCards.map((card) => (
             <Card
               key={card.id}

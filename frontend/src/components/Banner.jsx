@@ -69,7 +69,7 @@ export default function HeroSection() {
       variants={itemVariants}
       className="flex flex-col gap-4 min-[400px]:flex-row justify-center"
     >
-      <a href="#services" passHref>
+      <a href="/services" >
         <button className="inline-flex h-12 items-center justify-center rounded-full bg-[#378af9] px-8 text-base font-semibold text-white shadow-lg transition-all hover:bg-[#378af9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
           Our Services
         </button>

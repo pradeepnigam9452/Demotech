@@ -56,7 +56,7 @@ const Card = ({ title, description, laptopImg, mobileImg, features, link }) => {
 
   return (
     <motion.div
-      className="w-full px-2 sm:px-4 lg:px-6 py-6"
+      className="w-full px-2 sm:px- lg:px-6 py-6"
       variants={cardLoadVariant}
       initial="hidden"
       animate="visible"
