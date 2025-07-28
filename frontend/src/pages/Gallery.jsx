@@ -158,7 +158,7 @@ export default function Gallery() {
       id: 25,
       src: "/gallery/digital/Screenshot 2025-04-19 at 1.40.38 PM.png",
       alt: "Screenshot Campaign",
-      category: "Digital Marketing",
+      category: "Logo",
     },
     {
       id: 26,
