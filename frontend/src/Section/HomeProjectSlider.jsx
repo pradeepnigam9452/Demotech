@@ -114,7 +114,7 @@ const cardsData = [
   },
   {
     id: 8,
-     title: "Robo Fintech Pvt Ltd",
+    title: "Robo Fintech Pvt Ltd",
     description: "Robo Fintech Pvt Ltd is a financial technology website built to represent modern fintech services, investment tools, and consultancy features. It includes a user-centric design with call-to-actions, interactive components, and secure data management practices. The site is built with scalability and speed in mind for better user experience.",
     laptopImg: "proj3.png",
     mobileImg: "proj3.png",
@@ -127,76 +127,82 @@ const cardsData = [
       "Business-Oriented Aesthetic"
     ]
   }
-  
+
 ];
 
 const HomeProjectSlider = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    return (
-        <div className="w-full  bg-white py-5" id="project">
-            <div className="text-center mb-2">
-                <h2 className="text-4xl sm:text-5xl font-bold text-blue-900">
-                    Our Projects
-                </h2>
+  return (
+    <div className="w-full  bg-white py-5" id="project">
+      <div className="text-center mb-10">
+        <h2 className="text-xl sm:text-5xl font-bold text-blue-900">
+          Our Project
+        </h2>
+      </div>
+
+      <Swiper
+        modules={[Autoplay]}
+        slidesPerView={1}
+        autoplay={{ delay: 2000, disableOnInteraction: false }}
+        loop={true}
+        className="w-full px-4 md:px-10"
+      >
+        {cardsData.map((card) => (
+          <SwiperSlide key={card.id}>
+            <div className="flex w-[90%] mx-auto flex-col md:flex-row overflow-hidden transition-all duration-300 hover:shadow-xl">
+              <div className="md:w-1/2 w-full h-50 md:h-54">
+                <img
+                  src={card.laptopImg}
+                  alt={card.title}
+                  className="w-full h-full object-contain rounded-t-xl md:rounded-l-xl"
+                />
+              </div>
+
+              <div className="md:w-1/2 w-full p-6 md:p-10 space-y-4 flex flex-col justify-between">
+                <div>
+                  <h3 className="text-2xl md:text-3xl font-bold mb-2 text-blue-500">
+                    {card.title}
+                  </h3>
+                  {/* <p className="text-gray-700 mt-2 text-sm md:text-base leading-relaxed">
+                                        {card.features.split(" ").slice(0, 30).join(" ") + (card.features.split(" ").length > 30 ? "..." : "")} 
+
+                                      </p> */}
+                  <ul className="list-disc ml-5 space-y-1 text-sm sm:text-base">
+                    {card.features.map((feature, idx) => (
+                      <li key={idx}>{feature}</li>
+                    ))}
+                  </ul>
+
+                </div>
+
+
+                {card.link && (
+                  <div>
+                    <a
+                      href={card.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-4 bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-black transition"
+                    >
+                      Visit Website
+                    </a>
+                  </div>
+                )}
+              </div>
             </div>
+          </SwiperSlide>
+        ))}
+        <button
+          onClick={() => navigate("/projects")}
+          className="mt-4 mx-auto flex px-6 py-2 text-white bg-blue-500 rounded-lg shadow-md hover:bg-black transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+        >
+          View More
+        </button>
+      </Swiper>
 
-            <Swiper
-                modules={[Autoplay]}
-                slidesPerView={1}
-                autoplay={{ delay: 2000, disableOnInteraction: false }}
-                loop={true}
-                className="w-full px-4 md:px-10"
-            >
-                {cardsData.map((card) => (
-                    <SwiperSlide key={card.id}>
-                        <div className="flex w-[90%] mx-auto flex-col md:flex-row overflow-hidden transition-all duration-300 hover:shadow-xl">
-                            <div className="md:w-1/2 w-full h-50 md:h-54">
-                                <img
-                                    src={card.laptopImg}
-                                    alt={card.title}
-                                    className="w-full h-full object-contain rounded-t-xl md:rounded-l-xl"
-                                />
-                            </div>
-
-                            <div className="md:w-1/2 w-full p-6 md:p-10 space-y-4 flex flex-col justify-between">
-                                <div>
-                                    <h3 className="text-2xl md:text-3xl font-bold text-blue-900">
-                                        {card.title}
-                                    </h3>
-                                    <p className="text-gray-700 mt-2 text-sm md:text-base leading-relaxed">
-                                        {card.description.split(" ").slice(0, 30).join(" ") + (card.description.split(" ").length > 30 ? "..." : "")}
-                                    </p>
-
-                                </div>
-
-
-                                {card.link && (
-                                    <div>
-                                        <a
-                                            href={card.link}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-block mt-4 bg-blue-900 text-white px-5 py-2 rounded-lg hover:bg-blue-800 transition"
-                                        >
-                                            Visit Website
-                                        </a>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    </SwiperSlide>
-                ))}
-                <button
-                    onClick={() => navigate("/projects")}
-                    className="mt-4 mx-auto flex px-6 py-2 text-white bg-blue-900 rounded-lg shadow-md hover:bg-blue-800 transition-all duration-300 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                >
-                    View More
-                </button>
-            </Swiper>
-
-        </div>
-    );
+    </div>
+  );
 };
 
 export default HomeProjectSlider;

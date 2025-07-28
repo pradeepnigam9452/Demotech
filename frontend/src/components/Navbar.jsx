@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import EnquiryModal from "./EnquiryModal";
+import logo from "../assets/logo.png"
 
 const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -10,7 +11,7 @@ const Navbar = () => {
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   const navLinkStyle =
-    "relative text-lg font-semibold text-[#5a9efa] hover:text-gray-800 transition duration-300 before:absolute before:left-0 before:bottom-0 before:h-0.5 before:w-full before:scale-x-0 before:bg-[#016386] before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100";
+    "relative  hover:text-blue-500 transition duration-300 before:absolute before:left-0 before:bottom-0 before:h-0.5 before:w-full before:scale-x-0  before:bg-blue-500 before:origin-left before:transition-transform before:duration-300 hover:before:scale-x-100";
 
   return (
     <>
@@ -18,9 +19,9 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
-            <div className="flex-shrink-0 px-2">
+            <div className="flex-shrink-0 px-2 bg-white rounded-xl py-1">
               <NavLink to="https://binarylogix.in">
-                <img className="w-32 md:w-40 rounded-xl" src="logo.png" alt="Binarylogix Logo" />
+                <img className="w-32 md:w-40" src={logo} alt="Binarylogix Logo" />
               </NavLink>
             </div>
 
@@ -33,7 +34,7 @@ const Navbar = () => {
               <NavLink to="/projects" className={navLinkStyle}>Projects</NavLink>
               <button
                 onClick={toggleModal}
-                className="bg-[#5a9efa] text-white px-4 py-2 rounded-lg text-sm hover:bg-[#5a9dfac5] transition duration-300"
+                className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-black transition duration-300"
               >
                 Enquiry
               </button>
@@ -60,33 +61,32 @@ const Navbar = () => {
           </div>
         </div>
 
-       {/* Mobile Menu - Slide Down */}
-<div
-  className={`md:hidden absolute top-20 left-0 w-full bg-white shadow-md text-[#016386] transition-transform duration-600 ease-in-out z-40 ${
-    mobileMenuOpen ? "translate-y-0 opacity-100 visible" : "-translate-y-4 opacity-0 invisible"
-  }`}
->
-  <div className="flex flex-col px-4 pt-2 pb-4">
-    <NavLink to="/" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
-      Home
-    </NavLink>
-    <NavLink to="/aboutUs" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
-      About Us
-    </NavLink>
-    <NavLink to="/services" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
-      Services
-    </NavLink>
-    <NavLink to="/projects" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
-      Projects
-    </NavLink>
-    <button
-      onClick={toggleModal}
-      className="w-full text-left px-4 py-2 mt-2 bg-[#016386] text-white rounded hover:bg-[#014f59] transition"
-    >
-      Enquiry
-    </button>
-  </div>
-</div>
+        {/* Mobile Menu - Slide Down */}
+        <div
+          className={`md:hidden absolute top-20 left-0 w-full bg-white shadow-md text-[#016386] transition-transform duration-600 ease-in-out z-40 ${mobileMenuOpen ? "translate-y-0 opacity-100 visible" : "-translate-y-4 opacity-0 invisible"
+            }`}
+        >
+          <div className="flex flex-col px-4 pt-2 pb-4">
+            <NavLink to="/" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
+              Home
+            </NavLink>
+            <NavLink to="/aboutUs" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
+              About Us
+            </NavLink>
+            <NavLink to="/services" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
+              Services
+            </NavLink>
+            <NavLink to="/projects" className="block px-4 py-2 border-b border-gray-200 hover:bg-gray-100 rounded">
+              Projects
+            </NavLink>
+            <button
+              onClick={toggleModal}
+              className="w-full text-left px-4 py-2 mt-2 bg-blue-500 text-white rounded hover:bg-black transition"
+            >
+              Enquiry
+            </button>
+          </div>
+        </div>
 
       </nav>
 
