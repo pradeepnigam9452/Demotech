@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { motion } from "framer-motion";
 
 export default function Gallery() {
   const galleryImages = [
@@ -180,16 +181,35 @@ export default function Gallery() {
     <Navbar />
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b">
-        <div className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold tracking-tight mb-2">Photo Gallery</h1>
-            <p className="text-muted-foreground text-lg">
-              Discover our curated collection of stunning photography
-            </p>
-          </div>
-        </div>
-      </header>
+     {/* ✅ Animated Gallery Header Section */}
+<section className="relative py-16 sm:py-20 md:py-20 bg-gradient-to-br from-gray-700 to-gray-900 text-white overflow-hidden">
+  {/* Blurred background blobs */}
+  <motion.div
+    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#378bf977] rounded-full blur-3xl opacity-30"
+    animate={{ scale: [1, 1.05, 1], rotate: [0, 10, 0] }}
+    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+  />
+  <motion.div
+    className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-3xl opacity-30"
+    animate={{ scale: [1, 0.95, 1], rotate: [0, -10, 0] }}
+    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+  />
+
+  <motion.div
+    className="relative z-10 text-center px-4 sm:px-6"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+  >
+    <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
+      Our <span className="text-[#5a9efa]">Gallery</span>
+    </h1>
+    <p className="mt-4 max-w-2xl mx-auto text-gray-300 text-base sm:text-lg">
+      Discover our curated collection of logos, projects, and creative digital work.
+    </p>
+  </motion.div>
+</section>
+
 
       {/* Filter Tabs */}
       <section className="container mx-auto px-4 py-8">
