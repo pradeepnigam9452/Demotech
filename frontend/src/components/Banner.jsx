@@ -48,43 +48,43 @@ export default function HeroSection() {
 
       <div className="container mx-auto w-full relative z-10 px-4 md:px-6">
         <motion.div
-  className="flex flex-col justify-center items-center text-center"
-  variants={containerVariants}
-  initial="hidden"
-  animate="visible"
->
-  <div className="flex flex-col justify-center space-y-6">
-    <motion.div variants={itemVariants} className="space-y-4">
-      <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl xl:text-7xl leading-tight">
-        Innovate. Create. Elevate.
-        <br />
-        Your Vision, Our Expertise.
-      </h1>
-      <p className="max-w-[700px] text-lg md:text-xl text-gray-300 mx-auto">
-        We are a leading digital agency specializing in crafting bespoke web solutions, stunning designs, and
-        powerful digital strategies that drive growth and engagement.
-      </p>
-    </motion.div>
-    <motion.div
-      variants={itemVariants}
-      className="flex flex-col gap-4 min-[400px]:flex-row justify-center"
-    >
-      <a href="/services" >
-        <button className="inline-flex h-12 items-center justify-center rounded-full bg-[#378af9] px-8 text-base font-semibold text-white shadow-lg transition-all hover:bg-[#378af9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
-          Our Services
-        </button>
-      </a>
-      <a href="#contact" passHref>
-        <button
-          variant="outline"
-          className="inline-flex h-12 items-center justify-center rounded-full border-2 border-gray-500 bg-transparent px-8 text-base font-semibold text-white shadow-lg transition-all hover:bg-gray-700 hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+          className="flex flex-col justify-center items-center text-center"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
         >
-          Get a Quote
-        </button>
-      </a>
-    </motion.div>
-  </div>
-</motion.div>
+          <div className="flex flex-col justify-center space-y-6">
+            <motion.div variants={itemVariants} className="space-y-4">
+              <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl xl:text-7xl leading-tight">
+                Innovate. Create. Elevate.
+                <br />
+                Your Vision, Our Expertise.
+              </h1>
+              <p className="max-w-[700px] text-lg md:text-xl text-gray-300 mx-auto">
+                We are a leading digital agency specializing in crafting bespoke web solutions, stunning designs, and
+                powerful digital strategies that drive growth and engagement.
+              </p>
+            </motion.div>
+            <motion.div
+              variants={itemVariants}
+              className="flex flex-col gap-4 min-[400px]:flex-row justify-center"
+            >
+              <a href="/services" >
+                <button className="inline-flex h-12 items-center justify-center rounded-full bg-[#378af9] px-8 text-base font-semibold text-white shadow-lg transition-all hover:bg-[#378af9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
+                  Our Services
+                </button>
+              </a>
+              <a href="#contact" passHref>
+                <button
+                  variant="outline"
+                  className="inline-flex h-12 items-center justify-center rounded-full border-2 border-gray-500 bg-transparent px-8 text-base font-semibold text-white shadow-lg transition-all hover:bg-gray-700 hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+                >
+                  Get a Quote
+                </button>
+              </a>
+            </motion.div>
+          </div>
+        </motion.div>
 
       </div>
 

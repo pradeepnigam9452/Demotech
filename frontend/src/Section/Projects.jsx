@@ -111,7 +111,7 @@ const cardsData = [
   },
   {
     id: 8,
-     title: "Robo Fintech Pvt Ltd",
+    title: "Robo Fintech Pvt Ltd",
     description: "Robo Fintech Pvt Ltd is a financial technology website built to represent modern fintech services, investment tools, and consultancy features. It includes a user-centric design with call-to-actions, interactive components, and secure data management practices. The site is built with scalability and speed in mind for better user experience.",
     laptopImg: "proj3.png",
     mobileImg: "proj3.png",
@@ -124,7 +124,7 @@ const cardsData = [
       "Business-Oriented Aesthetic"
     ]
   }
-  
+
 ];
 
 
@@ -139,19 +139,19 @@ const Projects = () => {
 
   const totalPages = Math.ceil(cardsData.length / cardsPerPage);
 
-const handlePrev = () => {
-  if (currentPage > 1) {
-    setCurrentPage(prev => prev - 1);
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+  const handlePrev = () => {
+    if (currentPage > 1) {
+      setCurrentPage(prev => prev - 1);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
 
-const handleNext = () => {
-  if (currentPage < totalPages) {
-    setCurrentPage(prev => prev + 1);
-  }
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+  const handleNext = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(prev => prev + 1);
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -167,7 +167,7 @@ const handleNext = () => {
 
   return (
     <>
-                  {/* ✅ Small Animated Banner */}
+      {/* ✅ Small Animated Banner */}
       <section className="relative py-16 sm:py-20 md:py-20 bg-gradient-to-br from-gray-700 to-gray-900 text-white overflow-hidden">
         {/* Blurred background blobs */}
         <motion.div
@@ -189,7 +189,7 @@ const handleNext = () => {
         >
           <motion.h1
             variants={itemVariants}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold"
+            className="text-3xl sm:text-3xl md:text-5xl font-bold"
           >
             Our <span className="text-[#5a9efa]">Projects</span>
           </motion.h1>
