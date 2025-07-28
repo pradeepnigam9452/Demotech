@@ -29,6 +29,7 @@ const Navbar = () => {
               <NavLink to="/" className={navLinkStyle}>Home</NavLink>
               <NavLink to="/aboutUs" className={navLinkStyle}>About Us</NavLink>
               <NavLink to="/services" className={navLinkStyle}>Services</NavLink>
+              <NavLink to="/gallery" className={navLinkStyle}>Gallery</NavLink>
               <NavLink to="/projects" className={navLinkStyle}>Projects</NavLink>
               <button
                 onClick={toggleModal}
