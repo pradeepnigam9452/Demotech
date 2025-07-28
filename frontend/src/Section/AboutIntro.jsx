@@ -17,11 +17,7 @@ const AboutIntro = () => {
   return (
     <div className="w-full bg-white ">
       {/* ✅ Small Animated Banner */}
-      <PageBanner
-        title="About Us"
-        subtitle="Learn more about our mission and vision"
-        backgroundImage="/images/about-banner.jpg"
-      />
+      
 
 
       <section className="max-w-[88%] mx-auto px-2 sm:px-5 py-10 grid grid-cols-1 md:grid-cols-2  items-center">

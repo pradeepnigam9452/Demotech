@@ -12,7 +12,7 @@ import {
   FileText,
   ArrowRightToLineIcon,
 } from "lucide-react";
-import { motion } from 'framer-motion';
+
 
 const services = [
   {
@@ -82,18 +82,7 @@ const services = [
 
 export default function Service({ limit ,Button}) {
   const displayedServices = limit ? services.slice(0, limit) : services;
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2 },
-    },
-  };
 
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 },
-  };
   return (
     <section
       aria-label="Our Services"
@@ -101,39 +90,7 @@ export default function Service({ limit ,Button}) {
     >
 
                    {/* ✅ Small Animated Banner */}
-      <section className="relative py-16 sm:py-20 md:py-20 bg-gradient-to-br from-gray-700 to-gray-900 text-white overflow-hidden">
-        {/* Blurred background blobs */}
-        <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#378bf977] rounded-full blur-3xl opacity-30"
-          animate={{ scale: [1, 1.05, 1], rotate: [0, 10, 0] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.div
-          className="absolute top-1/4 right-1/4 w-[400px] h-[400px] bg-blue-500/20 rounded-full blur-3xl opacity-30"
-          animate={{ scale: [1, 0.95, 1], rotate: [0, -10, 0] }}
-          transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-        />
-
-        <motion.div
-          className="relative z-10 text-center px-4 sm:px-6"
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          <motion.h1
-            variants={itemVariants}
-            className="text-3xl sm:text-4xl md:text-5xl font-bold"
-          >
-            Our <span className="text-[#5a9efa]">Services</span>
-          </motion.h1>
-          <motion.p
-            variants={itemVariants}
-            className="mt-4 max-w-2xl mx-auto text-gray-300 text-base sm:text-lg"
-          >
-            Explore our comprehensive range of services designed to elevate your business and enhance your digital presence.
-          </motion.p>
-        </motion.div>
-      </section>
+    
       <div className="max-w-full  lg:mx-20 px-10 py-10 relative z-10  ">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-extrabold mb-3 text-black">
