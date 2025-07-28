@@ -202,7 +202,7 @@ export default function Gallery() {
     transition={{ duration: 0.8 }}
   >
     <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold">
-      Our <span className="text-[#5a9efa]">Design</span>
+      Our <span className="text-[#5a9efa]">Designs</span>
     </h1>
     <p className="mt-4 max-w-2xl mx-auto text-gray-300 text-base sm:text-lg">
       Discover our curated collection of logos, projects, and creative digital work.
