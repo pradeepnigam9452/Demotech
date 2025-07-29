@@ -93,7 +93,7 @@ const Card = ({ title, description, laptopImg, mobileImg, features, link }) => {
         >
           <div>
             <h2
-              className="text-2xl font-bold sm:text-3xl bg-sky-800 w-fit px-4 py-2 rounded-2xl text-white"
+              className="text-2xl font-bold sm:text-3xl bg-blue-500 w-fit px-4 py-2 rounded-2xl text-white"
               style={{ fontFamily: "Merriweather, cursive" }}
             >
               {title}
@@ -119,7 +119,7 @@ const Card = ({ title, description, laptopImg, mobileImg, features, link }) => {
               href={link}
               target="_blank"
               rel="noopener noreferrer"
-              className="mt-6 inline-flex justify-center items-center gap-1.5 bg-blue-800 hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-lg w-fit"
+              className="mt-6 inline-flex justify-center items-center gap-1.5 bg-gradient-to-br from-blue-500 to-blue-900 hover:bg-blue-600 text-white font-bold px-4 py-2 rounded-lg w-fit"
             >
               Visit Website <ExternalLink size={14} />
             </a>

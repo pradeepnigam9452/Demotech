@@ -1,4 +1,5 @@
 import React from "react";
+import {FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp} from "react-icons/fa";
 
 const Footer = () => {
   return (
@@ -12,7 +13,7 @@ const Footer = () => {
               <img
                 src="logo.png"
                 alt="Binarylogix Logo"
-                className="h-14 sm:h-16"
+                className="h-14 sm:h-16 rounded-2xl"
               />
             </a>
             <p className="mb-4 text-sm sm:text-base">
@@ -82,38 +83,52 @@ const Footer = () => {
           </div>
 
           {/* Gallery */}
-          <div>
-            <h4 className="text-xl font-semibold mb-4">Our Gallery</h4>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                {
-                  href: "https://binarylogix.in/footer-1/",
-                  src: "https://binarylogix.in/wp-content/uploads/2024/02/footer-1.jpg",
-                },
-                {
-                  href: "https://binarylogix.in/footer-1-2/",
-                  src: "https://binarylogix.in/wp-content/uploads/2024/02/footer-1-1.jpg",
-                },
-                {
-                  href: "https://binarylogix.in/footer-2-2/",
-                  src: "https://binarylogix.in/wp-content/uploads/2024/02/footer-2-1.jpg",
-                },
-                {
-                  href: "https://binarylogix.in/footer-4/",
-                  src: "https://binarylogix.in/wp-content/uploads/2024/02/footer-4.jpg",
-                },
-              ].map(({ href, src }, idx) => (
-                <a key={idx} href={href} className="block col-span-1">
-                  <img
-                    src={src}
-                    alt={`Gallery ${idx + 1}`}
-                    className="w-full h-auto rounded-sm object-cover"
-                    loading="lazy"
-                  />
-                </a>
-              ))}
+          <div className="">
+            <h4 className="text-xl font-semibold mb-4">Contact Us</h4>
+            <div className="space-y-2 text-sm ">
+              <p><strong>Address:</strong> 11, Himanshu Apartments Indrapuri A Sector, Bhopal</p>
+              <p><strong>Phone:</strong> <a href="tel:+919926417905" className=" hover:underline">+91 96171 89757</a></p>
+              <p><strong>Email:</strong> <a href="mailto:info@binarylogix.in" className="hover:underline">binarylogixofficial@gmail.com</a></p>
             </div>
+
+
+            <div className="mt-4 flex gap-4">
+              <a
+                href="https://facebook.com/binarylogix"
+                target="_blank"
+                rel="noopener noreferrer"
+                className=" hover:text-blue-600 text-xl"
+              >
+                <FaFacebookF />
+              </a>
+              <a
+                href="https://instagram.com/binarylogix"
+                target="_blank"
+                rel="noopener noreferrer"
+                className=" hover:text-pink-500 text-xl"
+              >
+                <FaInstagram />
+              </a>
+              <a
+                href="https://linkedin.com/company/binarylogix"
+                target="_blank"
+                rel="noopener noreferrer"
+                className=" hover:text-blue-800 text-xl"
+              >
+                <FaLinkedinIn />
+              </a>
+              <a
+                href="https://wa.me/919926417905"
+                target="_blank"
+                rel="noopener noreferrer"
+                className=" hover:text-green-600 text-xl"
+              >
+                <FaWhatsapp />
+              </a>
+            </div>
+
           </div>
+
         </div>
 
         {/* Bottom Footer */}
