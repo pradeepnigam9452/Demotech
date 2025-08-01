@@ -33,13 +33,13 @@ const contentHoverVariant = {
   },
 };
 
-const Card = ({ title, description, laptopImg, mobileImg, features, link }) => {
+const Card = ({ title, description, image, features, link }) => {
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 
   const imgList = [
-    { src: laptopImg, label: "Laptop View" },
-    { src: mobileImg, label: "Mobile View" },
+    { src: `/uploads/projects/${image}`, label: "Laptop View" },
+    { src: `/uploads/projects/${image}`, label: "Mobile View" },
   ];
 
   const paginate = (dir) => {

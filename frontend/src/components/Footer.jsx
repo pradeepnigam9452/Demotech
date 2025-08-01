@@ -1,5 +1,6 @@
 import React from "react";
 import {FaFacebookF, FaInstagram, FaLinkedinIn, FaWhatsapp} from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -67,6 +68,11 @@ const Footer = () => {
                 >
                   Contact Us
                 </a>
+              </li>
+              <li>
+                <Link to="/AdminLogin" className="hover:text-[#F9F3EF] transition-colors">
+                  Admin
+                </Link>
               </li>
             </ul>
           </div>
