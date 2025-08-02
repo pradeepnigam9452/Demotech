@@ -34,6 +34,7 @@ const contentHoverVariant = {
 };
 
 const Card = ({ title, description, image, features, link }) => {
+  console.log(features)
   const [index, setIndex] = useState(0);
   const [direction, setDirection] = useState(0);
 

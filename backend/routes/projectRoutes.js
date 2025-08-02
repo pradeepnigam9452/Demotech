@@ -11,11 +11,9 @@ const {
 } = require("../controller/projectController");
 
 
-router.post("/", upload.single("image"),addProject);
-
-router.get("/", getAllProjects);
-router.post("/", addProject);
-router.put("/:id", updateProject);
-router.delete("/:id", deleteProject);
+router.post("/addProject", upload.single("image"),addProject);
+router.get("/getAllProjects", getAllProjects);
+router.put("/updateProject/:id",upload.single("image"), updateProject);
+router.delete("/deleteProject/:id", deleteProject);
 
 module.exports = router;

@@ -7,7 +7,8 @@ import {
   Menu,
   X,
   LogOut,
-  GraduationCap
+  GraduationCap,
+  ProportionsIcon,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -15,7 +16,10 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [openMenus, setOpenMenus] = useState({ Projects: false });
+  const [openMenus, setOpenMenus] = useState({
+    Projects: false,
+    Clients: false,
+  });
 
   useEffect(() => {
     const token = sessionStorage.getItem("adminToken");
@@ -35,6 +39,20 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
 
   return (
     <>
+      {/* Hamburger for mobile */}
+      <div className="lg:hidden fixed top-4 left-4 z-50">
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="p-2   rounded-md shadow-md text-gray-700 focus:outline-none"
+        >
+          {mobileMenuOpen ? (
+            <X className="hidden" />
+          ) : (
+            <Menu className="h-5 w-5 bg-white" />
+          )}
+        </button>
+      </div>
+
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div
@@ -45,28 +63,31 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
 
       {/* Sidebar */}
       <aside
-        className={`fixed top-0 left-0 z-40 flex flex-col bg-white border-r border-gray-200 shadow-lg transition-all duration-300
-        ${collapsed ? "w-16" : "w-64"}
-        ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+        className={`relative top-0 left-0 z-40 min-h-screen w-64 flex flex-col bg-white border-r border-gray-200 shadow-lg transition-all duration-300 overflow-hidden  
+        ${collapsed ? "w-16" : "w-64 "}
+        ${
+          mobileMenuOpen
+            ? "translate-x-0"
+            : "-translate-x-full lg:translate-x-0"
+        }
         h-screen overflow-y-auto lg:static`}
       >
         {/* Sidebar Header */}
         <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
-              <Link to="/">
-              <img src="GraduationCap"  className="h-5 w-5" />
-              
-              </Link>
+              <ProportionsIcon className="h-5 w-5" />
             </div>
             {!collapsed && (
               <div className="flex flex-col">
-                <span className="text-sm font-semibold text-gray-900">PortFolio Admin</span>
+                <span className="text-sm font-semibold text-gray-900">
+                  PortFolio Admin
+                </span>
                 <span className="text-xs text-gray-500">Dashboard</span>
               </div>
             )}
           </div>
-          {/* Mobile close button */}
+          {/* Mobile Close Button */}
           <button
             onClick={closeMobileMenu}
             className="lg:hidden p-1 rounded-md text-gray-400 hover:text-gray-600"
@@ -75,7 +96,7 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
           </button>
         </div>
 
-        {/* Sidebar Navigation */}
+        {/* Navigation */}
         <div className="flex-1 overflow-y-auto py-2 px-3">
           <nav className="space-y-1">
             <button
@@ -98,12 +119,16 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
                 onClick={() => toggleMenu("Projects")}
                 className="flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-gray-100 text-gray-700"
               >
-                <GalleryVertical className={`h-5 w-5 ${collapsed ? "mx-auto" : "mr-3"}`} />
+                <GalleryVertical
+                  className={`h-5 w-5 ${collapsed ? "mx-auto" : "mr-3"}`}
+                />
                 {!collapsed && (
                   <>
                     <span className="flex-1 text-left">Projects</span>
                     <ChevronDown
-                      className={`h-4 w-4 transition-transform ${openMenus["Projects"] ? "rotate-180" : ""}`}
+                      className={`h-4 w-4 transition-transform ${
+                        openMenus["Projects"] ? "rotate-180" : ""
+                      }`}
                     />
                   </>
                 )}
@@ -126,6 +151,44 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
                 </div>
               )}
             </div>
+            {/* Clients Menu */}
+            <div>
+              <button
+                onClick={() => toggleMenu("Clients")}
+                className="flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-gray-100 text-gray-700"
+              >
+                <GraduationCap
+                  className={`h-5 w-5 ${collapsed ? "mx-auto" : "mr-3"}`}
+                />
+                {!collapsed && (
+                  <>
+                    <span className="flex-1 text-left">Clients</span>
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        openMenus["Clients"] ? "rotate-180" : ""
+                      }`}
+                    />
+                  </>
+                )}
+              </button>
+              {!collapsed && openMenus["Clients"] && (
+                <div className="mt-1 space-y-1 pl-10">
+                  <button
+                    onClick={() => {
+                      setActiveView("Clients");
+                      closeMobileMenu();
+                    }}
+                    className={`block w-full rounded-md py-2 text-left text-sm transition-colors ${
+                      activeView === "Clients"
+                        ? "text-blue-600 bg-gray-100"
+                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                    }`}
+                  >
+                    Clients
+                  </button>
+                </div>
+              )}
+            </div>
           </nav>
         </div>
 
@@ -134,17 +197,21 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
           onClick={() => setCollapsed(!collapsed)}
           className="absolute -right-3 top-20 hidden lg:flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-white text-gray-600 hover:bg-gray-50 shadow-sm transition-colors"
         >
-          <ChevronRight className={`h-4 w-4 transition-transform ${collapsed ? "" : "rotate-180"}`} />
+          <ChevronRight
+            className={`h-4 w-4 transition-transform ${
+              collapsed ? "" : "rotate-180"
+            }`}
+          />
         </button>
 
-        {/* Logout Button */}
+        {/* Logout */}
         <div className="mt-auto border-t border-gray-200 px-4 py-3">
           <button
             onClick={handleLogout}
-            className="flex items-center w-full text-sm text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md transition-colors"
+            className="flex items-center w-full text-sm text-gray-700 hover:bg-gray-100 px-3 py-2 rounded-md transition-colors duration-200"
           >
-            <LogOut className="mr-2 h-4 w-4" />
-            {!collapsed && "Logout"}
+            <LogOut className="mr-2 h-5 w-5 text-red-500" />
+            {!collapsed && <span>Logout</span>}
           </button>
         </div>
       </aside>

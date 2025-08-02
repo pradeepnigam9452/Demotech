@@ -5,6 +5,9 @@ require('dotenv').config();
 const app = express();
 const AdminRouter = require("./routes/AdminRouter");
 const projectRoutes =require("./routes/projectRoutes");
+const clientProjectRoutes = require('./routes/clientProjectRoutes');
+
+
 const PORT = process.env.PORT || 5000;
 const path = require("path");
 
@@ -15,6 +18,9 @@ app.use(express.json());
 
 app.use("/api/admin", AdminRouter);
  app.use("/api/projects", projectRoutes);
+
+app.use('/api/client-projects', clientProjectRoutes);
+
 
  app.use("/uploads/projects", express.static(path.join(__dirname, "uploads/projects")));
 
