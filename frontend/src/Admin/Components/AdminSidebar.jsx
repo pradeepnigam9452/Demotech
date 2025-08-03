@@ -25,6 +25,7 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
     const token = sessionStorage.getItem("adminToken");
     if (!token) navigate("/AdminLogin");
   }, [navigate]);
+  
 
   const handleLogout = () => {
     sessionStorage.removeItem("adminToken");
@@ -56,22 +57,24 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
       {/* Mobile Overlay */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black bg-opacity-50 lg:hidden"
+          className="fixed inset-0 z-30   bg-opacity-50 lg:hidden"
           onClick={closeMobileMenu}
         />
       )}
 
       {/* Sidebar */}
-      <aside
-        className={`relative top-0 left-0 z-40 min-h-screen w-64 flex flex-col bg-white border-r border-gray-200 shadow-lg transition-all duration-300 overflow-hidden  
-        ${collapsed ? "w-16" : "w-64 "}
-        ${
-          mobileMenuOpen
-            ? "translate-x-0"
-            : "-translate-x-full lg:translate-x-0"
-        }
-        h-screen overflow-y-auto lg:static`}
-      >
+     <aside
+  className={`
+    fixed top-0 left-0 z-40
+    h-screen
+    bg-white border-r border-gray-200 shadow-lg
+    flex flex-col transition-transform duration-300 ease-in-out
+    ${collapsed ? "w-16" : "w-64"}
+    ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"} 
+    lg:translate-x-0
+  `}
+>
+
         {/* Sidebar Header */}
         <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
           <div className="flex items-center gap-3">

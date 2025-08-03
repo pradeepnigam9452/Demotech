@@ -107,46 +107,75 @@ const ClientProjectManager = () => {
         Client Projects
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {projects.map((project) => (
           <div
             key={project._id}
-            className="bg-white rounded-xl shadow p-4 relative"
+            className="bg-white rounded-2xl shadow-md p-5 flex flex-col justify-between transition hover:shadow-lg border border-gray-100"
           >
-            <img
-              src={`/uploads/logos/${project.logo}`}
-              alt={project.projectName}
-              className="w-full h-56 object-contain rounded-lg mb-4"
-            />
-            <h3 className="text-xl font-bold text-[#1B3C53]">
-              {project.projectName}
-            </h3>
-            <p className="text-gray-700 mt-1 font-semibold">
-              {project.clientName}
-            </p>
-            <p className="text-sm text-gray-600">{project.companyName}</p>
-            <p className="text-sm mt-1">📞 {project.mobile}</p>
-            <p className="text-sm">📧 {project.email}</p>
-            <p className="text-gray-600 mt-2">{project.projectDetail}</p>
-            <a
-              href={project.link}
-              className="text-blue-600 hover:underline block mt-2"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Visit Link
-            </a>
+            {/* Top Section: Logo + Basic Info */}
+            <div className="flex items-start gap-4">
+              <img
+                src={`/uploads/projects/${project.logo}`}
+                alt={project.projectName}
+                className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-full border border-gray-300"
+              />
+              <div className="flex-1">
+                <h3 className="text-lg font-semibold text-[#1B3C53] leading-tight">
+                  {project.projectName}
+                </h3>
+                <p className="text-xs text-gray-500">Project Name</p>
 
-            <div className="flex mt-4 w-36 text-sm gap-2 z-10 p-2 rounded-xl shadow">
+                <p className="mt-1 font-medium text-gray-700">
+                  {project.clientName}
+                </p>
+                <p className="text-xs text-gray-500">Client Name</p>
+              </div>
+            </div>
+
+            {/* Middle Section: Details */}
+            <div className="mt-4 text-sm text-gray-700 space-y-2">
+              <div>
+                <span className="text-gray-500 font-medium">Company:</span>{" "}
+                {project.companyName}
+              </div>
+              <div>
+                <span className="text-gray-500 font-medium">Mobile:</span>{" "}
+                {project.mobile}
+              </div>
+              <div>
+                <span className="text-gray-500 font-medium">Email:</span>{" "}
+                {project.email}
+              </div>
+              <div>
+                <span className="text-gray-500 font-medium">Details:</span>
+                <p className="text-xs text-gray-600 mt-1">
+                  {project.projectDetail}
+                </p>
+              </div>
+              {project.link && (
+                <a
+                  href={project.link}
+                  className="text-blue-600 hover:underline text-xs inline-block mt-1"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  🔗 Visit Link
+                </a>
+              )}
+            </div>
+
+            {/* Bottom Section: Actions */}
+            <div className="mt-6 flex justify-end gap-2 text-sm">
               <button
                 onClick={() => handleEdit(project)}
-                className="flex-1 px-4 py-2 bg-blue-100 text-blue-800 hover:bg-blue-200 rounded-lg"
+                className="px-4 py-1.5 bg-blue-50 text-blue-700 hover:bg-blue-100 rounded-lg"
               >
                 Edit
               </button>
               <button
                 onClick={() => handleDelete(project._id)}
-                className="flex-1 px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg"
+                className="px-4 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 rounded-lg"
               >
                 Delete
               </button>
@@ -158,152 +187,166 @@ const ClientProjectManager = () => {
       {/* Floating Add Button */}
       <button
         onClick={openAddModal}
-        className="fixed top-6 right-6 bg-blue-500 hover:bg-blue-400 text-white px-6 py-3 rounded-full shadow-lg text-lg"
+        className="fixed top-4 right-4 sm:top-6 sm:right-6 bg-blue-500 hover:bg-blue-400 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-full shadow-lg text-base sm:text-lg z-50"
       >
         + Add Client Project
       </button>
 
       {/* Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-[#0000005e] flex justify-center items-center z-50">
-          <form
-            onSubmit={handleSubmit}
-            className="bg-white rounded-lg p-6 w-full max-w-xl shadow-lg  relative"
-          >
-            <h3 className="text-xl font-semibold text-[#1B3C53] mb-2">
-              {editingId ? "Edit Client Project" : "Add New Client Project"}
-            </h3>
+    {showModal && (
+  <div className="fixed inset-0 bg-[#0000005e] z-50 flex justify-center items-start overflow-y-auto px-4 py-10">
+    <form
+      onSubmit={handleSubmit}
+      className="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg relative max-h-full overflow-y-auto"
+    >
+      <h3 className="text-xl font-semibold text-[#1B3C53] mb-2">
+        {editingId ? "Edit Client Project" : "Add New Client Project"}
+      </h3>
 
             {/* --- Section 1 --- */}
-            <div>
-             
+            <div className="space-y-6">
+              {/* Section 1 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Project Name */}
                 <div>
-                  <label className="block font-medium">Project Name</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Project Name
+                  </label>
                   <input
                     type="text"
                     name="projectName"
                     value={formData.projectName}
                     onChange={handleChange}
-                    className="w-full mt-1 p-2 border rounded"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter project name"
                     required
                   />
                 </div>
 
-                {/* Client Name */}
                 <div>
-                  <label className="block font-medium">Client Name</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Client Name
+                  </label>
                   <input
                     type="text"
                     name="clientName"
                     value={formData.clientName}
                     onChange={handleChange}
-                    className="w-full mt-1 p-2 border rounded"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter client name"
                     required
                   />
                 </div>
 
-                {/* Company Name */}
                 <div>
-                  <label className="block font-medium">Company Name</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Company Name
+                  </label>
                   <input
                     type="text"
                     name="companyName"
                     value={formData.companyName}
                     onChange={handleChange}
-                    className="w-full mt-1 p-2 border rounded"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter company name"
                     required
                   />
                 </div>
 
-                {/* Mobile No. */}
                 <div>
-                  <label className="block font-medium">Mobile No.</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Mobile No.
+                  </label>
                   <input
                     type="text"
                     name="mobile"
                     value={formData.mobile}
                     onChange={handleChange}
-                    className="w-full mt-1 p-2 border rounded"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter mobile number"
                     required
                   />
                 </div>
               </div>
-            </div>
 
-            {/* --- Section 2 --- */}
-            <div>
-              
+              {/* Section 2 */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Email */}
                 <div>
-                  <label className="block font-medium">Email</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Email
+                  </label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full mt-1 p-2 border rounded"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="Enter email"
                     required
                   />
                 </div>
 
-                {/* Project Link */}
                 <div>
-                  <label className="block font-medium">Project Link</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">
+                    Project Link
+                  </label>
                   <input
                     type="text"
                     name="link"
                     value={formData.link}
                     onChange={handleChange}
-                    className="w-full mt-1 p-2 border rounded"
+                    className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    placeholder="https://example.com"
                     required
                   />
                 </div>
               </div>
 
               {/* Project Detail */}
-              <div className="mt-4">
-                <label className="block font-medium">Project Detail</label>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Project Detail
+                </label>
                 <textarea
                   name="projectDetail"
                   value={formData.projectDetail}
                   onChange={handleChange}
-                  className="w-full mt-1 p-2 border rounded"
-                  rows={3}
+                  rows={4}
+                  className="w-full p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Brief about the project"
                   required
-                />
+                ></textarea>
               </div>
 
               {/* Logo Upload */}
-              <div className="mt-4">
-                <label className="block font-medium">Logo</label>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1">
+                  Upload Logo
+                </label>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={(e) => setLogo(e.target.files[0])}
-                  className="w-full mt-1 p-2 border rounded"
+                  className="w-full p-2 border border-gray-300 rounded-lg bg-white"
                   required={!editingId}
                 />
               </div>
-            </div>
 
-            {/* Buttons */}
-            <div className="flex justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setShowModal(false)}
-                className="px-4 py-2 border rounded text-gray-700 hover:bg-gray-100"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded"
-              >
-                {editingId ? "Update Project" : "Add Project"}
-              </button>
+              {/* Submit Buttons */}
+              <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="px-4 py-2 border rounded-lg text-gray-700 hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+                >
+                  {editingId ? "Update Project" : "Add Project"}
+                </button>
+              </div>
             </div>
           </form>
         </div>
