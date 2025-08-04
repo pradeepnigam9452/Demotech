@@ -1,5 +1,6 @@
 import Background from "../components/Background"
 import Banner from "../components/Banner"
+import ClientsSlider from "../components/ClientsSlider"
 import Footer from "../components/Footer"
 import Navbar from "../components/Navbar"
 import AboutIntro from "../Section/AboutIntro"
@@ -16,6 +17,7 @@ function Home() {
       <Navbar />
       <Banner />
       <HomeProjectSlider/>
+      <ClientsSlider/>
       <AboutIntro />
       <Service limit={3} Button={true} />
       <Features />

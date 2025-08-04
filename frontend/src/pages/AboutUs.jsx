@@ -8,6 +8,7 @@ import WorkingProcess from '../Section/WorkingProcess';
 import WhyChooseUs from '../Section/WhyChooseUs';
 import PageBanner from '../components/PageBanner';
 import { motion } from 'framer-motion';
+import ClientsSlider from '../components/ClientsSlider';
 
 const AboutUs = () => {
       const containerVariants = {
@@ -61,6 +62,7 @@ const AboutUs = () => {
         </motion.div>
       </section>
         <AboutIntro />
+        <ClientsSlider/>
         <Features />
         <WorkingProcess />
         <WhyChooseUs />

@@ -12,7 +12,7 @@ const {
 router.post('/add', upload.single('logo'), addClientProject);
 
 // 🔹 Get all projects
-router.get('/', getAllClientProjects);
+router.get('/getAllClientProjects', getAllClientProjects);
 
 // 🔹 Delete a project
 router.delete('/:id', deleteClientProject);

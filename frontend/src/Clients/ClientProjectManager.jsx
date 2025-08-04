@@ -25,7 +25,7 @@ const ClientProjectManager = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await axios.get("/api/client-projects");
+      const res = await axios.get("/api/client-projects/getAllClientProjects");
       setProjects(Array.isArray(res.data) ? res.data : []);
     } catch (err) {
       console.error(err);
@@ -60,8 +60,8 @@ const ClientProjectManager = () => {
         await axios.post("/api/client-projects/add", data);
         Swal.fire("Added!", "Client project added successfully.", "success");
       }
-      fetchProjects();
       setShowModal(false);
+      fetchProjects();
     } catch (err) {
       Swal.fire("Error", err.response?.data?.error || err.message, "error");
     }
@@ -118,8 +118,9 @@ const ClientProjectManager = () => {
               <img
                 src={`/uploads/projects/${project.logo}`}
                 alt={project.projectName}
-                className="w-14 h-14 sm:w-16 sm:h-16 object-cover rounded-full border border-gray-300"
+                className="w-28 h-28 sm:w-20 sm:h-20 rounded-xl object-contain bg-white p-3 shadow-lg border border-gray-200 hover:scale-105 transition duration-300"
               />
+
               <div className="flex-1">
                 <h3 className="text-lg font-semibold text-[#1B3C53] leading-tight">
                   {project.projectName}
@@ -193,15 +194,15 @@ const ClientProjectManager = () => {
       </button>
 
       {/* Modal */}
-    {showModal && (
-  <div className="fixed inset-0 bg-[#0000005e] z-50 flex justify-center items-start overflow-y-auto px-4 py-10">
-    <form
-      onSubmit={handleSubmit}
-      className="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg relative max-h-full overflow-y-auto"
-    >
-      <h3 className="text-xl font-semibold text-[#1B3C53] mb-2">
-        {editingId ? "Edit Client Project" : "Add New Client Project"}
-      </h3>
+      {showModal && (
+        <div className="fixed inset-0 bg-[#0000005e] z-50 flex justify-center items-start overflow-y-auto px-4 py-10">
+          <form
+            onSubmit={handleSubmit}
+            className="bg-white rounded-lg p-6 w-full max-w-2xl shadow-lg relative max-h-full overflow-y-auto"
+          >
+            <h3 className="text-xl font-semibold text-[#1B3C53] mb-2">
+              {editingId ? "Edit Client Project" : "Add New Client Project"}
+            </h3>
 
             {/* --- Section 1 --- */}
             <div className="space-y-6">

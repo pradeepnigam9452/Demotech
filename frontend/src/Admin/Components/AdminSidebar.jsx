@@ -11,6 +11,7 @@ import {
   ProportionsIcon,
 } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import image from "../../assets/image.png"
 
 const AdminSidebar = ({ activeView, setActiveView }) => {
   const navigate = useNavigate();
@@ -25,7 +26,6 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
     const token = sessionStorage.getItem("adminToken");
     if (!token) navigate("/AdminLogin");
   }, [navigate]);
-  
 
   const handleLogout = () => {
     sessionStorage.removeItem("adminToken");
@@ -63,8 +63,8 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
       )}
 
       {/* Sidebar */}
-     <aside
-  className={`
+      <aside
+        className={`
     fixed top-0 left-0 z-40
     h-screen
     bg-white border-r border-gray-200 shadow-lg
@@ -73,8 +73,7 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
     ${mobileMenuOpen ? "translate-x-0" : "-translate-x-full"} 
     lg:translate-x-0
   `}
->
-
+      >
         {/* Sidebar Header */}
         <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
           <div className="flex items-center gap-3">
@@ -127,7 +126,7 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
                 />
                 {!collapsed && (
                   <>
-                    <span className="flex-1 text-left">Projects</span>
+                    <span className="flex-1  text-left">Projects</span>
                     <ChevronDown
                       className={`h-4 w-4 transition-transform ${
                         openMenus["Projects"] ? "rotate-180" : ""
@@ -143,7 +142,7 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
                       setActiveView("Projects");
                       closeMobileMenu();
                     }}
-                    className={`block w-full rounded-md py-2 text-left text-sm transition-colors ${
+                    className={`block w-full rounded-md py-2 pl-2 text-left text-sm transition-colors ${
                       activeView === "Projects"
                         ? "text-blue-600 bg-gray-100"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
@@ -160,8 +159,12 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
                 onClick={() => toggleMenu("Clients")}
                 className="flex w-full items-center rounded-lg px-3 py-2.5 text-sm font-medium transition-colors hover:bg-gray-100 text-gray-700"
               >
-                <GraduationCap
-                  className={`h-5 w-5 ${collapsed ? "mx-auto" : "mr-3"}`}
+                <img
+                  src={image}
+                  alt="Graduation Cap"
+                  className={`h-5 w-5 object-contain ${
+                    collapsed ? "mx-auto" : "mr-3"
+                  }`}
                 />
                 {!collapsed && (
                   <>
@@ -181,7 +184,7 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
                       setActiveView("Clients");
                       closeMobileMenu();
                     }}
-                    className={`block w-full rounded-md py-2 text-left text-sm transition-colors ${
+                    className={`block w-full rounded-md py-2 pl-2 text-left text-sm transition-colors ${
                       activeView === "Clients"
                         ? "text-blue-600 bg-gray-100"
                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
