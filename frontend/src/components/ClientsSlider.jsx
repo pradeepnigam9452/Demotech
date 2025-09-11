@@ -28,7 +28,7 @@ const ClientsSlider = () => {
 
       {/* Slider wrapper */}
       <div className="slider-wrapper overflow-hidden relative">
-        <div className="slider-track flex gap-10 items-center w-max animate-scroll group-hover:paused">
+        <div className="slider-track flex gap-19 items-center w-max animate-scroll group-hover:paused">
           {duplicatedClients.map((client, idx) => (
             <div
               key={idx}
@@ -66,7 +66,7 @@ const ClientsSlider = () => {
         }
 
         .animate-scroll {
-          animation: scroll 9s linear infinite;
+          animation: scroll 20s linear infinite;
         }
 
         .group-hover\\:paused:hover {

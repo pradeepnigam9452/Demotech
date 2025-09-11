@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import AdminSidebar from "./AdminSidebar";
 import AdminProjectManager from "./AdminProjectManager";
 import ClientProjectManager from "../../Clients/ClientProjectManager";
+import QuotationList from "./QuotationAdmin/QuotationList";
 
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -34,6 +35,8 @@ function AdminDashboard() {
 
           {activeView === "Projects" && <AdminProjectManager />}
           {activeView === "Clients" && <ClientProjectManager />}
+          {activeView === "Quotation" && <QuotationList />}
+
         </main>
       </div>
     </div>

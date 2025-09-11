@@ -8,6 +8,7 @@ import Gallery from "./pages/Gallery";
 import AdminLogin from "./Admin/Components/AdminLogin";
 import AdminDashboard from "./Admin/Components/AdminDashboard";
 import AdminProjectManager from "./Admin/Components/AdminProjectManager";
+import QuotationDetail from "./Admin/Components/QuotationAdmin/QuotationDetails";
 
 function App() {
   return (
@@ -21,6 +22,8 @@ function App() {
         <Route path="/services" element={<OurServices />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/aboutUs" element={<AboutUs />} />
+        <Route path="/quotation/:id" element={<QuotationDetail />} />
+
       </Routes>
     </Router>
   );
