@@ -18,6 +18,10 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
+
+
+
+  
   useEffect(() => {
     const token = sessionStorage.getItem("adminToken");
     if (!token) navigate("/AdminLogin");

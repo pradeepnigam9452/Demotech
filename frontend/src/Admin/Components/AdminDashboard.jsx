@@ -14,6 +14,27 @@ function AdminDashboard() {
     if (!token) navigate("/AdminLogin");
   }, [navigate]);
 
+
+// ✅ Reload ke baad last active tab restore karna
+useEffect(() => {
+  const savedView = sessionStorage.getItem("activeView");
+  if (savedView) {
+    setActiveView(savedView);   // agar kuch save hai to wahi open hoga
+  } else {
+    setActiveView("Dashboard"); // first time ya sessionStorage empty ho
+  }
+}, []);
+
+  // ✅ Jab bhi activeView change ho, usko sessionStorage me save karna
+useEffect(() => {
+  const timer = setTimeout(() => {
+    sessionStorage.setItem("activeView", activeView);
+  }, 500); // 500ms delay
+
+  return () => clearTimeout(timer); // cleanup on unmount or state change
+}, [activeView]);
+
+
   return (
     <div className="flex bg-gray-100">
       {/* Sidebar */}

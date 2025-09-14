@@ -107,10 +107,10 @@ features: Array.isArray(project.features) ? project.features.join(', ') : '',
   };
 
   return (
-    <div className=" md:p-4   bg-gray-100 min-h-screen relative">
-<h1 className="text-3xl font-bold text-[#1B3C53]   inline-block pb-3">
-  Projects
-</h1>
+    <div className="   bg-gray-100 min-h-screen relative">
+ <h1 className="text-2xl md:text-3xl font-bold text-[#1B3C53] mb-6">
+                Projects
+              </h1>
       {/* Project Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {projects.map((project) => (

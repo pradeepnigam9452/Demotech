@@ -17,7 +17,7 @@ app.use(express.json());
 app.use("/api/admin", AdminRouter);
 app.use("/api/projects", projectRoutes);
 app.use('/api/client-projects', clientProjectRoutes);
-app.use('/api/quatation', quotationRoutes);
+app.use('/api/quotations', quotationRoutes);
 
 app.use(cors({
   origin: "http://localhost:5173", // Your frontend URL

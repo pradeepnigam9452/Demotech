@@ -102,10 +102,10 @@ const ClientProjectManager = () => {
   };
 
   return (
-    <div className="md:p-4 bg-gray-100 min-h-screen relative">
-      <h1 className="text-3xl font-bold text-[#1B3C53] pb-3">
+    <div className=" bg-gray-100 min-h-screen relative">
+     <h1 className="text-2xl md:text-3xl font-bold text-[#1B3C53] mb-6">
         Client Projects
-      </h1>
+              </h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
         {projects.map((project) => (
