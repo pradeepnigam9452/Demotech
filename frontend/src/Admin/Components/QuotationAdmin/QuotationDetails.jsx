@@ -4,6 +4,7 @@ import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import logo from '../../../assets/BinaryLogixLogo.jpg';
 import logo2 from '../../../assets/waterMark.jpg';
+import qrcode from '../../../assets/QrCode.jpg';
 import { Phone, Mail, MapPin } from 'lucide-react';
 
 const QuotationDetail = ({ quotationId }) => {
@@ -141,7 +142,7 @@ const QuotationDetail = ({ quotationId }) => {
                 </button>
             </div>
 
-            {/* ✅ Hidden clone for PDF with watermark styling */}
+            {/* ✅ Hidden clone for PDF with watermark styling + QR code */}
             <div
                 ref={hiddenRef}
                 style={{ display: "none", opacity: 0 }}
@@ -218,19 +219,34 @@ const QuotationDetail = ({ quotationId }) => {
                     </tbody>
                 </table>
 
-                <div className="text-[14px] leading-[1.8] text-[#01070dff]">
-                    <strong className="pl-[13px]">Terms & Conditions</strong>
-                    <ul className="mt-2 pl-5">
-                        {terms.split('\n').map((line, index) => (
-                            <li key={index}>{line}</li>
-                        ))}
-                    </ul>
+                <div className="flex justify-between items-start mt-6">
+                    <div className="text-[14px] leading-[1.8] text-[#01070dff] w-[75%]">
+                        <strong className="pl-[13px]">Terms & Conditions</strong>
+                        <ul className="mt-2 pl-5">
+                            {terms.split('\n').map((line, index) => (
+                                <li key={index}>{line}</li>
+                            ))}
+                        </ul>
+                    </div>
+                    {/* Right side - QR Code */}
+                    <div className="ml-4 flex-shrink-0 text-center mt-8">
+                        <img
+                            src={qrcode}
+                            alt="QR Code"
+                            className="w-32 h-32 object-contain mx-auto"
+                        />
+                        <p className="-mt-1 text-[12px] text-black-600">
+                            Scan & Pay
+                        </p>
+
+                    </div>
+
                 </div>
 
-                <div className="text-center mt-[30px] text-[12px]" style={{ color: "#6B7280" }}>
+                {/* <div className="text-center mt-[30px] text-[12px]" style={{ color: "#6B7280" }}>
                     <p>Thank you for choosing {companyName}.</p>
                     <p>Please contact us if you have any questions regarding this quotation.</p>
-                </div>
+                </div> */}
             </div>
         </div>
     );
