@@ -1,12 +1,12 @@
 // controllers/projectController.js
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 const Project = require("../models/Project");
- 
+
 // 🔹 Get all projects
 const getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.find().sort({ createdAt: -1 });
+    const projects = await Project.find().sort({ createdAt: 1 });
     res.json(projects);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -25,28 +25,34 @@ const addProject = async (req, res) => {
         return res.status(400).json({ error: "Features must be an array" });
       }
     } catch (err) {
-      return res.status(400).json({ error: "Invalid features format (must be JSON array string)" });
+      return res
+        .status(400)
+        .json({ error: "Invalid features format (must be JSON array string)" });
     }
 
     const image = req.file?.filename;
 
     // Optional: validate required fields
     if (!title || !description || !link || features.length === 0) {
-      return res.status(400).json({ error: "All fields including features are required" });
+      return res
+        .status(400)
+        .json({ error: "All fields including features are required" });
     }
 
-    const newProject = new Project({ title, description, features, link, image });
+    const newProject = new Project({
+      title,
+      description,
+      features,
+      link,
+      image,
+    });
     const saved = await newProject.save();
     res.status(201).json(saved);
-
   } catch (err) {
     console.error("Add Project Error:", err);
     res.status(500).json({ error: err.message });
   }
 };
-
-
-
 
 // 🔹 Update an existing project
 const updateProject = async (req, res) => {
@@ -55,18 +61,24 @@ const updateProject = async (req, res) => {
     let features = req.body.features;
 
     // Handle features JSON
-    if (typeof features === 'string') {
+    if (typeof features === "string") {
       features = JSON.parse(features); // Convert from stringified array to real array
     }
 
     const project = await Project.findById(req.params.id);
     if (!project) {
-      return res.status(404).json({ error: 'Project not found' });
+      return res.status(404).json({ error: "Project not found" });
     }
 
     // If new image is uploaded, delete old image from disk
     if (req.file) {
-      const oldImagePath = path.join(__dirname, '..', 'uploads', 'projects', project.image);
+      const oldImagePath = path.join(
+        __dirname,
+        "..",
+        "uploads",
+        "projects",
+        project.image,
+      );
       if (fs.existsSync(oldImagePath)) {
         fs.unlinkSync(oldImagePath);
       }
@@ -79,15 +91,12 @@ const updateProject = async (req, res) => {
     project.features = features;
 
     await project.save();
-    res.json({ message: 'Project updated successfully', project });
+    res.json({ message: "Project updated successfully", project });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to update project' });
+    res.status(500).json({ error: "Failed to update project" });
   }
 };
-
-
-
 
 // 🔹 Delete a project
 const deleteProject = async (req, res) => {
