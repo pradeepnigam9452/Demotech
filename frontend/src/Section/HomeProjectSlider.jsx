@@ -17,7 +17,7 @@ const HomeProjectSlider = () => {
     const fetchProjects = async () => {
       try {
         const res = await axios.get("/api/projects/getAllProjects");
-        setCardData(res.data);
+        setCardData(res?.data);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       }

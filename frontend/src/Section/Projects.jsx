@@ -12,7 +12,7 @@ const Projects = () => {
     const fetchProjects = async () => {
       try {
         const res = await axios.get("/api/projects/getAllProjects");
-        setProjects(res.data);
+        setProjects(res?.data);
       } catch (error) {
         console.error("Failed to fetch projects:", error);
       }
