@@ -10,7 +10,7 @@ import { Home } from 'lucide-react';
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:5000/api/admin/login", { email, password });
+      const res = await axios.post("/api/admin/login", { email, password });
       sessionStorage.setItem("adminToken", res.data.token);
       console.log(res.data)
       navigate("/AdminDashboard");
