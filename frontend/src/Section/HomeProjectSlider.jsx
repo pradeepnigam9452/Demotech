@@ -41,7 +41,7 @@ const HomeProjectSlider = () => {
         pagination={{ clickable: true }}
         className="w-full px-4 md:px-10"
       >
-        {cardsData.map((card) => (
+        {cardsData?.map((card) => (
           <SwiperSlide key={card._id || card.id}>
             <div className="flex w-[90%] mx-auto flex-col md:flex-row overflow-hidden transition-all duration-300 hover:shadow-xl bg-white rounded-xl">
               <div className="md:w-1/2 w-full h-50 md:h-54">
@@ -58,7 +58,7 @@ const HomeProjectSlider = () => {
                     {card.title}
                   </h3>
                   <ul className="list-disc ml-5 space-y-1 text-sm sm:text-base">
-                    {card.features.map((feature, idx) => (
+                    {card?.features?.map((feature, idx) => (
                       <li key={idx}>{feature}</li>
                     ))}
                   </ul>

@@ -80,7 +80,7 @@ const services = [
   },
 ];
 
-export default function Service({ limit ,Button}) {
+export default function Service({ limit, Button }) {
   const displayedServices = limit ? services.slice(0, limit) : services;
 
   return (
@@ -89,8 +89,8 @@ export default function Service({ limit ,Button}) {
       className="relative overflow-hidden"
     >
 
-                   {/* ✅ Small Animated Banner */}
-    
+      {/* ✅ Small Animated Banner */}
+
       <div className="max-w-full  lg:mx-20 px-10 py-10 relative z-10  ">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-extrabold mb-3 text-black">
@@ -99,24 +99,24 @@ export default function Service({ limit ,Button}) {
         </div>
 
         <div className="flex flex-wrap gap-8 justify-center">
-          {displayedServices.map((service) => (
+          {displayedServices?.map((service) => (
             <div key={service.id} className="w-full sm:w-[48%] lg:w-[31%]">
               <ServiceCard {...service} />
             </div>
           ))}
         </div>
-        {Button?
-        <div className="flex justify-center">
+        {Button ?
+          <div className="flex justify-center">
 
-        <button 
-          className="bg-[#016386] mt-5 inline-flex gap-2 text-white px-4 py-2 rounded-lg text-lg hover:bg-[#014f59] transition"
-          onClick={()=>{window.location.href="/services"}}
-          >
-          Show More <ArrowRightToLineIcon/>
-        </button>
+            <button
+              className="bg-[#016386] mt-5 inline-flex gap-2 text-white px-4 py-2 rounded-lg text-lg hover:bg-[#014f59] transition"
+              onClick={() => { window.location.href = "/services" }}
+            >
+              Show More <ArrowRightToLineIcon />
+            </button>
           </div>
-        :
-        <></>
+          :
+          <></>
         }
       </div>
     </section>

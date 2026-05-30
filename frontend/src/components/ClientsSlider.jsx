@@ -29,7 +29,7 @@ const ClientsSlider = () => {
       {/* Slider wrapper */}
       <div className="slider-wrapper overflow-hidden relative">
         <div className="slider-track flex gap-19 items-center w-max animate-scroll group-hover:paused">
-          {duplicatedClients.map((client, idx) => (
+          {duplicatedClients?.map((client, idx) => (
             <div
               key={idx}
               className="flex-shrink-0 w-[120px] sm:w-[140px] md:w-[160px] text-center"
