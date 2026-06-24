@@ -13,15 +13,16 @@ import WorkingProcess from "../Section/WorkingProcess"
 function Home() {
   return (
     <>
-      <Background />
+      {/* <Background /> */}
       <Navbar />
       <Banner />
       <HomeProjectSlider/>
       <ClientsSlider/>
-      <AboutIntro />
+      
       <Service limit={3} Button={true} />
-      <Features />
+      {/* <Features /> */}
       <WhyChooseUs />
+      <AboutIntro />
       <Footer />
     </>
   )

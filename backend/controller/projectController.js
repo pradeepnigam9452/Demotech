@@ -2,11 +2,14 @@
 const fs = require("fs");
 const path = require("path");
 const Project = require("../models/Project");
-
+const Staff = require('../models/Staff')
 // 🔹 Get all projects
 const getAllProjects = async (req, res) => {
   try {
-    const projects = await Project.find().sort({ createdAt: 1 });
+    // const projects = await Project.find().sort({ createdAt: 1 });
+    const projects = await Project.find()
+  .populate("assignedTo", "name staffId category email")
+  .sort({ createdAt: 1 });
     res.json(projects);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -108,9 +111,81 @@ const deleteProject = async (req, res) => {
   }
 };
 
+
+const assignProjectToStaff = async (req, res) => {
+  try {
+    const { projectId, staffIds } = req.body;
+
+    if (!projectId || !staffIds || !Array.isArray(staffIds)) {
+      return res.status(400).json({
+        success: false,
+        message: "Project ID and staffIds array are required",
+      });
+    }
+
+    const staff = await Staff.find({ _id: { $in: staffIds } });
+
+    if (staff.length !== staffIds.length) {
+      return res.status(404).json({
+        success: false,
+        message: "One or more staff members not found",
+      });
+    }
+
+    const project = await Project.findByIdAndUpdate(
+      projectId,
+      {
+        assignedTo: staffIds,
+        assignedDate: new Date(),
+        status: "Assigned",
+      },
+      { new: true }
+    ).populate("assignedTo", "name email staffId category");
+
+    if (!project) {
+      return res.status(404).json({
+        success: false,
+        message: "Project not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Project assigned successfully",
+      data: project,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+const getMyAssignedProjects = async (req, res) => {
+  try {
+    const projects = await Project.find({
+      assignedTo: req.user.id,
+    }).sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      count: projects.length,
+      data: projects,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+
+
 module.exports = {
   getAllProjects,
   addProject,
   updateProject,
-  deleteProject,
+  deleteProject,assignProjectToStaff,getMyAssignedProjects
 };

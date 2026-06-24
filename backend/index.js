@@ -1,45 +1,3 @@
-// const express = require("express");
-// const mongoose = require("mongoose");
-// const cors = require("cors");
-// require("dotenv").config();
-// const app = express();
-// const AdminRouter = require("./routes/AdminRouter");
-// const projectRoutes = require("./routes/projectRoutes");
-// const clientProjectRoutes = require("./routes/clientProjectRoutes");
-// const quotationRoutes = require("./routes/quotationRouter");
-
-// const PORT = process.env.PORT;
-// const path = require("path");
-// app.use(cors());
-// app.use(
-//   "/uploads/projects",
-//   express.static(path.join(__dirname, "uploads/projects"))
-// );
-
-// app.use(express.json());
-// app.use("/api/admin", AdminRouter);
-// app.use("/api/projects", projectRoutes);
-// app.use("/api/client-projects", clientProjectRoutes);
-// app.use("/api/quotations", quotationRoutes);
-
-// app.use(
-//   cors({
-//     origin: "http://localhost:5173",
-//     credentials: true,
-//   })
-// );
-
-// // Connect MongoDB
-// mongoose
-//   .connect(process.env.MONGO_URI, {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => console.log("MongoDB connected"))
-//   .catch((err) => console.log(err));
-
-// // Start server
-// app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
 const express = require("express");
 const mongoose = require("mongoose");
@@ -49,21 +7,28 @@ const morgan = require("morgan");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const path = require("path");
-
 require("dotenv").config();
-
 const app = express();
-
 // Routes
 const AdminRouter = require("./routes/AdminRouter");
 const projectRoutes = require("./routes/projectRoutes");
 const clientProjectRoutes = require("./routes/clientProjectRoutes");
 const quotationRoutes = require("./routes/quotationRouter");
+const EnquiryRouter = require("./routes/EnquiryRouter")
+const StaffRouter = require('./routes/StaffRouter')
+const TaskRouter = require('./routes/taskRoutes')
+const attendanceRoutes = require('./routes/AttendanceRoutes')
+const dailyProgressRoutes = require("./routes/dailyProgressRoutes");
+const leaveRoutes = require("./routes/leaveRoutes");
+const taskRoutes = require("./routes/taskRoutes");
 
 const PORT = process.env.PORT || 5011;
 
+const dns = require("dns");
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 // ==============================
-// Security Middleware
+// Security Middleware 
 // ==============================
 app.use(helmet());
 
@@ -96,7 +61,6 @@ app.use(
 // ==============================
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
-
 // ==============================
 // Static Files
 // ==============================
@@ -108,13 +72,23 @@ app.use(
 // ==============================
 // API Routes
 // ==============================
+
+
+
+
 app.use("/api/admin", AdminRouter);
 app.use("/api/projects", projectRoutes);
 app.use("/api/client-projects", clientProjectRoutes);
 app.use("/api/quotations", quotationRoutes);
+app.use('/api/',EnquiryRouter)
+app.use("/api", taskRoutes);
+app.use('/api/',StaffRouter)
+app.use("/api", attendanceRoutes);
+app.use("/api", dailyProgressRoutes);
+app.use("/api", leaveRoutes);
 
 // ==============================
-// Health Check Route
+// Health Check Route 
 // ==============================
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -138,7 +112,6 @@ app.use((req, res) => {
 // ==============================
 app.use((err, req, res, next) => {
   console.error("Error:", err);
-
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Internal Server Error",

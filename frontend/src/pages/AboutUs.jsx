@@ -26,7 +26,7 @@ const AboutUs = () => {
 
   return (
     <>
-      <Background />
+      {/* <Background /> */}
       <Navbar />
       <section className="relative py-16 sm:py-20 md:py-20 bg-gradient-to-br from-gray-700 to-gray-900 text-white overflow-hidden">
         {/* Blurred background blobs */}
@@ -63,7 +63,7 @@ const AboutUs = () => {
       </section>
         <AboutIntro />
         <ClientsSlider/>
-        <Features />
+        {/* <Features /> */}
         <WorkingProcess />
         <WhyChooseUs />
       <Footer />
