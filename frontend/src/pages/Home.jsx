@@ -16,13 +16,13 @@ function Home() {
       {/* <Background /> */}
       <Navbar />
       <Banner />
-      <HomeProjectSlider/>
+      {/* <HomeProjectSlider/> */}
       <ClientsSlider/>
+      <AboutIntro />
       
       <Service limit={3} Button={true} />
-      {/* <Features /> */}
       <WhyChooseUs />
-      <AboutIntro />
+      
       <Footer />
     </>
   )

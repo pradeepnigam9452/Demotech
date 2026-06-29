@@ -220,6 +220,7 @@ const StaffHome = ({ setActiveView }) => {
           email: parsed.email || '',
           designation: parsed.designation || 'Staff',
           department: parsed.department || 'Department',
+          profileImage : parsed.profileImage ,
         });
       } catch (e) {
         console.error('Error parsing staff data', e);
@@ -240,7 +241,7 @@ const StaffHome = ({ setActiveView }) => {
       color: 'bg-blue-100 text-blue-600',
       view: 'Projects',
       description: 'View all your active projects',
-      count: 0, // Replace with actual count from API if needed
+      // Replace with actual count from API if needed
     },
     {
       label: 'Total Tasks',
@@ -248,7 +249,7 @@ const StaffHome = ({ setActiveView }) => {
       color: 'bg-purple-100 text-purple-600',
       view: 'StaffTasks',
       description: 'View all tasks',
-      count: 0,
+     
     },
   ];
 
@@ -282,8 +283,20 @@ const StaffHome = ({ setActiveView }) => {
         <div className="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-6 md:p-8 mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
-                <User className="w-7 h-7" />
+              {/* <div className="w-14 h-14 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600">
+                  <img src={user.profileImage} alt="user image" />
+               </div> */}
+                 <div className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 overflow-hidden border border-indigo-200">
+                {user.profileImage ? (
+                  <img
+                    src={user.profileImage}
+                    alt={user.name || "Staff"}
+                    className="w-full h-full object-cover rounded-full"
+                   
+                  />
+                ) : (
+                  <User className="w-8 h-8" />
+                )}
               </div>
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold text-slate-800">

@@ -196,14 +196,15 @@ function DashboardPage({ setActiveView }) {
       borderColor: "bg-amber-600",
       onClick: () => setActiveView("Quotation"),
     },
-    {
-      title: "Reports",
-      icon: BarChart3,
-      iconBg: "bg-emerald-100",
-      textColor: "text-emerald-600",
-      borderColor: "bg-emerald-600",
-      onClick: () => setActiveView("Reports"),
-    },
+    // {
+    //   title: "Reports",
+    //   icon: BarChart3,
+    //   iconBg: "bg-emerald-100",
+    //   textColor: "text-emerald-600",
+    //   borderColor: "bg-emerald-600",
+    //   onClick: () => setActiveView("Reports"),
+    // },
+    
     {
       title: "Staff",
       icon: UserRound,

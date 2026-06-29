@@ -10,7 +10,6 @@ const OurProjects = () => {
     <>
     {/* <Background/> */}
     <Navbar/>
-    {/* <Banner OnProjectSection={true}/> */}
     <Projects/>
     <Footer/> 
     </>

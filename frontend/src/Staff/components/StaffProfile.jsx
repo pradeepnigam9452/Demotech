@@ -15,7 +15,7 @@ import {
 const StaffProfile = () => {
   const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [showImageModal, setShowImageModal] = useState(false);
   const getStaffDetails = async () => {
     try {
       const token = localStorage.getItem("staffToken");
@@ -75,6 +75,7 @@ const StaffProfile = () => {
     { label: "Joining Date", value: formatDate(staff.joiningDate), icon: Calendar },
     { label: "Experience", value: staff.experience || "Not added", icon: Briefcase },
     { label: "Role", value: staff.role, icon: BadgeCheck },
+  
   ];
 
   return (
@@ -88,10 +89,24 @@ const StaffProfile = () => {
           <div className="p-6 md:p-8">
             {/* User summary */}
             <div className="flex items-center gap-5 mb-8">
-              <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
-                <User className="w-10 h-10 text-blue-600" />
-              </div>
-              <div>
+           
+
+                  <div
+  onClick={() => user.profileImage && setShowImageModal(true)}
+  className="w-16 h-16 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 overflow-hidden border border-indigo-200 cursor-pointer hover:ring-4 hover:ring-indigo-100 transition"
+>
+  {staff.profileImage ? (
+    <img
+      src={staff.profileImage}
+      alt={staff.name || "Staff"}
+      className="w-full h-full object-cover rounded-full"
+    />
+  ) : (
+    <User className="w-8 h-8" />
+  )}
+</div>
+
+                  <div>
                 <h2 className="text-2xl font-bold text-gray-800">
                   {staff.name}
                 </h2>
@@ -130,9 +145,9 @@ const StaffProfile = () => {
             </div>
 
             {/* Footer */}
-            <div className="mt-8 text-xs text-gray-400 border-t border-gray-100 pt-4">
+            {/* <div className="mt-8 text-xs text-gray-400 border-t border-gray-100 pt-4">
               Last updated: {formatDate(staff.updatedAt)}
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

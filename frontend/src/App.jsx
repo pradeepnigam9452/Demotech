@@ -12,6 +12,7 @@ import QuotationDetail from "./Admin/Components/QuotationAdmin/QuotationDetails"
 import StaffLogin from './Staff/Pages/StaffLogin';
 import StaffDashboard from './Staff/Pages/StaffDashboard'
 import NotFound from "./pages/Notfound";
+import Contact from './pages/Contact'
 function App() {
   return (
     <Router>
@@ -24,7 +25,9 @@ function App() {
         <Route path="/services" element={<OurServices />} />
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/aboutUs" element={<AboutUs />} />
-        <Route path="/quotation/:id" element={<QuotationDetail />} />
+                <Route path="/contact" element={<Contact />} />
+
+          <Route path="/quotation/:id" element={<QuotationDetail />} />
 
         <Route path="/binarylogix/staff/login" element ={<StaffLogin />} />
         <Route path="/binarylogix/staffDashboard" element ={<StaffDashboard />} />

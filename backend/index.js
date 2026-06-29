@@ -64,10 +64,15 @@ app.use(express.urlencoded({ extended: true }));
 // ==============================
 // Static Files
 // ==============================
-app.use(
-  "/uploads/projects",
-  express.static(path.join(__dirname, "uploads/projects")),
-);
+
+// app.use(
+//   "/uploads/projects",
+//   express.static(path.join(__dirname, "uploads/projects")),
+// );
+
+
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
 
 // ==============================
 // API Routes

@@ -1,182 +1,244 @@
-  // "use client" // This component uses client-side hooks for animations
 
-  import { motion } from "framer-motion" // Import motion for animations
 
-  export default function HeroSection() {
-    const containerVariants = {
-      hidden: { opacity: 0 },
-      visible: {
-        opacity: 1,
-        transition: {
-          staggerChildren: 0.2, // Delay between child animations
-        },
+import { motion } from "framer-motion";
+
+export default function HeroSection() {
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.15,
       },
-    }
+    },
+  };
 
-    const itemVariants = {
-      hidden: { opacity: 0, y: 20 },
-      visible: { opacity: 1, y: 0 },
-    }
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0 },
+  };
 
-    return (
-      <section className="relative py-20 md:py-32 lg:py-40 overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 text-white">
-        {/* Animated background blob */}
+  // Sample data for the chart (requests over 7 days)
+  const chartData = [1200, 1900, 1500, 2200, 2800, 2500, 3200];
+  const maxValue = Math.max(...chartData);
+  const minValue = Math.min(...chartData);
+  const range = maxValue - minValue || 1;
+  const padding = 10;
+  const chartHeight = 80;
+  const chartWidth = 250;
+
+  // Generate the path for the line
+  const points = chartData.map((value, index) => ({
+    x: (index / (chartData.length - 1)) * chartWidth,
+    y: chartHeight - ((value - minValue) / range) * (chartHeight - padding) - padding / 2,
+  }));
+
+  const linePath = points
+    .map((p, i) => `${i === 0 ? "M" : "L"} ${p.x.toFixed(1)} ${p.y.toFixed(1)}`)
+    .join(" ");
+
+  // Area under the line (gradient fill)
+  const areaPath = `
+    M ${points[0].x.toFixed(1)} ${chartHeight}
+    ${linePath}
+    L ${points[points.length - 1].x.toFixed(1)} ${chartHeight}
+    Z
+  `;
+
+  return (
+    <section className="relative min-h-screen py-16 md:py-20 lg:py-24 overflow-hidden bg-white text-gray-900">
+      {/* Animated background blobs */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full filter blur-3xl opacity-10"
+        style={{ background: "#378af9" }}
+        animate={{ scale: [1, 1.05, 1], rotate: [0, 10, 0] }}
+        transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute top-1/4 right-[10%] w-[600px] h-[600px] rounded-full filter blur-3xl opacity-5"
+        style={{ background: "#378af9" }}
+        animate={{ scale: [1, 0.95, 1], rotate: [0, -15, 0] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10 pt-16 md:pt-20 lg:pt-24">
         <motion.div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-[#378bf988] rounded-full filter blur-3xl opacity-30"
-          animate={{
-            scale: [1, 1.05, 1],
-            rotate: [0, 10, 0],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
-          }}
-        />
-        <motion.div
-          className="absolute top-1/4 right-1/4 w-[600px] h-[600px] bg-blue-500/20 rounded-full filter blur-3xl opacity-30"
-          animate={{
-            scale: [1, 0.95, 1],
-            rotate: [0, -15, 0],
-          }}
-          transition={{
-            duration: 12,
-            repeat: Number.POSITIVE_INFINITY,
-            ease: "easeInOut",
-          }}
-        />
+          className="grid grid-cols-1 lg:grid-cols-5 gap-10 lg:gap-6 items-start"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Left column - spans 3 */}
+          <div className="lg:col-span-3 space-y-6">
+            <motion.div variants={itemVariants} className="space-y-3">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] text-gray-900">
+                Build Your Digital Future
+                <br />
+                <span className="text-[#378af9]">With Binarylogix</span> Technology LLP
+              </h1>
+            </motion.div>
 
-        <div className="container mx-auto w-full relative z-10 px-4 md:px-6">
+            <motion.div variants={itemVariants}>
+              <p className="text-xl sm:text-2xl font-semibold text-gray-800">
+                We build Business Software
+              </p>
+              <p className="mt-2 max-w-2xl text-sm sm:text-base text-gray-600 leading-relaxed">
+                We build scalable web applications, mobile apps, and digital
+                products that help businesses grow faster and smarter.
+              </p>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="flex flex-wrap gap-3">
+              <a href="#start">
+                <button className="inline-flex h-10 items-center justify-center rounded-full bg-[#378af9] px-6 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition-all hover:bg-[#2a6fc7] hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#378af9] focus-visible:ring-offset-2 focus-visible:ring-offset-white">
+                  Start Project <span className="ml-1">→</span>
+                </button>
+              </a>
+              <a href="#portfolio">
+                <button className="inline-flex h-10 items-center justify-center rounded-full border-2 border-gray-300 bg-transparent px-6 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-100 hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
+                  View Portfolio
+                </button>
+              </a>
+            </motion.div>
+
+            {/* Stats row */}
+            <motion.div
+              variants={itemVariants}
+              className="grid grid-cols-3 gap-4 pt-3 border-t border-gray-200"
+            >
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#378af9]">50+</div>
+                <div className="text-xs uppercase tracking-wider text-gray-500">Projects</div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#378af9]">20+</div>
+                <div className="text-xs uppercase tracking-wider text-gray-500">Clients</div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#378af9]">99%</div>
+                <div className="text-xs uppercase tracking-wider text-gray-500">Satisfaction</div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right column - analytics card with graph */}
           <motion.div
-            className="flex flex-col justify-center items-center text-center"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
+            className="lg:col-span-2"
+            variants={itemVariants}
+            transition={{ delay: 0.1 }}
           >
-            <div className="flex flex-col justify-center space-y-6">
-              <motion.div variants={itemVariants} className="space-y-4">
-                <h1 className="text-4xl font-extrabold tracking-tight sm:text-6xl xl:text-7xl leading-tight">
-                  Innovate. Create. Elevate.
-                  <br />
-                  Your Vision, Our Expertise.
-                </h1>
-                <p className="max-w-[700px] text-lg md:text-xl text-gray-300 mx-auto">
-                  We are a leading digital agency specializing in crafting bespoke web solutions, stunning designs, and
-                  powerful digital strategies that drive growth and engagement.
-                </p>
-              </motion.div>
-              <motion.div
-                variants={itemVariants}
-                className="flex flex-col gap-4 min-[400px]:flex-row justify-center"
-              >
-                <a href="/services" >
-                  <button className="inline-flex h-12 items-center justify-center rounded-full bg-[#378af9] px-8 text-base font-semibold text-white shadow-lg transition-all hover:bg-[#378af9] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900">
-                    Our Services
-                  </button>
-                </a>
-                <a href="#contact" passHref>
-                  <button
-                    variant="outline"
-                    className="inline-flex h-12 items-center justify-center rounded-full border-2 border-gray-500 bg-transparent px-8 text-base font-semibold text-white shadow-lg transition-all hover:bg-gray-700 hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
+            <div className="rounded-2xl p-5 md:p-7 bg-gradient-to-br from-white via-white to-blue-50/30 shadow-2xl shadow-blue-100/50 border border-blue-100/60 backdrop-blur-sm transition-all duration-300 hover:shadow-blue-200/40 hover:scale-[1.01]">
+              
+              {/* Header */}
+              <div className="flex items-center justify-between mb-5">
+                <div className="flex items-center gap-2">
+                  <span className="text-blue-500 text-sm">📊</span>
+                  <span className="text-xs font-semibold uppercase tracking-wider text-gray-600">
+                    Analytics Overview
+                  </span>
+                </div>
+                <span className="text-[10px] px-3 py-1 rounded-full bg-emerald-100 text-emerald-700 font-medium border border-emerald-200 shadow-sm flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Live
+                </span>
+              </div>
+
+              {/* Deployments */}
+              <div className="flex flex-wrap gap-2 mb-5">
+                <span className="text-[11px] font-medium bg-gradient-to-r from-blue-50 to-blue-100 text-[#378af9] px-3 py-1.5 rounded-full border border-blue-200 shadow-sm flex items-center gap-1.5">
+                  <span>⚡</span> Deployments
+                </span>
+                <span className="text-[11px] bg-gray-50 px-3 py-1.5 rounded-full text-gray-700 border border-gray-200 shadow-sm flex items-center gap-1.5">
+                  <span className="text-gray-400">▸</span> App-v2.0-Production
+                </span>
+                <span className="text-[11px] bg-gray-50 px-3 py-1.5 rounded-full text-gray-700 border border-gray-200 shadow-sm flex items-center gap-1.5">
+                  <span className="text-gray-400">▸</span> API-Gateway-Active
+                </span>
+              </div>
+
+              {/* ===== GRAPH SECTION (NEW) ===== */}
+              <div className="mb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-wider">
+                    Requests (last 7 days)
+                  </span>
+                  <span className="text-[9px] text-gray-400">peak: {maxValue}</span>
+                </div>
+                <div className="bg-white/50 rounded-xl p-2 border border-gray-100/50 shadow-inner">
+                  <svg
+                    viewBox={`0 0 ${chartWidth} ${chartHeight + 20}`}
+                    className="w-full h-auto"
+                    preserveAspectRatio="xMidYMid meet"
                   >
-                    Get a Quote
-                  </button>
-                </a>
-              </motion.div>
+                    {/* Horizontal grid lines */}
+                    {[0, 25, 50, 75, 100].map((y) => (
+                      <line
+                        key={y}
+                        x1="0"
+                        y1={chartHeight - (y / 100) * chartHeight + 10}
+                        x2={chartWidth}
+                        y2={chartHeight - (y / 100) * chartHeight + 10}
+                        stroke="#e5e7eb"
+                        strokeWidth="0.5"
+                        strokeDasharray="2 2"
+                      />
+                    ))}
+
+                    {/* Area under the line */}
+                    <path d={areaPath} fill="url(#gradient)" opacity="0.3" />
+
+                    {/* Main line */}
+                    <path
+                      d={linePath}
+                      fill="none"
+                      stroke="#378af9"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+
+                    {/* Data points */}
+                    {points.map((p, i) => (
+                      <circle
+                        key={i}
+                        cx={p.x}
+                        cy={p.y}
+                        r="3"
+                        fill="#378af9"
+                        stroke="white"
+                        strokeWidth="1.5"
+                      />
+                    ))}
+
+                    {/* Gradient definition */}
+                    <defs>
+                      <linearGradient id="gradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stopColor="#378af9" stopOpacity="0.8" />
+                        <stop offset="100%" stopColor="#378af9" stopOpacity="0" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </div>
+              </div>
+
+              {/* Total requests */}
+              <div className="mt-2 pt-4 border-t border-gray-200/70 flex items-center justify-between">
+                <span className="text-[11px] text-gray-500 flex items-center gap-1.5">
+                  <span className="text-blue-400">📈</span> Total requests
+                </span>
+                <span className="text-base font-mono font-bold text-gray-800 bg-blue-50/50 px-3 py-1 rounded-lg border border-blue-100/50">
+                  14,923
+                </span>
+              </div>
+
+              {/* Subtle progress bar */}
+              <div className="mt-4 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                <div className="h-full w-3/4 bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"></div>
+              </div>
             </div>
           </motion.div>
-
-        </div>
-
-      </section>
-    )
-  }
-
-
-// import { motion } from "framer-motion";
-
-// export default function HeroSection() {
-//   const containerVariants = {
-//     hidden: { opacity: 0 },
-//     visible: {
-//       opacity: 1,
-//       transition: { staggerChildren: 0.18 },
-//     },
-//   };
-
-//   const itemVariants = {
-//     hidden: { opacity: 0, y: 18 },
-//     visible: { opacity: 1, y: 0 },
-//   };
-
-//   return (
-//     <section
-//       aria-labelledby="hero-heading"
-//       className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 py-16 text-white md:py-24 lg:py-42"
-//     >
-//       <div className="absolute inset-0 pointer-events-none">
-//         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(59,130,246,0.18),_transparent_30%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.14),_transparent_25%)]" />
-//         <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.04)_1px,transparent_1px)] bg-[size:56px_56px] opacity-20" />
-
-//         <motion.div
-//           aria-hidden="true"
-//           className="absolute left-1/2 top-1/2 h-[780px] w-[780px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-blue-500/25 blur-3xl opacity-40"
-//           animate={{ scale: [1, 1.08, 1], rotate: [0, 10, 0] }}
-//           transition={{ duration: 11, repeat: Infinity, ease: "easeInOut" }}
-//         />
-//         <motion.div
-//           aria-hidden="true"
-//           className="absolute right-[8%] top-[14%] h-[520px] w-[520px] rounded-full bg-cyan-500/20 blur-3xl opacity-30"
-//           animate={{ scale: [1, 0.96, 1], rotate: [0, -12, 0] }}
-//           transition={{ duration: 13, repeat: Infinity, ease: "easeInOut" }}
-//         />
-//       </div>
-
-//       <div className="container mx-auto relative z-10 px-4 md:px-6">
-//         <motion.div
-//           className="mx-auto flex max-w-5xl flex-col items-center text-center"
-//           variants={containerVariants}
-//           initial="hidden"
-//           animate="visible"
-//         >
-//           <motion.div variants={itemVariants} className="space-y-4">
-//             <h1
-//               id="hero-heading"
-//               className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl leading-tight"
-//             >
-//               Innovate. Create. Elevate.
-//               <br />
-//               <span className="bg-gradient-to-r from-blue-400 to-cyan-300 bg-clip-text text-transparent">
-//                 Your Vision, Our Expertise.
-//               </span>
-//             </h1>
-
-//             <p className="mx-auto max-w-3xl text-lg text-slate-300 md:text-xl">
-//               We design and build modern websites, premium UI experiences, and
-//               high-converting digital solutions that help brands grow faster.
-//             </p>
-//           </motion.div>
-
-//           <motion.div
-//             variants={itemVariants}
-//             className="mt-10 flex flex-col gap-4 sm:flex-row"
-//           >
-//             <a
-//               href="/services"
-//               className="inline-flex h-12 items-center justify-center rounded-full bg-gradient-to-r from-blue-500 to-cyan-400 px-8 text-base font-semibold text-white shadow-lg shadow-blue-500/30 transition-all hover:-translate-y-0.5 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-//             >
-//               Our Services
-//             </a>
-
-//             <a
-//               href="#contact"
-//               className="inline-flex h-12 items-center justify-center rounded-full border border-white/20 bg-white/5 px-8 text-base font-semibold text-white shadow-lg backdrop-blur-sm transition-all hover:bg-white/10 hover:border-white/30 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
-//             >
-//               Get a Quote
-//             </a>
-//           </motion.div>
-//         </motion.div>
-//       </div>
-//     </section>
-//   );
-// }
+        </motion.div>
+      </div>
+    </section>
+  );
+}

@@ -98,7 +98,7 @@ const Features = () => {
               className="group bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 hover:scale-[1.02] border border-white/50 text-center"
             >
               <div className="flex justify-center mb-6">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#016386] to-[#014f59] flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
+                <div className="w-16 h-16 rounded-full  flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-300">
                   {item.icon}
                 </div>
               </div>

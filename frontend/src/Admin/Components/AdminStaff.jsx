@@ -1,93 +1,58 @@
 
 
-// import React, { useEffect, useState, useRef } from "react";
+
+// import React, { useEffect, useMemo, useState } from "react";
 // import axios from "axios";
-// import { Users, Mail, Phone, Loader2, Plus, X, ChevronDown, Edit, Trash2 } from "lucide-react";
-// import Swal from 'sweetalert2';
+// import Swal from "sweetalert2";
+// import {
+//   Users,
+//   Mail,
+//   Phone,
+//   Trash2,
+//   CalendarDays,
+//   Loader2,
+//   X,
+//   Search,
+//   MapPin,
+//   Briefcase,
+//   IdCard,
+//   CalendarCheck2,
+//   Plus,
+//   Edit,
+// } from "lucide-react";
 
-// // Custom dropdown component
-// const CustomSelect = ({ options, value, onChange, name, required, placeholder }) => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const dropdownRef = useRef(null);
-
-//   const selectedOption = options.find(opt => opt.value === value);
-
-//   useEffect(() => {
-//     const handleClickOutside = (event) => {
-//       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-//         setIsOpen(false);
-//       }
-//     };
-//     document.addEventListener("mousedown", handleClickOutside);
-//     return () => document.removeEventListener("mousedown", handleClickOutside);
-//   }, []);
-
-//   const filteredOptions = options.filter(opt =>
-//     opt.label.toLowerCase().includes(searchTerm.toLowerCase())
-//   );
-
-//   return (
-//     <div className="relative" ref={dropdownRef}>
-//       <div
-//         className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white flex items-center justify-between cursor-pointer"
-//         onClick={() => setIsOpen(!isOpen)}
-//       >
-//         <span className={selectedOption ? "text-gray-800" : "text-gray-400"}>
-//           {selectedOption ? selectedOption.label : placeholder || "Select Category"}
-//         </span>
-//         <ChevronDown size={18} className={`transition-transform ${isOpen ? "rotate-180" : ""}`} />
-//       </div>
-
-//       {isOpen && (
-//         <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-//           <input
-//             type="text"
-//             placeholder="Search..."
-//             value={searchTerm}
-//             onChange={(e) => setSearchTerm(e.target.value)}
-//             className="w-full px-3 py-2 border-b border-gray-200 focus:outline-none sticky top-0 bg-white"
-//             onClick={(e) => e.stopPropagation()}
-//           />
-//           {filteredOptions.length === 0 ? (
-//             <div className="px-4 py-2 text-gray-500">No options found</div>
-//           ) : (
-//             filteredOptions.map((opt) => (
-//               <div
-//                 key={opt.value}
-//                 className={`px-4 py-2 cursor-pointer hover:bg-blue-50 ${
-//                   value === opt.value ? "bg-blue-100 text-blue-700" : ""
-//                 }`}
-//                 onClick={() => {
-//                   onChange({ target: { name, value: opt.value } });
-//                   setIsOpen(false);
-//                   setSearchTerm("");
-//                 }}
-//               >
-//                 {opt.label}
-//               </div>
-//             ))
-//           )}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
-
-// const AdminStaff = () => {
+// const AdminStaffMembers = () => {
 //   const [staffList, setStaffList] = useState([]);
 //   const [loading, setLoading] = useState(false);
+//   const [deleteLoadingId, setDeleteLoadingId] = useState(null);
+
+//   const [search, setSearch] = useState("");
+
+//   // Create/Edit states
 //   const [isModalOpen, setIsModalOpen] = useState(false);
 //   const [formLoading, setFormLoading] = useState(false);
 //   const [isEditMode, setIsEditMode] = useState(false);
 //   const [editingId, setEditingId] = useState(null);
-//   const [deleteLoading, setDeleteLoading] = useState(false);
-//   const [selectedStaff, setSelectedStaff] = useState(null);
-//   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
+//   // Attendance states
+//   const [selectedStaff, setSelectedStaff] = useState(null);
+//   const [attendanceLoading, setAttendanceLoading] = useState(false);
+//   const [isAttendanceOpen, setIsAttendanceOpen] = useState(false);
+
+//   const [attendanceSummary, setAttendanceSummary] = useState({
+//     totalRecords: 0,
+//     totalWorkingDays: 0,
+//     presentDays: 0,
+//     adminLeaveDays: 0,
+//     absentDays: 0,
+//   });
+
+//   const [monthWiseAttendance, setMonthWiseAttendance] = useState([]);
+//   const [selectedMonth, setSelectedMonth] = useState("");
+
+//   // Form state (including profileImage)
 //   const [formData, setFormData] = useState({
 //     name: "",
-//     staffId: "",
 //     email: "",
 //     number: "",
 //     role: "staff",
@@ -107,34 +72,48 @@
 //     experience: "",
 //     aadharNumber: "",
 //     remarks: "",
+//     github: "",
+//     profileImage: null,
 //   });
 
 //   const categoryOptions = [
-//     { value: "HR", label: "HR" },
-    
-//     { value: "Frontend Developer", label: "Frontend Developer" },
-//     { value: "Backend Developer", label: "Backend Developer" },
-//     { value: "MERN Developer", label: "MERN Developer" },
-//     { value: "Full Stack Developer", label: "Full Stack Developer" },
-//     { value: "UI/UX Designer", label: "UI/UX Designer" },
-//     { value: "DevOps Engineer", label: "DevOps Engineer" },
-//     { value: "Project Manager", label: "Project Manager" },
-//     { value: "Business Analyst", label: "Business Analyst" },
-//     { value: "Digital Marketer", label: "Digital Marketer" },
-//     { value: "Content Writer", label: "Content Writer" },
-//     { value: "Sales Executive", label: "Sales Executive" },
-//     { value: "Support Engineer", label: "Support Engineer" },
-//     { value: "Intern", label: "Intern" },
-//     { value: "Other", label: "Other" },
+//     "HR",
+//     "admin",
+//     "Frontend Developer",
+//     "Backend Developer",
+//     "MERN Developer",
+//     "Full Stack Developer",
+//     "UI/UX Designer",
+//     "DevOps Engineer",
+//     "Project Manager",
+//     "Business Analyst",
+//     "Digital Marketer",
+//     "Content Writer",
+//     "Sales Executive",
+//     "Support Engineer",
+//     "Intern",
+//     "Other",
 //   ];
 
+//   const adminToken = sessionStorage.getItem("adminToken") || "";
+//   const authHeaders = adminToken
+//     ? { Authorization: `Bearer ${adminToken}` }
+//     : {};
+
+//   // ---------- API Calls ----------
 //   const getStaff = async () => {
 //     try {
 //       setLoading(true);
 //       const res = await axios.get("/api/allstaff");
-//       setStaffList(res.data.staff || res.data.data || res.data || []);
+//       const data = res.data?.staff || res.data?.data || res.data || [];
+//       setStaffList(Array.isArray(data) ? data : []);
 //     } catch (error) {
-//       console.error("Error fetching staff:", error);
+//       console.error("Staff fetch error:", error);
+//       Swal.fire({
+//         icon: "error",
+//         title: "Error",
+//         text: error.response?.data?.message || "Failed to load staff members",
+//       });
 //     } finally {
 //       setLoading(false);
 //     }
@@ -144,15 +123,15 @@
 //     getStaff();
 //   }, []);
 
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData((prev) => ({ ...prev, [name]: value }));
+//   // ---------- Helpers ----------
+//   const formatDateForInput = (date) => {
+//     if (!date) return "";
+//     return new Date(date).toISOString().split("T")[0];
 //   };
 
 //   const resetForm = () => {
 //     setFormData({
 //       name: "",
-//       staffId: "",
 //       email: "",
 //       number: "",
 //       role: "staff",
@@ -163,7 +142,7 @@
 //       city: "",
 //       state: "",
 //       pincode: "",
-//       github: "",
+//       emergencyContact: "",
 //       address: "",
 //       category: "",
 //       designation: "",
@@ -172,59 +151,43 @@
 //       experience: "",
 //       aadharNumber: "",
 //       remarks: "",
+//       github: "",
+//       profileImage: "",
 //     });
 //     setIsEditMode(false);
 //     setEditingId(null);
 //   };
 
-//   const handleSubmit = async (e) => {
-//     e.preventDefault();
-//     try {
-//       setFormLoading(true);
-//       if (isEditMode && editingId) {
-//         await axios.put(`/api/updatestaff/${editingId}`, formData);
-//         Swal.fire({
-//           icon: 'success',
-//           title: 'Updated!',
-//           text: 'Staff updated successfully!',
-//           timer: 2000,
-//           showConfirmButton: false
-//         });
-//       } else {
-//         await axios.post("/api/createstaff", formData);
-//         Swal.fire({
-//           icon: 'success',
-//           title: 'Success!',
-//           text: 'Staff created successfully!',
-//           timer: 2000,
-//           showConfirmButton: false
-//         });
-//       }
-//       setIsModalOpen(false);
-//       resetForm();
-//       getStaff();
-//     } catch (error) {
-//       Swal.fire({
-//         icon: 'error',
-//         title: 'Oops...',
-//         text: error.response?.data?.message || (isEditMode ? "Failed to update staff" : "Failed to create staff"),
-//       });
-//     } finally {
-//       setFormLoading(false);
-//     }
+//   // ---------- Form Handlers ----------
+//   const handleInputChange = (e) => {
+//     const { name, value } = e.target;
+//     setFormData((prev) => ({ ...prev, [name]: value }));
+//   };
+
+//   const handleFileChange = (e) => {
+//     const file = e.target.files[0];
+//     setFormData((prev) => ({ ...prev, profileImage: file }));
+//   };
+
+//   const openCreateModal = () => {
+//     resetForm();
+//     setIsModalOpen(true);
 //   };
 
 //   const handleEdit = (staff) => {
+//     if (!staff) {
+//       Swal.fire("Error", "Invalid staff data", "error");
+//       return;
+//     }
 //     setIsEditMode(true);
 //     setEditingId(staff._id);
 //     setFormData({
 //       name: staff.name || "",
-//       staffId: staff.staffId || "",
 //       email: staff.email || "",
 //       number: staff.number || "",
 //       role: staff.role || "staff",
 //       password: "",
-//       dateOfBirth: staff.dateOfBirth || "",
+//       dateOfBirth: formatDateForInput(staff.dateOfBirth),
 //       gender: staff.gender || "",
 //       maritalStatus: staff.maritalStatus || "",
 //       city: staff.city || "",
@@ -234,313 +197,764 @@
 //       address: staff.address || "",
 //       category: staff.category || "",
 //       designation: staff.designation || "",
-//       joiningDate: staff.joiningDate ? staff.joiningDate.split('T')[0] : "",
+//       joiningDate: formatDateForInput(staff.joiningDate),
 //       salary: staff.salary || "",
 //       experience: staff.experience || "",
-//       aadharNumber: staff.aadharNumber || "",
+//       aadharNumber: staff.aadharNumber || staff.aadhaarNumber || "",
 //       remarks: staff.remarks || "",
+//       github: staff.github || "",
+//       profileImage: staff.profileImage ,
 //     });
 //     setIsModalOpen(true);
 //   };
 
+
+//   const handleSubmit = async (e) => {
+//   e.preventDefault();
+//   try {
+//     setFormLoading(true);
+
+//     const payload = new FormData();
+
+//     Object.entries(formData).forEach(([key, value]) => {
+//       if (key === "profileImage") {
+//         if (value instanceof File) {
+//           payload.append("profileImage", value); // only append if it's a new file
+//         }
+//         return;
+//       }
+//       if (key === "password" && isEditMode && !value) {
+//         return; // don't overwrite password if left blank
+//       }
+//       payload.append(key, value ?? "");
+//     });
+
+//     const url = isEditMode ? `/api/updatestaff/${editingId}` : "/api/createstaff";
+//     const method = isEditMode ? "put" : "post";
+
+//     const response = await axios({
+//       method,
+//       url,
+//       data: payload,
+//       headers: { ...authHeaders }, // don't set Content-Type manually
+//     });
+
+//     // ...rest unchanged
+//   } catch (error) {
+//     // ...
+//   } finally {
+//     setFormLoading(false);
+//   }
+// };
+
+// // const handleSubmit = async (e) => {
+// //   e.preventDefault();
+// //   try {
+// //     setFormLoading(true);
+
+// //     // Build payload object (copy formData, exclude profileImage)
+// //     const payload = { ...formData };
+// //     delete payload.profileImage; // not a field in backend
+
+// //     // If editing and password is empty, delete it to avoid overwriting with empty
+// //     if (isEditMode && !payload.password) {
+// //       delete payload.password;
+// //     }
+
+// //     // Ensure required fields are present (backend may require them)
+// //     // For creation: name, email, number, password, category
+// //     // Our form already has them, but we can add validation if needed
+
+// //     const url = isEditMode ? `/api/updatestaff/${editingId}` : "/api/createstaff";
+// //     const method = isEditMode ? "put" : "post";
+
+// //     const response = await axios({
+// //       method,
+// //       url,
+// //       data: payload,
+// //       headers: {
+// //         ...authHeaders,
+// //         "Content-Type": "application/json",
+// //       },
+// //     });
+
+// //     Swal.fire({
+// //       icon: "success",
+// //       title: isEditMode ? "Updated!" : "Success!",
+// //       text: isEditMode ? "Staff updated successfully!" : "Staff created successfully!",
+// //       timer: 2000,
+// //       showConfirmButton: false,
+// //     });
+
+// //     setIsModalOpen(false);
+// //     resetForm();
+// //     getStaff();
+// //   } catch (error) {
+// //     console.error("Submit error:", error.response?.data || error.message);
+// //     Swal.fire({
+// //       icon: "error",
+// //       title: "Oops...",
+// //       text: error.response?.data?.message || error.response?.data?.error || (isEditMode ? "Failed to update staff" : "Failed to create staff"),
+// //     });
+// //   } finally {
+// //     setFormLoading(false);
+// //   }
+// // };
+
 //   const handleDelete = async (id) => {
 //     const result = await Swal.fire({
-//       title: 'Are you sure?',
-//       text: "You won't be able to revert this!",
-//       icon: 'warning',
+//       title: "Are you sure?",
+//       text: "This staff member will be deleted permanently.",
+//       icon: "warning",
 //       showCancelButton: true,
-//       confirmButtonColor: '#d33',
-//       cancelButtonColor: '#3085d6',
-//       confirmButtonText: 'Yes, delete it!'
+//       confirmButtonColor: "#dc2626",
+//       cancelButtonColor: "#2563eb",
+//       confirmButtonText: "Yes, delete it",
 //     });
+
 //     if (!result.isConfirmed) return;
 
 //     try {
-//       setDeleteLoading(true);
-//       await axios.delete(`/api/deletestaff/${id}`);
+//       setDeleteLoadingId(id);
+//       await axios.delete(`/api/deletestaff/${id}`, { headers: authHeaders });
 //       Swal.fire({
-//         icon: 'success',
-//         title: 'Deleted!',
-//         text: 'Staff member has been deleted.',
-//         timer: 2000,
-//         showConfirmButton: false
+//         icon: "success",
+//         title: "Deleted!",
+//         text: "Staff member deleted successfully.",
+//         timer: 1800,
+//         showConfirmButton: false,
 //       });
 //       getStaff();
 //     } catch (error) {
+//       console.error("Delete staff error:", error);
 //       Swal.fire({
-//         icon: 'error',
-//         title: 'Error',
+//         icon: "error",
+//         title: "Error",
 //         text: error.response?.data?.message || "Failed to delete staff",
 //       });
 //     } finally {
-//       setDeleteLoading(false);
+//       setDeleteLoadingId(null);
 //     }
 //   };
 
-//   const handleViewDetails = (staff) => {
+//   const handleViewAttendance = async (staff) => {
+//     if (!staff) {
+//       Swal.fire("Error", "No staff selected", "error");
+//       return;
+//     }
 //     setSelectedStaff(staff);
-//     setIsDetailsModalOpen(true);
+//     setIsAttendanceOpen(true);
+
+//     setAttendanceSummary({
+//       totalRecords: 0,
+//       totalWorkingDays: 0,
+//       presentDays: 0,
+//       adminLeaveDays: 0,
+//       absentDays: 0,
+//     });
+//     setMonthWiseAttendance([]);
+//     setSelectedMonth("");
+
+//     try {
+//       setAttendanceLoading(true);
+//       const url = `/api/admin/attendance/${staff._id}`;
+//       const res = await axios.get(url, { headers: authHeaders });
+
+//       const summary = res.data?.summary || {};
+//       setAttendanceSummary({
+//         totalRecords: summary.totalRecords ?? 0,
+//         totalWorkingDays: summary.totalWorkingDays ?? 0,
+//         presentDays: summary.presentDays ?? 0,
+//         adminLeaveDays: summary.adminLeaveDays ?? 0,
+//         absentDays: summary.absentDays ?? 0,
+//       });
+
+//       const months = res.data?.monthWiseAttendance || [];
+//       setMonthWiseAttendance(months);
+//       if (months.length > 0) setSelectedMonth(months[0].month);
+//     } catch (error) {
+//       console.error("Attendance fetch error:", error);
+//       Swal.fire({
+//         icon: "error",
+//         title: "Error",
+//         text:
+//           error.response?.data?.message ||
+//           "Failed to load staff attendance details",
+//       });
+//     } finally {
+//       setAttendanceLoading(false);
+//     }
 //   };
 
+//   // Filtered staff (skip invalid entries)
+//   const filteredStaff = useMemo(() => {
+//     const text = search.toLowerCase().trim();
+//     return staffList
+//       .filter((staff) => staff && typeof staff === "object")
+//       .filter((staff) => {
+//         if (!text) return true;
+//         return (
+//           staff.name?.toLowerCase().includes(text) ||
+//           staff.email?.toLowerCase().includes(text) ||
+//           staff.staffId?.toLowerCase().includes(text) ||
+//           staff.category?.toLowerCase().includes(text) ||
+//           staff.designation?.toLowerCase().includes(text)
+//         );
+//       });
+//   }, [search, staffList]);
+
+//   // Attendance helpers
+//   const selectedMonthData =
+//     monthWiseAttendance.find((item) => item.month === selectedMonth) || null;
+
+//   const getStatusClass = (status) => {
+//     const value = status?.toLowerCase();
+//     if (value === "present")
+//       return { box: "bg-green-50 border-green-200", text: "text-green-700", icon: "✅" };
+//     if (value === "leave")
+//       return { box: "bg-yellow-50 border-yellow-200", text: "text-yellow-700", icon: "📅" };
+//     if (value === "absent")
+//       return { box: "bg-red-50 border-red-200", text: "text-red-700", icon: "❌" };
+//     return { box: "bg-gray-50 border-gray-200", text: "text-gray-400", icon: "—" };
+//   };
+
+//   // ---------- Render ----------
 //   return (
-//     <div className="min-h-screen bg-gray-100 p-4 md:p-6">
-//       <div className="bg-white rounded-2xl shadow-md p-5">
-//         <div className="flex items-center justify-between mb-6">
-//           <div className="flex items-center gap-3">
-//             <div className="bg-blue-100 text-blue-600 p-3 rounded-xl">
-//               <Users size={26} />
+//     <div className="min-h-screen bg-slate-100 p-4 md:p-6">
+//       <div className="max-w-7xl mx-auto">
+//         {/* Header */}
+//         <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6">
+//           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+//             <div className="flex items-center gap-3">
+//               <div className="h-12 w-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center">
+//                 <Users size={26} />
+//               </div>
+//               <div>
+//                 <h1 className="text-2xl font-bold text-slate-800">
+//                   Staff Members
+//                 </h1>
+//                 <p className="text-sm text-slate-500">
+//                   Create, update, delete, and check staff attendance.
+//                 </p>
+//               </div>
 //             </div>
-//             <div>
-//               <h1 className="text-2xl font-bold text-gray-800">Staff Management</h1>
-//               <p className="text-gray-500 text-sm">View all registered staff members</p>
+
+//             <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+//               <div className="relative w-full sm:w-80">
+//                 <Search
+//                   size={18}
+//                   className="absolute left-3 top-3 text-slate-400"
+//                 />
+//                 <input
+//                   type="text"
+//                   placeholder="Search staff..."
+//                   value={search}
+//                   onChange={(e) => setSearch(e.target.value)}
+//                   className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+//                 />
+//               </div>
+//               <button
+//                 onClick={openCreateModal}
+//                 className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold transition"
+//               >
+//                 <Plus size={18} />
+//                 Create Staff
+//               </button>
 //             </div>
 //           </div>
-//           <button
-//             onClick={() => {
-//               resetForm();
-//               setIsModalOpen(true);
-//             }}
-//             className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
-//           >
-//             <Plus size={20} /> Add New Staff
-//           </button>
 //         </div>
 
+//         {/* Staff Cards */}
 //         {loading ? (
-//           <div className="flex justify-center items-center py-20">
-//             <Loader2 className="animate-spin text-blue-600" size={36} />
+//           <div className="flex items-center justify-center py-24">
+//             <Loader2 size={42} className="animate-spin text-blue-600" />
 //           </div>
-//         ) : staffList.length === 0 ? (
-//           <div className="text-center py-16 text-gray-500">No staff found</div>
+//         ) : filteredStaff.length === 0 ? (
+//           <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500">
+//             No staff members found.
+//           </div>
 //         ) : (
-//           <div className="overflow-x-auto">
-//             <table className="w-full border-collapse">
-//               <thead>
-//                 <tr className="bg-gray-100 text-left text-gray-700">
-//                   <th className="p-3">Sr No.</th>
-//                   <th className="p-3">Name</th>
-//                   <th className="p-3">Staff ID</th>
-//                   <th className="p-3">Email</th>
-//                   <th className="p-3">Phone</th>
-//                   <th className="p-3">Role</th>
-//                   <th className="p-3">Actions</th>
-//                 </tr>
-//               </thead>
-//               <tbody>
-//                 {staffList.map((staff, index) => (
-//                   <tr
-//                     key={staff._id}
-//                     className="border-b hover:bg-gray-50 transition cursor-pointer"
-//                     onClick={() => handleViewDetails(staff)}
-//                   >
-//                     <td className="p-3">{index + 1}</td>
-//                     <td className="p-3 font-semibold text-gray-800">{staff.name || "N/A"}</td>
-//                     <td className="p-3 text-gray-600">{staff.staffId || "N/A"}</td>
-//                     <td className="p-3">
-//                       <div className="flex items-center gap-2 text-gray-600">
-//                         <Mail size={16} /> {staff.email || "N/A"}
+//           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+//             {filteredStaff.map((staff) => (
+//               <div
+//                 key={staff._id}
+//                 className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden"
+//               >
+//                 <div className="p-5">
+//                   <div className="flex items-start justify-between gap-3">
+//                     <div className="flex items-center gap-3">
+//                       {/* <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-bold text-lg">
+//                         {staff.name ? staff.name.charAt(0).toUpperCase() : "S"}
+//                       </div> */}
+
+//                       <div className="h-14 w-14 rounded-2xl overflow-hidden bg-blue-100 flex items-center justify-center border border-slate-200">
+//   {staff.profileImage ? (
+//     <img
+//       src={staff.profileImage}
+//       alt={staff.name || "Staff"}
+//       className="h-full w-full object-cover"
+//     />
+//   ) : (
+//     <span className="text-blue-600 font-bold text-lg">
+//       {staff.profileImage ? staff.profileImage.charAt(0).toUpperCase() : "S"}
+//     </span>
+//   )}
+// </div>
+//                       <div>
+//                         <h2 className="font-bold text-slate-800 text-lg">
+//                           {staff.name || "N/A"}
+//                         </h2>
+//                         <p className="text-sm text-slate-500">
+//                           {staff.designation || staff.category || "Staff"}
+//                         </p>
 //                       </div>
-//                     </td>
-//                     <td className="p-3">
-//                       <div className="flex items-center gap-2 text-gray-600">
-//                         <Phone size={16} /> {staff.number || staff.mobile || "N/A"}
-//                       </div>
-//                     </td>
-//                     <td className="p-3">
-//                       <span className="px-3 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full">
-//                         {staff.role || "staff"}
+//                     </div>
+//                     <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+//                       {staff.status || "Active"}
+//                     </span>
+//                   </div>
+
+//                   <div className="mt-5 space-y-3">
+//                     <div className="flex items-center gap-2 text-sm text-slate-600">
+//                       <IdCard size={16} className="text-blue-500" />
+//                       <span>{staff.staffId || "N/A"}</span>
+//                     </div>
+//                     <div className="flex items-center gap-2 text-sm text-slate-600">
+//                       <Mail size={16} className="text-blue-500" />
+//                       <span className="truncate">{staff.email || "N/A"}</span>
+//                     </div>
+//                     <div className="flex items-center gap-2 text-sm text-slate-600">
+//                       <Phone size={16} className="text-blue-500" />
+//                       <span>{staff.number || staff.mobile || "N/A"}</span>
+//                     </div>
+//                     <div className="flex items-center gap-2 text-sm text-slate-600">
+//                       <Briefcase size={16} className="text-blue-500" />
+//                       <span>{staff.category || "N/A"}</span>
+//                     </div>
+//                     <div className="flex items-center gap-2 text-sm text-slate-600">
+//                       <MapPin size={16} className="text-blue-500" />
+//                       <span>
+//                         {staff.city || "N/A"}
+//                         {staff.state ? `, ${staff.state}` : ""}
 //                       </span>
-//                     </td>
-//                     <td className="p-3" onClick={(e) => e.stopPropagation()}>
-//                       <div className="flex items-center gap-2">
-//                         <button
-//                           onClick={() => handleEdit(staff)}
-//                           className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-//                           title="Edit"
-//                         >
-//                           <Edit size={18} />
-//                         </button>
-//                         <button
-//                           onClick={() => handleDelete(staff._id)}
-//                           disabled={deleteLoading}
-//                           className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
-//                           title="Delete"
-//                         >
-//                           <Trash2 size={18} />
-//                         </button>
-//                       </div>
-//                     </td>
-//                   </tr>
-//                 ))}
-//               </tbody>
-//             </table>
+//                     </div>
+//                   </div>
+
+//                   <div className="mt-5 grid grid-cols-2 gap-3">
+//                     <button
+//                       onClick={() => handleViewAttendance(staff)}
+//                       className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition text-sm font-semibold"
+//                     >
+//                       <CalendarDays size={17} />
+//                       Attendance
+//                     </button>
+//                     <button
+//                       onClick={() => handleEdit(staff)}
+//                       className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition text-sm font-semibold"
+//                     >
+//                       <Edit size={17} />
+//                       Edit
+//                     </button>
+//                     <button
+//                       onClick={() => handleDelete(staff._id)}
+//                       disabled={deleteLoadingId === staff._id}
+//                       className="col-span-2 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition text-sm font-semibold disabled:opacity-60"
+//                     >
+//                       {deleteLoadingId === staff._id ? (
+//                         <Loader2 size={17} className="animate-spin" />
+//                       ) : (
+//                         <Trash2 size={17} />
+//                       )}
+//                       Delete Staff
+//                     </button>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
 //           </div>
 //         )}
 //       </div>
 
-//       {/* Create/Edit Modal - your original modal */}
+//       {/* ---------- Create/Edit Modal ---------- */}
 //       {isModalOpen && (
 //         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-//           <div className="fixed inset-0 bg-transparent" onClick={() => setIsModalOpen(false)}></div>
-//           <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto z-10">
-//             <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between z-20">
-//               <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+//           <div
+//             className="absolute inset-0 bg-black/40"
+//             onClick={() => setIsModalOpen(false)}
+//           />
+//           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+//             <div className="sticky top-0 z-10 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+//               <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
 //                 <Users size={24} className="text-blue-600" />
-//                 {isEditMode ? "Edit Staff" : "Add New Staff"}
+//                 {isEditMode ? "Edit Staff" : "Create Staff"}
 //               </h2>
-//               <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100">
-//                 <X size={24} />
+//               <button
+//                 onClick={() => setIsModalOpen(false)}
+//                 className="p-2 rounded-xl hover:bg-slate-100 text-slate-500"
+//               >
+//                 <X size={22} />
 //               </button>
 //             </div>
 
-//             <form onSubmit={handleSubmit} className="p-6">
-//               <div className="space-y-6">
-//                 {/* Personal Information */}
-//                 <div>
-//                   <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Personal Information</h3>
-//                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name <span className="text-red-500">*</span></label>
-//                       <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter full name" />
-//                     </div>
-//                     {/* <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Staff ID</label>
-//                       <input type="text" name="staffId" value={formData.staffId} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter staff ID" />
-//                     </div> */}
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Date of Birth</label>
-//                       <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Gender</label>
-//                       <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-//                         <option value="">Select Gender</option>
-//                         <option value="Male">Male</option>
-//                         <option value="Female">Female</option>
-//                         <option value="Other">Other</option>
-//                       </select>
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Marital Status</label>
-//                       <select name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-//                         <option value="">Select Status</option>
-//                         <option value="Single">Single</option>
-//                         <option value="Married">Married</option>
-//                       </select>
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
-//                       <input type="text" name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter city" />
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">State</label>
-//                       <input type="text" name="state" value={formData.state} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter state" />
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Pincode</label>
-//                       <input type="text" name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter pincode" />
-//                     </div>
+//             <form onSubmit={handleSubmit} className="p-6 space-y-6">
+//               {/* Personal Information */}
+//               <div>
+//                 <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
+//                   Personal Information
+//                 </h3>
+//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//                   <div className="md:col-span-3">
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Profile Image
+//                     </label>
+//                     <input
+//                       type="file"
+//                       accept="image/*"
+//                       onChange={handleFileChange}
+//                       className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+//                     />
+//                     {formData.profileImage && (
+//                       <p className="text-sm text-slate-500 mt-1">
+//                         Selected: {formData.profileImage.name}
+//                       </p>
+//                     )}
 //                   </div>
-//                 </div>
 
-//                 {/* Contact Information */}
-//                 <div>
-//                   <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Contact Information</h3>
-//                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address <span className="text-red-500">*</span></label>
-//                       <div className="relative">
-//                         <Mail size={18} className="absolute left-3 top-3 text-gray-400" />
-//                         <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="staff@example.com" />
-//                       </div>
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number <span className="text-red-500">*</span></label>
-//                       <div className="relative">
-//                         <Phone size={18} className="absolute left-3 top-3 text-gray-400" />
-//                         <input type="tel" name="number" value={formData.number} onChange={handleInputChange} required className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+91 9876543210" />
-//                       </div>
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">github</label>
-//                       <input type="tel" name="github" value={formData.github} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="add github id " />
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Address</label>
-//                       <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter address" />
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 {/* Professional Information */}
-//                 <div>
-//                   <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Professional Information</h3>
-//                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Category <span className="text-red-500">*</span></label>
-//                       <CustomSelect
-//                         options={categoryOptions}
-//                         value={formData.category}
-//                         onChange={handleInputChange}
-//                         name="category"
-//                         required
-//                         placeholder="Select Category"
-//                       />
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Designation</label>
-//                       <input type="text" name="designation" value={formData.designation} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Software Developer" />
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Joining Date</label>
-//                       <input type="date" name="joiningDate" value={formData.joiningDate} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Salary</label>
-//                       <input type="number" name="salary" value={formData.salary} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter salary amount" />
-//                     </div>
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Experience (Years)</label>
-//                       <input type="number" name="experience" value={formData.experience} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Years of experience" step="0.5" />
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 {/* Government IDs */}
-//                 <div>
-//                   <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Government IDs</h3>
-//                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//                     <div>
-//                       <label className="block text-sm font-semibold text-gray-700 mb-2">Aadhar Number</label>
-//                       <input type="text" name="aadharNumber" value={formData.aadharNumber} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter Aadhar number" />
-//                     </div>
-//                   </div>
-//                 </div>
-
-//                 {/* Password - only in create mode */}
-//                 {!isEditMode && (
 //                   <div>
-//                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//                       <div>
-//                         <label className="block text-sm font-semibold text-gray-700 mb-2">Password <span className="text-red-500">*</span></label>
-//                         <input type="password" name="password" value={formData.password} onChange={handleInputChange} required className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter password" />
-//                         <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
-//                       </div>
-//                     </div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Full Name <span className="text-red-500">*</span>
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="name"
+//                       value={formData.name}
+//                       onChange={handleInputChange}
+//                       required
+//                       placeholder="Enter full name"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
 //                   </div>
-//                 )}
-
-//                 {/* Additional Information */}
-//                 <div>
-//                   <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Additional Information</h3>
-//                   <textarea name="remarks" value={formData.remarks} onChange={handleInputChange} rows={4} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter remarks or notes about staff" />
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Date of Birth
+//                     </label>
+//                     <input
+//                       type="date"
+//                       name="dateOfBirth"
+//                       value={formData.dateOfBirth}
+//                       onChange={handleInputChange}
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Gender
+//                     </label>
+//                     <select
+//                       name="gender"
+//                       value={formData.gender}
+//                       onChange={handleInputChange}
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     >
+//                       <option value="">Select Gender</option>
+//                       <option value="Male">Male</option>
+//                       <option value="Female">Female</option>
+//                       <option value="Other">Other</option>
+//                     </select>
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Marital Status
+//                     </label>
+//                     <select
+//                       name="maritalStatus"
+//                       value={formData.maritalStatus}
+//                       onChange={handleInputChange}
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     >
+//                       <option value="">Select Status</option>
+//                       <option value="Single">Single</option>
+//                       <option value="Married">Married</option>
+//                     </select>
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       City
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="city"
+//                       value={formData.city}
+//                       onChange={handleInputChange}
+//                       placeholder="Enter city"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       State
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="state"
+//                       value={formData.state}
+//                       onChange={handleInputChange}
+//                       placeholder="Enter state"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Pincode
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="pincode"
+//                       value={formData.pincode}
+//                       onChange={handleInputChange}
+//                       placeholder="Enter pincode"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
 //                 </div>
 //               </div>
 
-//               <div className="flex gap-3 mt-8 pt-4 border-t">
-//                 <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">Cancel</button>
-//                 <button type="submit" disabled={formLoading} className="flex-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium py-2.5">
-//                   {formLoading ? <><Loader2 size={18} className="animate-spin" /> {isEditMode ? "Updating..." : "Creating..."}</> : <><Plus size={18} /> {isEditMode ? "Update Staff" : "Create Staff"}</>}
+//               {/* Contact Information */}
+//               <div>
+//                 <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
+//                   Contact Information
+//                 </h3>
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Email <span className="text-red-500">*</span>
+//                     </label>
+//                     <input
+//                       type="email"
+//                       name="email"
+//                       value={formData.email}
+//                       onChange={handleInputChange}
+//                       required
+//                       placeholder="staff@example.com"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Phone Number <span className="text-red-500">*</span>
+//                     </label>
+//                     <input
+//                       type="tel"
+//                       name="number"
+//                       value={formData.number}
+//                       onChange={handleInputChange}
+//                       required
+//                       placeholder="9876543210"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       GitHub
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="github"
+//                       value={formData.github}
+//                       onChange={handleInputChange}
+//                       placeholder="GitHub username"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Emergency Contact
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="emergencyContact"
+//                       value={formData.emergencyContact}
+//                       onChange={handleInputChange}
+//                       placeholder="Emergency contact number"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div className="md:col-span-2">
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Address
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="address"
+//                       value={formData.address}
+//                       onChange={handleInputChange}
+//                       placeholder="Enter address"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Professional Information */}
+//               <div>
+//                 <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
+//                   Professional Information
+//                 </h3>
+//                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Category <span className="text-red-500">*</span>
+//                     </label>
+//                     <select
+//                       name="category"
+//                       value={formData.category}
+//                       onChange={handleInputChange}
+//                       required
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     >
+//                       <option value="">Select Category</option>
+//                       {categoryOptions.map((cat) => (
+//                         <option key={cat} value={cat}>
+//                           {cat}
+//                         </option>
+//                       ))}
+//                     </select>
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Designation
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="designation"
+//                       value={formData.designation}
+//                       onChange={handleInputChange}
+//                       placeholder="Software Developer"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Joining Date
+//                     </label>
+//                     <input
+//                       type="date"
+//                       name="joiningDate"
+//                       value={formData.joiningDate}
+//                       onChange={handleInputChange}
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Salary
+//                     </label>
+//                     <input
+//                       type="number"
+//                       name="salary"
+//                       value={formData.salary}
+//                       onChange={handleInputChange}
+//                       placeholder="Enter salary"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Experience (years)
+//                     </label>
+//                     <input
+//                       type="number"
+//                       name="experience"
+//                       value={formData.experience}
+//                       onChange={handleInputChange}
+//                       placeholder="Years"
+//                       step="0.5"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       Aadhar Number
+//                     </label>
+//                     <input
+//                       type="text"
+//                       name="aadharNumber"
+//                       value={formData.aadharNumber}
+//                       onChange={handleInputChange}
+//                       placeholder="Enter Aadhar number"
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Password */}
+//               <div>
+//                 <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
+//                   Login Information
+//                 </h3>
+//                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+//                   <div>
+//                     <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                       {isEditMode ? "New Password" : "Password"}{" "}
+//                       {!isEditMode && <span className="text-red-500">*</span>}
+//                     </label>
+//                     <input
+//                       type="password"
+//                       name="password"
+//                       value={formData.password}
+//                       onChange={handleInputChange}
+//                       required={!isEditMode}
+//                       placeholder={
+//                         isEditMode
+//                           ? "Leave blank to keep old password"
+//                           : "Enter password"
+//                       }
+//                       className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                     />
+//                   </div>
+//                 </div>
+//               </div>
+
+//               {/* Remarks */}
+//               <div>
+//                 <label className="block text-sm font-semibold text-slate-700 mb-2">
+//                   Remarks
+//                 </label>
+//                 <textarea
+//                   name="remarks"
+//                   value={formData.remarks}
+//                   onChange={handleInputChange}
+//                   rows={4}
+//                   placeholder="Enter remarks"
+//                   className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                 />
+//               </div>
+
+//               <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+//                 <button
+//                   type="button"
+//                   onClick={() => setIsModalOpen(false)}
+//                   className="flex-1 px-4 py-2.5 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition font-semibold"
+//                 >
+//                   Cancel
+//                 </button>
+//                 <button
+//                   type="submit"
+//                   disabled={formLoading}
+//                   className="flex-1 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2 font-semibold py-2.5"
+//                 >
+//                   {formLoading ? (
+//                     <>
+//                       <Loader2 size={18} className="animate-spin" />
+//                       {isEditMode ? "Updating..." : "Creating..."}
+//                     </>
+//                   ) : (
+//                     <>
+//                       <Plus size={18} />
+//                       {isEditMode ? "Update Staff" : "Create Staff"}
+//                     </>
+//                   )}
 //                 </button>
 //               </div>
 //             </form>
@@ -548,83 +962,144 @@
 //         </div>
 //       )}
 
-//       {/* Details Popup Modal */}
-//       {isDetailsModalOpen && selectedStaff && (
+//       {/* ---------- Attendance Modal ---------- */}
+//       {isAttendanceOpen && selectedStaff && (
 //         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-//           <div className="fixed inset-0 bg-gray-100 bg-transparent" onClick={() => setIsDetailsModalOpen(false)}></div>
-//           <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto z-10">
-//             <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between z-20">
-//               <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-//                 <Users size={24} className="text-blue-600" />
-//                 Staff Details
-//               </h2>
-//               <button onClick={() => setIsDetailsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100">
-//                 <X size={24} />
+//           <div
+//             className="absolute inset-0 bg-black/40"
+//             onClick={() => setIsAttendanceOpen(false)}
+//           />
+//           <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+//             <div className="sticky top-0 z-10 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+//               <div>
+//                 <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+//                   <CalendarCheck2 size={24} className="text-blue-600" />
+//                   Attendance Details
+//                 </h2>
+//                 <p className="text-sm text-slate-500">
+//                   {selectedStaff.name || "N/A"} - {selectedStaff.staffId || "N/A"}
+//                 </p>
+//               </div>
+//               <button
+//                 onClick={() => setIsAttendanceOpen(false)}
+//                 className="p-2 rounded-xl hover:bg-slate-100 text-slate-500"
+//               >
+//                 <X size={22} />
 //               </button>
 //             </div>
-//             <div className="p-6 space-y-4">
-//               <div className="grid grid-cols-2 gap-4">
-//                 <div>
-//                   <p className="text-sm text-gray-500">Full Name</p>
-//                   <p className="font-semibold">{selectedStaff.name || "N/A"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Staff ID</p>
-//                   <p className="font-semibold">{selectedStaff.staffId || "N/A"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Email</p>
-//                   <p className="font-semibold">{selectedStaff.email || "N/A"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Phone</p>
-//                   <p className="font-semibold">{selectedStaff.number || selectedStaff.mobile || "N/A"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Role</p>
-//                   <p className="font-semibold">{selectedStaff.role || "staff"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Category</p>
-//                   <p className="font-semibold">{selectedStaff.category || "N/A"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Designation</p>
-//                   <p className="font-semibold">{selectedStaff.designation || "N/A"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Joining Date</p>
-//                   <p className="font-semibold">{selectedStaff.joiningDate ? new Date(selectedStaff.joiningDate).toLocaleDateString() : "N/A"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Salary</p>
-//                   <p className="font-semibold">{selectedStaff.salary ? `₹${selectedStaff.salary}` : "N/A"}</p>
-//                 </div>
-//                 <div>
-//                   <p className="text-sm text-gray-500">Experience</p>
-//                   <p className="font-semibold">{selectedStaff.experience ? `${selectedStaff.experience} years` : "N/A"}</p>
-//                 </div>
-//                 <div className="col-span-2">
-//                   <p className="text-sm text-gray-500">Address</p>
-//                   <p className="font-semibold">{selectedStaff.address || "N/A"}</p>
-//                 </div>
-//               </div>
 
-//               <div className="border-t pt-4 mt-2">
-//                 <h3 className="text-lg font-semibold text-gray-800 mb-3">Projects Allotted</h3>
-//                 {selectedStaff.projects && selectedStaff.projects.length > 0 ? (
-//                   <ul className="list-disc list-inside space-y-1">
-//                     {selectedStaff.projects.map((project, idx) => (
-//                       <li key={idx} className="text-gray-700">{project.name || project}</li>
-//                     ))}
-//                   </ul>
-//                 ) : (
-//                   <p className="text-gray-500 italic">No projects allotted yet.</p>
-//                 )}
-//               </div>
+//             <div className="p-6">
+//               {attendanceLoading ? (
+//                 <div className="flex items-center justify-center py-20 text-blue-600">
+//                   <Loader2 size={36} className="animate-spin" />
+//                 </div>
+//               ) : (
+//                 <>
+//                   <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+//                     <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+//                       <p className="text-xs text-slate-500">Records</p>
+//                       <h3 className="text-2xl font-bold text-slate-800">
+//                         {attendanceSummary.totalRecords}
+//                       </h3>
+//                     </div>
+//                     <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+//                       <p className="text-xs text-slate-500">Working Days</p>
+//                       <h3 className="text-2xl font-bold text-blue-700">
+//                         {attendanceSummary.totalWorkingDays}
+//                       </h3>
+//                     </div>
+//                     <div className="bg-green-50 border border-green-100 rounded-xl p-4">
+//                       <p className="text-xs text-slate-500">Present</p>
+//                       <h3 className="text-2xl font-bold text-green-700">
+//                         {attendanceSummary.presentDays}
+//                       </h3>
+//                     </div>
+//                     <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4">
+//                       <p className="text-xs text-slate-500">Leave</p>
+//                       <h3 className="text-2xl font-bold text-yellow-700">
+//                         {attendanceSummary.adminLeaveDays}
+//                       </h3>
+//                     </div>
+//                     <div className="bg-red-50 border border-red-100 rounded-xl p-4">
+//                       <p className="text-xs text-slate-500">Absent</p>
+//                       <h3 className="text-2xl font-bold text-red-700">
+//                         {attendanceSummary.absentDays}
+//                       </h3>
+//                     </div>
+//                   </div>
+
+//                   {monthWiseAttendance.length > 0 && (
+//                     <div className="flex justify-between items-center mb-4">
+//                       <h3 className="text-lg font-bold text-slate-800">
+//                         Monthly Calendar
+//                       </h3>
+//                       <select
+//                         value={selectedMonth}
+//                         onChange={(e) => setSelectedMonth(e.target.value)}
+//                         className="px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+//                       >
+//                         {monthWiseAttendance.map((item) => (
+//                           <option key={item.month} value={item.month}>
+//                             {item.monthName}
+//                           </option>
+//                         ))}
+//                       </select>
+//                     </div>
+//                   )}
+
+//                   {selectedMonthData ? (
+//                     <div className="border border-slate-200 rounded-2xl overflow-hidden">
+//                       <div className="grid grid-cols-7 bg-slate-100 text-slate-700 text-sm font-semibold">
+//                         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+//                           (day) => (
+//                             <div key={day} className="p-3 text-center">
+//                               {day}
+//                             </div>
+//                           )
+//                         )}
+//                       </div>
+//                       <div className="grid grid-cols-7 gap-px bg-slate-200">
+//                         {selectedMonthData.dates?.map((item) => {
+//                           const dateObj = new Date(item.date);
+//                           const day = dateObj.getDate();
+//                           const status = item.status || "No Record";
+//                           const style = getStatusClass(status);
+//                           return (
+//                             <div
+//                               key={item.date}
+//                               title={`${dateObj.toLocaleDateString()} - ${status}`}
+//                               className={`${style.box} border min-h-[78px] p-2 flex flex-col items-center justify-center`}
+//                             >
+//                               <span className={`font-bold ${style.text}`}>
+//                                 {day}
+//                               </span>
+//                               <span className="text-lg">{style.icon}</span>
+//                               <span
+//                                 className={`text-[10px] font-semibold ${style.text}`}
+//                               >
+//                                 {status}
+//                               </span>
+//                             </div>
+//                           );
+//                         })}
+//                       </div>
+//                     </div>
+//                   ) : (
+//                     <div className="text-center py-10 text-slate-500 bg-slate-50 rounded-2xl border border-slate-200">
+//                       No attendance data found.
+//                     </div>
+//                   )}
+//                 </>
+//               )}
 //             </div>
-//             <div className="px-6 py-4 border-t flex justify-end">
-//               <button onClick={() => setIsDetailsModalOpen(false)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Close</button>
+
+//             <div className="px-6 py-4 border-t border-slate-200 flex justify-end">
+//               <button
+//                 onClick={() => setIsAttendanceOpen(false)}
+//                 className="px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-semibold"
+//               >
+//                 Close
+//               </button>
 //             </div>
 //           </div>
 //         </div>
@@ -633,98 +1108,63 @@
 //   );
 // };
 
-// export default AdminStaff;
+// export default AdminStaffMembers;
 
 
-import React, { useEffect, useState, useRef } from "react";
+
+
+import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { Users, Mail, Phone, Loader2, Plus, X, ChevronDown, Edit, Trash2 } from "lucide-react";
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
+import {
+  Users,
+  Mail,
+  Phone,
+  Trash2,
+  CalendarDays,
+  Loader2,
+  X,
+  Search,
+  MapPin,
+  Briefcase,
+  IdCard,
+  CalendarCheck2,
+  Plus,
+  Edit,
+} from "lucide-react";
 
-// Custom dropdown component (unchanged)
-const CustomSelect = ({ options, value, onChange, name, required, placeholder }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
-  const dropdownRef = useRef(null);
-
-  const selectedOption = options.find(opt => opt.value === value);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const filteredOptions = options.filter(opt =>
-    opt.label.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  return (
-    <div className="relative" ref={dropdownRef}>
-      <div
-        className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white flex items-center justify-between cursor-pointer"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <span className={selectedOption ? "text-gray-800" : "text-gray-400"}>
-          {selectedOption ? selectedOption.label : placeholder || "Select Category"}
-        </span>
-        <ChevronDown size={18} className={`transition-transform ${isOpen ? "rotate-180" : ""}`} />
-      </div>
-
-      {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-3 py-2 border-b border-gray-200 focus:outline-none sticky top-0 bg-white"
-            onClick={(e) => e.stopPropagation()}
-          />
-          {filteredOptions.length === 0 ? (
-            <div className="px-4 py-2 text-gray-500">No options found</div>
-          ) : (
-            filteredOptions.map((opt) => (
-              <div
-                key={opt.value}
-                className={`px-4 py-2 cursor-pointer hover:bg-blue-50 ${
-                  value === opt.value ? "bg-blue-100 text-blue-700" : ""
-                }`}
-                onClick={() => {
-                  onChange({ target: { name, value: opt.value } });
-                  setIsOpen(false);
-                  setSearchTerm("");
-                }}
-              >
-                {opt.label}
-              </div>
-            ))
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const AdminStaff = () => {
+const AdminStaffMembers = () => {
   const [staffList, setStaffList] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [deleteLoadingId, setDeleteLoadingId] = useState(null);
+
+  const [search, setSearch] = useState("");
+
+  // Create/Edit states
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formLoading, setFormLoading] = useState(false);
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-  const [selectedStaff, setSelectedStaff] = useState(null);
-  const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
 
-  // ✅ Added 'github' to initial state (was missing)
+  // Attendance states
+  const [selectedStaff, setSelectedStaff] = useState(null);
+  const [attendanceLoading, setAttendanceLoading] = useState(false);
+  const [isAttendanceOpen, setIsAttendanceOpen] = useState(false);
+
+  const [attendanceSummary, setAttendanceSummary] = useState({
+    totalRecords: 0,
+    totalWorkingDays: 0,
+    presentDays: 0,
+    adminLeaveDays: 0,
+    absentDays: 0,
+  });
+
+  const [monthWiseAttendance, setMonthWiseAttendance] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState("");
+
+  // Form state (including profileImage)
   const [formData, setFormData] = useState({
     name: "",
-    staffId: "",
     email: "",
     number: "",
     role: "staff",
@@ -744,40 +1184,47 @@ const AdminStaff = () => {
     experience: "",
     aadharNumber: "",
     remarks: "",
-    github: "", // Added
+    github: "",
+    profileImage: null,
   });
 
   const categoryOptions = [
-    { value: "HR", label: "HR" },
-    { value: "Frontend Developer", label: "Frontend Developer" },
-    { value: "Backend Developer", label: "Backend Developer" },
-    { value: "MERN Developer", label: "MERN Developer" },
-    { value: "Full Stack Developer", label: "Full Stack Developer" },
-    { value: "UI/UX Designer", label: "UI/UX Designer" },
-    { value: "DevOps Engineer", label: "DevOps Engineer" },
-    { value: "Project Manager", label: "Project Manager" },
-    { value: "Business Analyst", label: "Business Analyst" },
-    { value: "Digital Marketer", label: "Digital Marketer" },
-    { value: "Content Writer", label: "Content Writer" },
-    { value: "Sales Executive", label: "Sales Executive" },
-    { value: "Support Engineer", label: "Support Engineer" },
-    { value: "Intern", label: "Intern" },
-    { value: "Other", label: "Other" },
+    "HR",
+    "admin",
+    "Frontend Developer",
+    "Backend Developer",
+    "MERN Developer",
+    "Full Stack Developer",
+    "UI/UX Designer",
+    "DevOps Engineer",
+    "Project Manager",
+    "Business Analyst",
+    "Digital Marketer",
+    "Content Writer",
+    "Sales Executive",
+    "Support Engineer",
+    "Intern",
+    "Other",
   ];
 
+  const adminToken = sessionStorage.getItem("adminToken") || "";
+  const authHeaders = adminToken
+    ? { Authorization: `Bearer ${adminToken}` }
+    : {};
+
+  // ---------- API Calls ----------
   const getStaff = async () => {
     try {
       setLoading(true);
       const res = await axios.get("/api/allstaff");
-      // ✅ More robust response handling
       const data = res.data?.staff || res.data?.data || res.data || [];
       setStaffList(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error("Error fetching staff:", error);
+      console.error("Staff fetch error:", error);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'Failed to load staff list',
+        icon: "error",
+        title: "Error",
+        text: error.response?.data?.message || "Failed to load staff members",
       });
     } finally {
       setLoading(false);
@@ -788,15 +1235,15 @@ const AdminStaff = () => {
     getStaff();
   }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  // ---------- Helpers ----------
+  const formatDateForInput = (date) => {
+    if (!date) return "";
+    return new Date(date).toISOString().split("T")[0];
   };
 
   const resetForm = () => {
     setFormData({
       name: "",
-      staffId: "",
       email: "",
       number: "",
       role: "staff",
@@ -816,67 +1263,43 @@ const AdminStaff = () => {
       experience: "",
       aadharNumber: "",
       remarks: "",
-      github: "", // ✅ included
+      github: "",
+      profileImage: null,
     });
     setIsEditMode(false);
     setEditingId(null);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      setFormLoading(true);
-      let payload = { ...formData };
+  // ---------- Form Handlers ----------
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
-      // ✅ If editing and password is empty, remove it from payload to avoid overwriting
-      if (isEditMode && !payload.password) {
-        delete payload.password;
-      }
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setFormData((prev) => ({ ...prev, profileImage: file }));
+  };
 
-      if (isEditMode && editingId) {
-        await axios.put(`/api/updatestaff/${editingId}`, payload);
-        Swal.fire({
-          icon: 'success',
-          title: 'Updated!',
-          text: 'Staff updated successfully!',
-          timer: 2000,
-          showConfirmButton: false
-        });
-      } else {
-        await axios.post("/api/createstaff", payload);
-        Swal.fire({
-          icon: 'success',
-          title: 'Success!',
-          text: 'Staff created successfully!',
-          timer: 2000,
-          showConfirmButton: false
-        });
-      }
-      setIsModalOpen(false);
-      resetForm();
-      getStaff();
-    } catch (error) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.response?.data?.message || (isEditMode ? "Failed to update staff" : "Failed to create staff"),
-      });
-    } finally {
-      setFormLoading(false);
-    }
+  const openCreateModal = () => {
+    resetForm();
+    setIsModalOpen(true);
   };
 
   const handleEdit = (staff) => {
+    if (!staff) {
+      Swal.fire("Error", "Invalid staff data", "error");
+      return;
+    }
     setIsEditMode(true);
     setEditingId(staff._id);
     setFormData({
       name: staff.name || "",
-      staffId: staff.staffId || "",
       email: staff.email || "",
       number: staff.number || "",
       role: staff.role || "staff",
-      password: "", // Password left empty on edit (will be excluded if not changed)
-      dateOfBirth: staff.dateOfBirth || "",
+      password: "",
+      dateOfBirth: formatDateForInput(staff.dateOfBirth),
       gender: staff.gender || "",
       maritalStatus: staff.maritalStatus || "",
       city: staff.city || "",
@@ -886,321 +1309,757 @@ const AdminStaff = () => {
       address: staff.address || "",
       category: staff.category || "",
       designation: staff.designation || "",
-      joiningDate: staff.joiningDate ? staff.joiningDate.split('T')[0] : "",
+      joiningDate: formatDateForInput(staff.joiningDate),
       salary: staff.salary || "",
       experience: staff.experience || "",
-      aadharNumber: staff.aadharNumber || "",
+      aadharNumber: staff.aadharNumber || staff.aadhaarNumber || "",
       remarks: staff.remarks || "",
       github: staff.github || "",
+      profileImage: staff.profileImage , // existing URL string, not a File
     });
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id) => {
-    const result = await Swal.fire({
-      title: 'Are you sure?',
-      text: "You won't be able to revert this!",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#d33',
-      cancelButtonColor: '#3085d6',
-      confirmButtonText: 'Yes, delete it!'
-    });
-    if (!result.isConfirmed) return;
-
+  const handleSubmit = async (e) => {
+    e.preventDefault();
     try {
-      setDeleteLoading(true);
-      await axios.delete(`/api/deletestaff/${id}`);
-      Swal.fire({
-        icon: 'success',
-        title: 'Deleted!',
-        text: 'Staff member has been deleted.',
-        timer: 2000,
-        showConfirmButton: false
+      setFormLoading(true);
+
+      const payload = new FormData();
+
+      Object.entries(formData).forEach(([key, value]) => {
+        if (key === "profileImage") {
+          if (value instanceof File) {
+            payload.append("profileImage", value);
+          }
+          return;
+        }
+        if (key === "password" && isEditMode && !value) {
+          return; // don't overwrite password if left blank
+        }
+        payload.append(key, value ?? "");
       });
+
+      const url = isEditMode
+        ? `/api/updatestaff/${editingId}`
+        : "/api/createstaff";
+      const method = isEditMode ? "put" : "post";
+
+      await axios({
+        method,
+        url,
+        data: payload,
+        headers: { ...authHeaders }, // do NOT set Content-Type manually
+      });
+
+      Swal.fire({
+        icon: "success",
+        title: isEditMode ? "Updated!" : "Success!",
+        text: isEditMode
+          ? "Staff updated successfully!"
+          : "Staff created successfully!",
+        timer: 2000,
+        showConfirmButton: false,
+      });
+
+      setIsModalOpen(false);
+      resetForm();
       getStaff();
     } catch (error) {
+      console.error("Submit error:", error.response?.data || error.message);
       Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.response?.data?.message || "Failed to delete staff",
+        icon: "error",
+        title: "Oops...",
+        text:
+          error.response?.data?.message ||
+          error.response?.data?.error ||
+          (isEditMode ? "Failed to update staff" : "Failed to create staff"),
       });
     } finally {
-      setDeleteLoading(false);
+      setFormLoading(false);
     }
   };
 
-  const handleViewDetails = (staff) => {
-    setSelectedStaff(staff);
-    setIsDetailsModalOpen(true);
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This staff member will be deleted permanently.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#2563eb",
+      confirmButtonText: "Yes, delete it",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      setDeleteLoadingId(id);
+      await axios.delete(`/api/deletestaff/${id}`, { headers: authHeaders });
+      Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Staff member deleted successfully.",
+        timer: 1800,
+        showConfirmButton: false,
+      });
+      getStaff();
+    } catch (error) {
+      console.error("Delete staff error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: error.response?.data?.message || "Failed to delete staff",
+      });
+    } finally {
+      setDeleteLoadingId(null);
+    }
   };
 
+  const handleViewAttendance = async (staff) => {
+    if (!staff) {
+      Swal.fire("Error", "No staff selected", "error");
+      return;
+    }
+    setSelectedStaff(staff);
+    setIsAttendanceOpen(true);
+
+    setAttendanceSummary({
+      totalRecords: 0,
+      totalWorkingDays: 0,
+      presentDays: 0,
+      adminLeaveDays: 0,
+      absentDays: 0,
+    });
+    setMonthWiseAttendance([]);
+    setSelectedMonth("");
+
+    try {
+      setAttendanceLoading(true);
+      const url = `/api/admin/attendance/${staff._id}`;
+      const res = await axios.get(url, { headers: authHeaders });
+
+      const summary = res.data?.summary || {};
+      setAttendanceSummary({
+        totalRecords: summary.totalRecords ?? 0,
+        totalWorkingDays: summary.totalWorkingDays ?? 0,
+        presentDays: summary.presentDays ?? 0,
+        adminLeaveDays: summary.adminLeaveDays ?? 0,
+        absentDays: summary.absentDays ?? 0,
+      });
+
+      const months = res.data?.monthWiseAttendance || [];
+      setMonthWiseAttendance(months);
+      if (months.length > 0) setSelectedMonth(months[0].month);
+    } catch (error) {
+      console.error("Attendance fetch error:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text:
+          error.response?.data?.message ||
+          "Failed to load staff attendance details",
+      });
+    } finally {
+      setAttendanceLoading(false);
+    }
+  };
+
+  // Filtered staff (skip invalid entries)
+  const filteredStaff = useMemo(() => {
+    const text = search.toLowerCase().trim();
+    return staffList
+      .filter((staff) => staff && typeof staff === "object")
+      .filter((staff) => {
+        if (!text) return true;
+        return (
+          staff.name?.toLowerCase().includes(text) ||
+          staff.email?.toLowerCase().includes(text) ||
+          staff.staffId?.toLowerCase().includes(text) ||
+          staff.category?.toLowerCase().includes(text) ||
+          staff.designation?.toLowerCase().includes(text)
+        );
+      });
+  }, [search, staffList]);
+
+  // Attendance helpers
+  const selectedMonthData =
+    monthWiseAttendance.find((item) => item.month === selectedMonth) || null;
+
+  const getStatusClass = (status) => {
+    const value = status?.toLowerCase();
+    if (value === "present")
+      return { box: "bg-green-50 border-green-200", text: "text-green-700", icon: "✅" };
+    if (value === "leave")
+      return { box: "bg-yellow-50 border-yellow-200", text: "text-yellow-700", icon: "📅" };
+    if (value === "absent")
+      return { box: "bg-red-50 border-red-200", text: "text-red-700", icon: "❌" };
+    return { box: "bg-gray-50 border-gray-200", text: "text-gray-400", icon: "—" };
+  };
+
+  // ---------- Render ----------
   return (
-    <div className="min-h-screen bg-gray-100 p-4 md:p-6">
-      <div className="bg-white rounded-2xl shadow-md p-5">
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <div className="bg-blue-100 text-blue-600 p-3 rounded-xl">
-              <Users size={26} />
+    <div className="min-h-screen bg-slate-100 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="h-12 w-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center">
+                <Users size={26} />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold text-slate-800">
+                  Staff Members
+                </h1>
+                <p className="text-sm text-slate-500">
+                  Create, update, delete, and check staff attendance.
+                </p>
+              </div>
             </div>
-            <div>
-              <h1 className="text-2xl font-bold text-gray-800">Staff Management</h1>
-              <p className="text-gray-500 text-sm">View all registered staff members</p>
+
+            <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+              <div className="relative w-full sm:w-80">
+                <Search
+                  size={18}
+                  className="absolute left-3 top-3 text-slate-400"
+                />
+                <input
+                  type="text"
+                  placeholder="Search staff..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+                />
+              </div>
+              <button
+                onClick={openCreateModal}
+                className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl font-semibold transition"
+              >
+                <Plus size={18} />
+                Create Staff
+              </button>
             </div>
           </div>
-          <button
-            onClick={() => {
-              resetForm();
-              setIsModalOpen(true);
-            }}
-            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
-          >
-            <Plus size={20} /> Add New Staff
-          </button>
         </div>
 
+        {/* Staff Cards */}
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <Loader2 className="animate-spin text-blue-600" size={36} />
+          <div className="flex items-center justify-center py-24">
+            <Loader2 size={42} className="animate-spin text-blue-600" />
           </div>
-        ) : staffList.length === 0 ? (
-          <div className="text-center py-16 text-gray-500">No staff found</div>
+        ) : filteredStaff.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-slate-500">
+            No staff members found.
+          </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr className="bg-gray-100 text-left text-gray-700">
-                  <th className="p-3">Sr No.</th>
-                  <th className="p-3">Name</th>
-                  <th className="p-3">Staff ID</th>
-                  <th className="p-3">Email</th>
-                  <th className="p-3">Phone</th>
-                  <th className="p-3">Role</th>
-                  <th className="p-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {staffList.map((staff, index) => (
-                  <tr
-                    key={staff._id}
-                    className="border-b hover:bg-gray-50 transition cursor-pointer"
-                    onClick={() => handleViewDetails(staff)}
-                  >
-                    <td className="p-3">{index + 1}</td>
-                    <td className="p-3 font-semibold text-gray-800">{staff.name || "N/A"}</td>
-                    <td className="p-3 text-gray-600">{staff.staffId || "N/A"}</td>
-                    <td className="p-3">
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <Mail size={16} /> {staff.email || "N/A"}
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {filteredStaff.map((staff) => (
+              <div
+                key={staff._id}
+                className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden"
+              >
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      {/* <div className="h-14 w-14 rounded-2xl overflow-hidden bg-blue-100 flex items-center justify-center border border-slate-200">
+                        {staff.profileImage ? (
+                          <img
+                            src={staff.profileImage}
+                            alt={staff.name || "Staff"}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <span className="text-blue-600 font-bold text-lg">
+                            {staff.name ? staff.name.charAt(0).toUpperCase() : "S"}
+                          </span>
+                        )}
+                      </div> */}
+                      <div className="h-14 w-14 rounded-2xl overflow-hidden bg-blue-100 flex items-center justify-center border border-slate-200">
+  {staff.profileImage ? (
+    <img
+      src={staff.profileImage}
+      alt={staff.name || "Staff"}
+      className="h-full w-full object-cover"
+    />
+  ) : (
+    <span className="text-blue-600 font-bold text-lg">
+      {staff.profileImage ? staff.profileImage.charAt(0).toUpperCase() : "S"}
+    </span>
+  )}
+</div>
+                      <div>
+                        <h2 className="font-bold text-slate-800 text-lg">
+                          {staff.name || "N/A"}
+                        </h2>
+                        <p className="text-sm text-slate-500">
+                          {staff.designation || staff.category || "Staff"}
+                        </p>
                       </div>
-                    </td>
-                    <td className="p-3">
-                      <div className="flex items-center gap-2 text-gray-600">
-                        <Phone size={16} /> {staff.number || staff.mobile || "N/A"}
-                      </div>
-                    </td>
-                    <td className="p-3">
-                      <span className="px-3 py-1 text-xs font-semibold bg-green-100 text-green-700 rounded-full">
-                        {staff.role || "staff"}
+                    </div>
+                    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
+                      {staff.status || "Active"}
+                    </span>
+                  </div>
+
+                  <div className="mt-5 space-y-3">
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                      <IdCard size={16} className="text-blue-500" />
+                      <span>{staff.staffId || "N/A"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                      <Mail size={16} className="text-blue-500" />
+                      <span className="truncate">{staff.email || "N/A"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                      <Phone size={16} className="text-blue-500" />
+                      <span>{staff.number || staff.mobile || "N/A"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                      <Briefcase size={16} className="text-blue-500" />
+                      <span>{staff.category || "N/A"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-slate-600">
+                      <MapPin size={16} className="text-blue-500" />
+                      <span>
+                        {staff.city || "N/A"}
+                        {staff.state ? `, ${staff.state}` : ""}
                       </span>
-                    </td>
-                    <td className="p-3" onClick={(e) => e.stopPropagation()}>
-                      <div className="flex items-center gap-2">
-                        <button
-                          onClick={() => handleEdit(staff)}
-                          className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition"
-                          title="Edit"
-                        >
-                          <Edit size={18} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(staff._id)}
-                          disabled={deleteLoading}
-                          className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition disabled:opacity-50"
-                          title="Delete"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+
+                  <div className="mt-5 grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => handleViewAttendance(staff)}
+                      className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition text-sm font-semibold"
+                    >
+                      <CalendarDays size={17} />
+                      Attendance
+                    </button>
+                    <button
+                      onClick={() => handleEdit(staff)}
+                      className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition text-sm font-semibold"
+                    >
+                      <Edit size={17} />
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDelete(staff._id)}
+                      disabled={deleteLoadingId === staff._id}
+                      className="col-span-2 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition text-sm font-semibold disabled:opacity-60"
+                    >
+                      {deleteLoadingId === staff._id ? (
+                        <Loader2 size={17} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={17} />
+                      )}
+                      Delete Staff
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
 
-      {/* Create/Edit Modal (your original modal with fixes) */}
+      {/* ---------- Create/Edit Modal ---------- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/20" onClick={() => setIsModalOpen(false)}></div>
-          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto z-10">
-            <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between z-20">
-              <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setIsModalOpen(false)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 z-10 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+              <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
                 <Users size={24} className="text-blue-600" />
-                {isEditMode ? "Edit Staff" : "Add New Staff"}
+                {isEditMode ? "Edit Staff" : "Create Staff"}
               </h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100">
-                <X size={24} />
+              <button
+                onClick={() => setIsModalOpen(false)}
+                className="p-2 rounded-xl hover:bg-slate-100 text-slate-500"
+              >
+                <X size={22} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6">
-              <div className="space-y-6">
-                {/* Personal Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Personal Information</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name <span className="text-red-500">*</span></label>
-                      <input type="text" name="name" value={formData.name} onChange={handleInputChange} required className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter full name" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Date of Birth</label>
-                      <input type="date" name="dateOfBirth" value={formData.dateOfBirth} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Gender</label>
-                      <select name="gender" value={formData.gender} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Marital Status</label>
-                      <select name="maritalStatus" value={formData.maritalStatus} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select Status</option>
-                        <option value="Single">Single</option>
-                        <option value="Married">Married</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">City</label>
-                      <input type="text" name="city" value={formData.city} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter city" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">State</label>
-                      <input type="text" name="state" value={formData.state} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter state" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Pincode</label>
-                      <input type="text" name="pincode" value={formData.pincode} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter pincode" />
-                    </div>
-                  </div>
-                </div>
+            <form onSubmit={handleSubmit} className="p-6 space-y-6">
+              {/* Personal Information */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
+                  Personal Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="md:col-span-3">
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Profile Image
+                    </label>
 
-                {/* Contact Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Contact Information</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address <span className="text-red-500">*</span></label>
-                      <div className="relative">
-                        <Mail size={18} className="absolute left-3 top-3 text-gray-400" />
-                        <input type="email" name="email" value={formData.email} onChange={handleInputChange} required className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="staff@example.com" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number <span className="text-red-500">*</span></label>
-                      <div className="relative">
-                        <Phone size={18} className="absolute left-3 top-3 text-gray-400" />
-                        <input type="tel" name="number" value={formData.number} onChange={handleInputChange} required className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="+91 9876543210" />
-                      </div>
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">GitHub</label>
-                      <input type="text" name="github" value={formData.github} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="add github id" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Address</label>
-                      <input type="text" name="address" value={formData.address} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter address" />
-                    </div>
-                  </div>
-                </div>
+                    {/* Show existing image preview in edit mode */}
+                    {isEditMode &&
+                      typeof formData.profileImage === "string" &&
+                      formData.profileImage && (
+                        <div className="mb-2 flex items-center gap-3">
+                          <img
+                            src={formData.profileImage}
+                            alt="Current profile"
+                            className="h-14 w-14 rounded-xl object-cover border border-slate-200"
+                          />
+                          <span className="text-xs text-slate-500">
+                            Current image (upload a new one to replace it)
+                          </span>
+                        </div>
+                      )}
 
-                {/* Professional Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Professional Information</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Category <span className="text-red-500">*</span></label>
-                      <CustomSelect
-                        options={categoryOptions}
-                        value={formData.category}
-                        onChange={handleInputChange}
-                        name="category"
-                        required
-                        placeholder="Select Category"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Designation</label>
-                      <input type="text" name="designation" value={formData.designation} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Software Developer" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Joining Date</label>
-                      <input type="date" name="joiningDate" value={formData.joiningDate} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Salary</label>
-                      <input type="number" name="salary" value={formData.salary} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter salary amount" />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Experience (Years)</label>
-                      <input type="number" name="experience" value={formData.experience} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Years of experience" step="0.5" />
-                    </div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                    />
+                    {formData.profileImage instanceof File && (
+                      <p className="text-sm text-slate-500 mt-1">
+                        Selected: {formData.profileImage.name}
+                      </p>
+                    )}
                   </div>
-                </div>
 
-                {/* Government IDs */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Government IDs</h3>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Aadhar Number</label>
-                      <input type="text" name="aadharNumber" value={formData.aadharNumber} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter Aadhar number" />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Password - only in create mode (or optionally allow change) */}
-                {!isEditMode && (
                   <div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Password <span className="text-red-500">*</span></label>
-                        <input type="password" name="password" value={formData.password} onChange={handleInputChange} required className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter password" />
-                        <p className="text-xs text-gray-500 mt-1">Minimum 6 characters</p>
-                      </div>
-                    </div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Full Name <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="Enter full name"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
                   </div>
-                )}
-                {/* Optionally, you can show a password field in edit mode to allow changing password */}
-                {isEditMode && (
                   <div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">New Password (leave blank to keep current)</label>
-                        <input type="password" name="password" value={formData.password} onChange={handleInputChange} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter new password" />
-                      </div>
-                    </div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Date of Birth
+                    </label>
+                    <input
+                      type="date"
+                      name="dateOfBirth"
+                      value={formData.dateOfBirth}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
                   </div>
-                )}
-
-                {/* Additional Information */}
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3 border-b pb-2">Additional Information</h3>
-                  <textarea name="remarks" value={formData.remarks} onChange={handleInputChange} rows={4} className="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Enter remarks or notes about staff" />
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Gender
+                    </label>
+                    <select
+                      name="gender"
+                      value={formData.gender}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Marital Status
+                    </label>
+                    <select
+                      name="maritalStatus"
+                      value={formData.maritalStatus}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Status</option>
+                      <option value="Single">Single</option>
+                      <option value="Married">Married</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      placeholder="Enter city"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      name="state"
+                      value={formData.state}
+                      onChange={handleInputChange}
+                      placeholder="Enter state"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Pincode
+                    </label>
+                    <input
+                      type="text"
+                      name="pincode"
+                      value={formData.pincode}
+                      onChange={handleInputChange}
+                      placeholder="Enter pincode"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="flex gap-3 mt-8 pt-4 border-t">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="flex-1 px-4 py-2.5 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition font-medium">Cancel</button>
-                <button type="submit" disabled={formLoading} className="flex-1 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 font-medium py-2.5">
-                  {formLoading ? <><Loader2 size={18} className="animate-spin" /> {isEditMode ? "Updating..." : "Creating..."}</> : <><Plus size={18} /> {isEditMode ? "Update Staff" : "Create Staff"}</>}
+              {/* Contact Information */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
+                  Contact Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Email <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="staff@example.com"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Phone Number <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      name="number"
+                      value={formData.number}
+                      onChange={handleInputChange}
+                      required
+                      placeholder="9876543210"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      GitHub
+                    </label>
+                    <input
+                      type="text"
+                      name="github"
+                      value={formData.github}
+                      onChange={handleInputChange}
+                      placeholder="GitHub username"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Emergency Contact
+                    </label>
+                    <input
+                      type="text"
+                      name="emergencyContact"
+                      value={formData.emergencyContact}
+                      onChange={handleInputChange}
+                      placeholder="Emergency contact number"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Address
+                    </label>
+                    <input
+                      type="text"
+                      name="address"
+                      value={formData.address}
+                      onChange={handleInputChange}
+                      placeholder="Enter address"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Professional Information */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
+                  Professional Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Category <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      name="category"
+                      value={formData.category}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    >
+                      <option value="">Select Category</option>
+                      {categoryOptions.map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Designation
+                    </label>
+                    <input
+                      type="text"
+                      name="designation"
+                      value={formData.designation}
+                      onChange={handleInputChange}
+                      placeholder="Software Developer"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Joining Date
+                    </label>
+                    <input
+                      type="date"
+                      name="joiningDate"
+                      value={formData.joiningDate}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Salary
+                    </label>
+                    <input
+                      type="number"
+                      name="salary"
+                      value={formData.salary}
+                      onChange={handleInputChange}
+                      placeholder="Enter salary"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Experience (years)
+                    </label>
+                    <input
+                      type="number"
+                      name="experience"
+                      value={formData.experience}
+                      onChange={handleInputChange}
+                      placeholder="Years"
+                      step="0.5"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      Aadhar Number
+                    </label>
+                    <input
+                      type="text"
+                      name="aadharNumber"
+                      value={formData.aadharNumber}
+                      onChange={handleInputChange}
+                      placeholder="Enter Aadhar number"
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Password */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
+                  Login Information
+                </h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">
+                      {isEditMode ? "New Password" : "Password"}{" "}
+                      {!isEditMode && <span className="text-red-500">*</span>}
+                    </label>
+                    <input
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required={!isEditMode}
+                      placeholder={
+                        isEditMode
+                          ? "Leave blank to keep old password"
+                          : "Enter password"
+                      }
+                      className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Remarks */}
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Remarks
+                </label>
+                <textarea
+                  name="remarks"
+                  value={formData.remarks}
+                  onChange={handleInputChange}
+                  rows={4}
+                  placeholder="Enter remarks"
+                  className="w-full px-4 py-2.5 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="flex-1 px-4 py-2.5 border border-slate-300 text-slate-700 rounded-xl hover:bg-slate-50 transition font-semibold"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={formLoading}
+                  className="flex-1 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition disabled:opacity-50 flex items-center justify-center gap-2 font-semibold py-2.5"
+                >
+                  {formLoading ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      {isEditMode ? "Updating..." : "Creating..."}
+                    </>
+                  ) : (
+                    <>
+                      <Plus size={18} />
+                      {isEditMode ? "Update Staff" : "Create Staff"}
+                    </>
+                  )}
                 </button>
               </div>
             </form>
@@ -1208,83 +2067,144 @@ const AdminStaff = () => {
         </div>
       )}
 
-      {/* Details Popup Modal (unchanged) */}
-      {isDetailsModalOpen && selectedStaff && (
+      {/* ---------- Attendance Modal ---------- */}
+      {isAttendanceOpen && selectedStaff && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="fixed inset-0 bg-black/20" onClick={() => setIsDetailsModalOpen(false)}></div>
-          <div className="relative bg-white rounded-xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto z-10">
-            <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between z-20">
-              <h2 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                <Users size={24} className="text-blue-600" />
-                Staff Details
-              </h2>
-              <button onClick={() => setIsDetailsModalOpen(false)} className="text-gray-400 hover:text-gray-600 p-1 rounded-lg hover:bg-gray-100">
-                <X size={24} />
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setIsAttendanceOpen(false)}
+          />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+            <div className="sticky top-0 z-10 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
+              <div>
+                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
+                  <CalendarCheck2 size={24} className="text-blue-600" />
+                  Attendance Details
+                </h2>
+                <p className="text-sm text-slate-500">
+                  {selectedStaff.name || "N/A"} - {selectedStaff.staffId || "N/A"}
+                </p>
+              </div>
+              <button
+                onClick={() => setIsAttendanceOpen(false)}
+                className="p-2 rounded-xl hover:bg-slate-100 text-slate-500"
+              >
+                <X size={22} />
               </button>
             </div>
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <p className="text-sm text-gray-500">Full Name</p>
-                  <p className="font-semibold">{selectedStaff.name || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Staff ID</p>
-                  <p className="font-semibold">{selectedStaff.staffId || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Github</p>
-                  <p className="font-semibold">{selectedStaff.github || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Phone</p>
-                  <p className="font-semibold">{selectedStaff.number || selectedStaff.mobile || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Role</p>
-                  <p className="font-semibold">{selectedStaff.role || "staff"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Category</p>
-                  <p className="font-semibold">{selectedStaff.category || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Designation</p>
-                  <p className="font-semibold">{selectedStaff.designation || "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Joining Date</p>
-                  <p className="font-semibold">{selectedStaff.joiningDate ? new Date(selectedStaff.joiningDate).toLocaleDateString() : "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Salary</p>
-                  <p className="font-semibold">{selectedStaff.salary ? `₹${selectedStaff.salary}` : "N/A"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500">Experience</p>
-                  <p className="font-semibold">{selectedStaff.experience ? `${selectedStaff.experience} years` : "N/A"}</p>
-                </div>
-                <div className="col-span-2">
-                  <p className="text-sm text-gray-500">Address</p>
-                  <p className="font-semibold">{selectedStaff.address || "N/A"}</p>
-                </div>
-              </div>
 
-              <div className="border-t pt-4 mt-2">
-                <h3 className="text-lg font-semibold text-gray-800 mb-3">Projects Allotted</h3>
-                {selectedStaff.projects && selectedStaff.projects.length > 0 ? (
-                  <ul className="list-disc list-inside space-y-1">
-                    {selectedStaff.projects.map((project, idx) => (
-                      <li key={idx} className="text-gray-700">{project.name || project}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-500 italic">No projects allotted yet.</p>
-                )}
-              </div>
+            <div className="p-6">
+              {attendanceLoading ? (
+                <div className="flex items-center justify-center py-20 text-blue-600">
+                  <Loader2 size={36} className="animate-spin" />
+                </div>
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                      <p className="text-xs text-slate-500">Records</p>
+                      <h3 className="text-2xl font-bold text-slate-800">
+                        {attendanceSummary.totalRecords}
+                      </h3>
+                    </div>
+                    <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                      <p className="text-xs text-slate-500">Working Days</p>
+                      <h3 className="text-2xl font-bold text-blue-700">
+                        {attendanceSummary.totalWorkingDays}
+                      </h3>
+                    </div>
+                    <div className="bg-green-50 border border-green-100 rounded-xl p-4">
+                      <p className="text-xs text-slate-500">Present</p>
+                      <h3 className="text-2xl font-bold text-green-700">
+                        {attendanceSummary.presentDays}
+                      </h3>
+                    </div>
+                    <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4">
+                      <p className="text-xs text-slate-500">Leave</p>
+                      <h3 className="text-2xl font-bold text-yellow-700">
+                        {attendanceSummary.adminLeaveDays}
+                      </h3>
+                    </div>
+                    <div className="bg-red-50 border border-red-100 rounded-xl p-4">
+                      <p className="text-xs text-slate-500">Absent</p>
+                      <h3 className="text-2xl font-bold text-red-700">
+                        {attendanceSummary.absentDays}
+                      </h3>
+                    </div>
+                  </div>
+
+                  {monthWiseAttendance.length > 0 && (
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-bold text-slate-800">
+                        Monthly Calendar
+                      </h3>
+                      <select
+                        value={selectedMonth}
+                        onChange={(e) => setSelectedMonth(e.target.value)}
+                        className="px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      >
+                        {monthWiseAttendance.map((item) => (
+                          <option key={item.month} value={item.month}>
+                            {item.monthName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+
+                  {selectedMonthData ? (
+                    <div className="border border-slate-200 rounded-2xl overflow-hidden">
+                      <div className="grid grid-cols-7 bg-slate-100 text-slate-700 text-sm font-semibold">
+                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                          (day) => (
+                            <div key={day} className="p-3 text-center">
+                              {day}
+                            </div>
+                          )
+                        )}
+                      </div>
+                      <div className="grid grid-cols-7 gap-px bg-slate-200">
+                        {selectedMonthData.dates?.map((item) => {
+                          const dateObj = new Date(item.date);
+                          const day = dateObj.getDate();
+                          const status = item.status || "No Record";
+                          const style = getStatusClass(status);
+                          return (
+                            <div
+                              key={item.date}
+                              title={`${dateObj.toLocaleDateString()} - ${status}`}
+                              className={`${style.box} border min-h-[78px] p-2 flex flex-col items-center justify-center`}
+                            >
+                              <span className={`font-bold ${style.text}`}>
+                                {day}
+                              </span>
+                              <span className="text-lg">{style.icon}</span>
+                              <span
+                                className={`text-[10px] font-semibold ${style.text}`}
+                              >
+                                {status}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-10 text-slate-500 bg-slate-50 rounded-2xl border border-slate-200">
+                      No attendance data found.
+                    </div>
+                  )}
+                </>
+              )}
             </div>
-            <div className="px-6 py-4 border-t flex justify-end">
-              <button onClick={() => setIsDetailsModalOpen(false)} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Close</button>
+
+            <div className="px-6 py-4 border-t border-slate-200 flex justify-end">
+              <button
+                onClick={() => setIsAttendanceOpen(false)}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-semibold"
+              >
+                Close
+              </button>
             </div>
           </div>
         </div>
@@ -1293,4 +2213,4 @@ const AdminStaff = () => {
   );
 };
 
-export default AdminStaff;
+export default AdminStaffMembers;

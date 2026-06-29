@@ -91,6 +91,11 @@ const staffSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    profileImage: {
+      type: String,
+      default: "",
+    },
+
 
     pincode: {
       type: String,
@@ -110,10 +115,16 @@ const staffSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    // password: {
+    //   type: String,
+    //   select: false, 
+    // },
+
     password: {
-      type: String,
-      select: false, 
-    },
+  type: String,
+  required: true,
+  select: false,
+},
 
     role: {
       type: String,
