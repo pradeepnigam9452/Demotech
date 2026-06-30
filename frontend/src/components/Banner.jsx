@@ -89,14 +89,14 @@ export default function HeroSection() {
             </motion.div>
 
             <motion.div variants={itemVariants} className="flex flex-wrap gap-3">
-              <a href="#start">
+              <a href="/contact">
                 <button className="inline-flex h-10 items-center justify-center rounded-full bg-[#378af9] px-6 text-sm font-semibold text-white shadow-lg shadow-blue-200 transition-all hover:bg-[#2a6fc7] hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#378af9] focus-visible:ring-offset-2 focus-visible:ring-offset-white">
                   Start Project <span className="ml-1">→</span>
                 </button>
               </a>
-              <a href="#portfolio">
+              <a href="/services">
                 <button className="inline-flex h-10 items-center justify-center rounded-full border-2 border-gray-300 bg-transparent px-6 text-sm font-semibold text-gray-700 shadow-sm transition-all hover:bg-gray-100 hover:border-gray-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white">
-                  View Portfolio
+                  View services
                 </button>
               </a>
             </motion.div>
@@ -111,7 +111,7 @@ export default function HeroSection() {
                 <div className="text-xs uppercase tracking-wider text-gray-500">Projects</div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-bold text-[#378af9]">20+</div>
+                <div className="text-2xl sm:text-3xl font-bold text-[#378af9]">50+</div>
                 <div className="text-xs uppercase tracking-wider text-gray-500">Clients</div>
               </div>
               <div>
@@ -226,9 +226,7 @@ export default function HeroSection() {
                 <span className="text-[11px] text-gray-500 flex items-center gap-1.5">
                   <span className="text-blue-400">📈</span> Total requests
                 </span>
-                <span className="text-base font-mono font-bold text-gray-800 bg-blue-50/50 px-3 py-1 rounded-lg border border-blue-100/50">
-                  14,923
-                </span>
+                
               </div>
 
               {/* Subtle progress bar */}

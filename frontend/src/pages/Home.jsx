@@ -9,20 +9,18 @@ import HomeProjectSlider from "../Section/HomeProjectSlider"
 import Service from "../Section/Service"
 import WhyChooseUs from "../Section/WhyChooseUs"
 import WorkingProcess from "../Section/WorkingProcess"
-
+import HomeContact from '../components/HomeContact'
 function Home() {
   return (
     <>
-      {/* <Background /> */}
       <Navbar />
       <Banner />
-      {/* <HomeProjectSlider/> */}
       <ClientsSlider/>
       <AboutIntro />
       
       <Service limit={3} Button={true} />
       <WhyChooseUs />
-      
+      <HomeContact />
       <Footer />
     </>
   )

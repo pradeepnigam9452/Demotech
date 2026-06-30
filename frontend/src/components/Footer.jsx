@@ -312,7 +312,7 @@ const Footer = () => {
               {[
                 { icon: <FaFacebookF />, href: "https://facebook.com/binarylogix", color: "hover:text-blue-500" },
                 { icon: <FaInstagram />, href: "https://instagram.com/binarylogix", color: "hover:text-pink-500" },
-                { icon: <FaLinkedinIn />, href: "https://linkedin.com/company/binarylogix", color: "hover:text-blue-400" },
+                { icon: <FaLinkedinIn />, href: "https://www.linkedin.com/company/binarylogix-technologies-llp/", color: "hover:text-blue-400" },
                 { icon: <FaWhatsapp />, href: "https://wa.me/919617189757", color: "hover:text-green-500" },
               ].map((social, idx) => (
                 <a

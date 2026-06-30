@@ -145,7 +145,7 @@ import Footer from "../components/Footer";
 import Service from "../Section/Service";
 import EnquiryModal from "../components/EnquiryModal"; // adjust path if needed
 import { motion } from "framer-motion";
-
+import Servicescomponets from '../Section/Servicescomponets'
 export default function OurServices() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -167,7 +167,11 @@ export default function OurServices() {
       <Navbar />
 
       {/* Services Component */}
-      <Service />
+     
+
+      <Servicescomponets />
+
+       <Service />
 
       {/* Call to Action Section */}
       <section className="relative w-full bg-white py-16 md:py-20 lg:py-24 overflow-hidden">
