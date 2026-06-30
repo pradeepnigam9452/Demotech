@@ -10,7 +10,7 @@ const {
   addTaskProgress,
   updateTaskAssignedStaff,
   deleteTask,
-} = require("../controller/taskController");
+} = require("../controller/TaskControllers");
 
 // Admin routes
 router.post("/admin/tasks", auth, isAdmin, createTask);

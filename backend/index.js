@@ -25,7 +25,6 @@ const taskRoutes = require("./routes/taskRoutes");
 const PORT = process.env.PORT || 5011;
 
 
-
 // ==============================
 // Security Middleware 
 // ==============================
