@@ -24,8 +24,7 @@ const taskRoutes = require("./routes/taskRoutes");
 
 const PORT = process.env.PORT || 5011;
 
-const dns = require("dns");
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 
 // ==============================
 // Security Middleware 
