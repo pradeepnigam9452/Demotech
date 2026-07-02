@@ -11,8 +11,9 @@ require("dotenv").config();
 const app = express();
 
 // ==============================
-// Routes
+// Routes  
 // ==============================
+
 const adminRouter = require("./routes/AdminRouter");
 const projectRouter = require("./routes/projectRouter");
 const clientProjectRouter = require("./routes/clientProjectRouter");
@@ -20,9 +21,7 @@ const quotationRouter = require("./routes/quotationRouter");
 const enquiryRouter = require("./routes/EnquiryRouter");
 const staffRouter = require("./routes/StaffRouter");
 const taskRouter = require("./routes/taskRouter");
-
 const attendanceRouter = require("./routes/AttendanceRouter");
-
 const dailyProgressRouter = require("./routes/dailyProgressRouter");
 const leaveRouter = require("./routes/leaveRouter");
 const careerRouter = require("./routes/careerRouter");
@@ -32,6 +31,10 @@ const PORT = process.env.PORT || 5011;
 // Security Middleware
 // ==============================
 app.use(helmet());
+
+
+
+
 
 // ==============================
 // Request Logging
@@ -46,20 +49,22 @@ app.use(compression());
 // ==============================
 // Cookie Parser
 // ==============================
+
 app.use(cookieParser());
 
 // ==============================
 // CORS
 // ==============================
+
 app.use(
   cors({
     origin: "*",
   })
 );
-
 // ==============================
 // Body Parsers
 // ==============================
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -68,14 +73,13 @@ app.use(express.urlencoded({ extended: true }));
 // ==============================
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-
-
-
-
+const dns = require("dns");
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 // ==============================
 // API Routes
 // ==============================
+
 app.use("/api/admin", adminRouter);
 app.use("/api/projects", projectRouter);
 app.use("/api/client-projects", clientProjectRouter);
@@ -92,12 +96,14 @@ app.use("/api/careers", careerRouter);
 // ==============================
 // Health Check Route
 // ==============================
+
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "Server is running successfully",
   });
 });
+
 
 // ==============================
 // 404 Handler
@@ -108,6 +114,8 @@ app.use((req, res) => {
     message: "Route not found",
   });
 });
+
+
 
 // ==============================
 // Global Error Handler

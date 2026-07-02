@@ -6,7 +6,7 @@ const {
   markAttendance,
   getMyAttendance,
   getAttendanceById
-} = require("../controller/attendanceController");
+} = require("../controller/AttendanceController");
 
 router.post("/staff/me/attendance", auth, markAttendance);
 router.get("/staff/me/attendance", auth, getMyAttendance);
