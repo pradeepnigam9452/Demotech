@@ -293,7 +293,8 @@ const Navbar = () => {
     { name: 'Services', to: '/services' },
     { name: 'Design', to: '/gallery' },
     { name: 'Projects', to: '/projects' },
-    {name : 'contact', to: '/contact'},
+    {name : 'Contact', to: '/contact'},
+    {name : 'Careers', to: '/careers'},
   ];
 
   // --- NavLink active styling with underline animation ---

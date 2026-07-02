@@ -1,4 +1,3 @@
-
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -8,25 +7,29 @@ const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 require("dotenv").config();
+
 const app = express();
-// Routes
-const AdminRouter = require("./routes/AdminRouter");
-const projectRoutes = require("./routes/projectRoutes");
-const clientProjectRoutes = require("./routes/clientProjectRoutes");
-const quotationRoutes = require("./routes/quotationRouter");
-const EnquiryRouter = require("./routes/EnquiryRouter")
-const StaffRouter = require('./routes/StaffRouter')
-const TaskRouter = require('./routes/taskRoutes')
-const attendanceRoutes = require('./routes/AttendanceRoutes')
-const dailyProgressRoutes = require("./routes/dailyProgressRoutes");
-const leaveRoutes = require("./routes/leaveRoutes");
-const taskRoutes = require("./routes/taskRoutes");
-
-const PORT = process.env.PORT || 5011;
-
 
 // ==============================
-// Security Middleware 
+// Routes
+// ==============================
+const adminRouter = require("./routes/AdminRouter");
+const projectRouter = require("./routes/projectRouter");
+const clientProjectRouter = require("./routes/clientProjectRouter");
+const quotationRouter = require("./routes/quotationRouter");
+const enquiryRouter = require("./routes/EnquiryRouter");
+const staffRouter = require("./routes/StaffRouter");
+const taskRouter = require("./routes/taskRouter");
+
+const attendanceRouter = require("./routes/AttendanceRouter");
+
+const dailyProgressRouter = require("./routes/dailyProgressRouter");
+const leaveRouter = require("./routes/leaveRouter");
+const careerRouter = require("./routes/careerRouter");
+const PORT = process.env.PORT || 5011;
+
+// ==============================
+// Security Middleware
 // ==============================
 app.use(helmet());
 
@@ -51,7 +54,7 @@ app.use(cookieParser());
 app.use(
   cors({
     origin: "*",
-  }),
+  })
 );
 
 // ==============================
@@ -59,39 +62,35 @@ app.use(
 // ==============================
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
+
 // ==============================
 // Static Files
 // ==============================
-
-// app.use(
-//   "/uploads/projects",
-//   express.static(path.join(__dirname, "uploads/projects")),
-// );
-
-
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+
+
+
 
 
 // ==============================
 // API Routes
 // ==============================
+app.use("/api/admin", adminRouter);
+app.use("/api/projects", projectRouter);
+app.use("/api/client-projects", clientProjectRouter);
+app.use("/api/quotations", quotationRouter);
 
-
-
-
-app.use("/api/admin", AdminRouter);
-app.use("/api/projects", projectRoutes);
-app.use("/api/client-projects", clientProjectRoutes);
-app.use("/api/quotations", quotationRoutes);
-app.use('/api/',EnquiryRouter)
-app.use("/api", taskRoutes);
-app.use('/api/',StaffRouter)
-app.use("/api", attendanceRoutes);
-app.use("/api", dailyProgressRoutes);
-app.use("/api", leaveRoutes);
+app.use("/api", enquiryRouter);
+app.use("/api", staffRouter);
+app.use("/api", taskRouter);
+app.use("/api", attendanceRouter);
+app.use("/api", dailyProgressRouter);
+app.use("/api", leaveRouter);
+app.use("/api/careers", careerRouter);
 
 // ==============================
-// Health Check Route 
+// Health Check Route
 // ==============================
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -115,6 +114,7 @@ app.use((req, res) => {
 // ==============================
 app.use((err, req, res, next) => {
   console.error("Error:", err);
+
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Internal Server Error",
@@ -137,3 +137,4 @@ mongoose
     console.error("❌ MongoDB Connection Failed:", err);
     process.exit(1);
   });
+

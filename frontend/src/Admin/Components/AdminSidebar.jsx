@@ -41,7 +41,7 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
     { id: "Staff", label: "Staff", icon: UserRound , color: "text-rose-600" },
     { id: "Clients", label: "Clients", icon: Users, color: "text-indigo-600" },
     { id: "Quotation", label: "Quotation", icon: FileText, color: "text-amber-600" },
-    // { id: "Reports", label: "Reports", icon: BarChart3, color: "text-rose-600" },
+     { id: "Careers", label: "Careers", icon: BarChart3, color: "text-rose-600" },
     { id: "AdminLeaveRequests", label: "LeaveRequests", icon: Calendar, color: "text-rose-600" },
     { id: "AdminSetLeave", label: "AdminSetLeave", icon: BarChart3, color: "text-rose-600" },
     { id: "AdminTaskManager", label: "Task Manager", icon: ClipboardList , color: "text-rose-600" },

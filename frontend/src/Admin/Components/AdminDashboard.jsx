@@ -10,7 +10,7 @@ import AdminStaff from "./AdminStaff";
 import Reports from "./Reports";
 import AdminLeaveRequests from "./AdminLeaveRequests";
 import AdminSetLeave from './AdminSetLeave'
-
+import AdminCareerPage from './AdminCareerPage';
 import AdminTaskManager from "./AdminTaskManager";
 function AdminDashboard() {
   const navigate = useNavigate();
@@ -56,7 +56,7 @@ useEffect(() => {
           {activeView === "Reports" && <Reports />}
           {activeView=== "AdminLeaveRequests" && <AdminLeaveRequests />}
           {activeView=== "AdminSetLeave" && <AdminSetLeave />}
-
+          {activeView=== "Careers" && <AdminCareerPage />}
           {activeView=== "AdminTaskManager" && <AdminTaskManager />}
            
         </main>

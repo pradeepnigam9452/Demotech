@@ -13,6 +13,7 @@ import StaffLogin from './Staff/Pages/StaffLogin';
 import StaffDashboard from './Staff/Pages/StaffDashboard'
 import NotFound from "./pages/Notfound";
 import Contact from './pages/Contact'
+import CareerPage  from './pages/CareerPage'
 function App() {
   return (
     <Router>
@@ -26,7 +27,7 @@ function App() {
         <Route path="/gallery" element={<Gallery />} />
         <Route path="/aboutUs" element={<AboutUs />} />
                 <Route path="/contact" element={<Contact />} />
-
+                <Route path="/careers" element={<CareerPage />} />
           <Route path="/quotation/:id" element={<QuotationDetail />} />
 
         <Route path="/binarylogix/staff/login" element ={<StaffLogin />} />
