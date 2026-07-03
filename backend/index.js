@@ -74,8 +74,7 @@ app.use(express.urlencoded({ extended: true }));
 // ==============================
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-const dns = require("dns");
-dns.setServers(["1.1.1.1", "8.8.8.8"]);
+
 
 // ==============================
 // API Routes
