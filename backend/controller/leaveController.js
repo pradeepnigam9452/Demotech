@@ -79,12 +79,12 @@ module.exports.updateLeaveStatus = async (req, res) => {
   try {
     const { status, adminRemark } = req.body;
 
-    if (!["Approved", "Rejected"].includes(status)) {
-      return res.status(400).json({
-        success: false,
-        message: "Status must be Approved or Rejected",
-      });
-    }
+    // if (!["Approved", "Rejected" , "Pending"].includes(status)) {
+    //   return res.status(400).json({
+    //     success: false,
+    //     message: "Status must be Approved, Rejected or Pending",
+    //   });
+    // }
 
     const leave = await Leave.findByIdAndUpdate(
       req.params.id,

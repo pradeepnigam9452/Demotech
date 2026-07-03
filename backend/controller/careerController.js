@@ -301,6 +301,7 @@ const applyForJob = async (req, res) => {
     });
   }
 };
+
 const deleteApplication = async (req, res) => {
   try {
     const application = await CareerApplication.findByIdAndDelete(req.params.id);
@@ -325,6 +326,36 @@ const deleteApplication = async (req, res) => {
   }
 };
 
+const updateApplication = async (req, res) => {
+  try {
+    const application = await CareerApplication.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Application updated successfully",
+      data: application,
+    });
+  } catch (error) {
+    console.error("Update Application Error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Failed to update application",
+    });
+  }
+};
+
+    
+  
 
 module.exports = {
   createJob,
@@ -334,5 +365,6 @@ module.exports = {
   deleteJob,
   applyForJob,
   getAllApplications,
-  deleteApplication
+  deleteApplication,
+  updateApplication
 };

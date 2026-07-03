@@ -20,7 +20,7 @@ const {
   updateJob,
   deleteJob,
   applyForJob,
-  getAllApplications, deleteApplication
+  getAllApplications, deleteApplication , updateApplication
 } = require("../controller/careerController");
 
 // Public routes
@@ -33,6 +33,7 @@ router.post("/jobs", createJob);
 router.put("/jobs/:id", updateJob);
 router.delete("/jobs/:id", deleteJob);
 router.get("/applications", getAllApplications);
+router.put("/applications/:id", updateApplication);
 router.delete("/applications/:id", deleteApplication);
 
 module.exports = router;

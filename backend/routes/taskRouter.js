@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { auth, isAdmin } = require("../middlewares/authMiddleware");
+const { auth, isAdmin ,isStaff } = require("../middlewares/authMiddleware");
 
 const {
   createTask,
@@ -22,7 +22,8 @@ router.delete("/admin/tasks/:taskId", auth, isAdmin, deleteTask);
 
 
 // Staff routes
-router.get("/staff/tasks", auth, getMyTasks);
+router.get("/staff/tasks/my", auth, isStaff, getMyTasks);
+
 router.post("/staff/tasks/:taskId/progress", auth, addTaskProgress);
 
 module.exports = router;

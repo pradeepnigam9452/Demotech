@@ -34,7 +34,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { auth, isAdmin } = require("../middlewares/authMiddleware");
+const { auth, isAdmin,isStaff  } = require("../middlewares/authMiddleware");
 const upload = require("../middlewares/upload");
 
 const {

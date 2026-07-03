@@ -362,6 +362,7 @@ module.exports.stafflogin = async (req, res) => {
       {
         id: staff._id,
         role: staff.role,
+        staffId: staff.staffId,
       },
       process.env.JWT_SECRET,
       {

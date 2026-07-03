@@ -1,5 +1,6 @@
 const Task = require("../models/Task");
 const Staff = require("../models/Staff");
+const mongoose = require("mongoose");
 
 module.exports.createTask = async (req, res) => {
   try {
@@ -85,10 +86,20 @@ module.exports.getAllTasks = async (req, res) => {
 
 module.exports.getMyTasks = async (req, res) => {
   try {
+    const staffId = req.user.id;
+
+    if (!mongoose.Types.ObjectId.isValid(staffId)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid staff id in token",
+      });
+    }
+
     const tasks = await Task.find({
-      assignedTo: req.user.id,
+      assignedTo: { $in: [staffId] },
     })
       .populate("assignedTo", "name email staffId category")
+      .populate("assignedBy", "name email")
       .populate("workLogs.staff", "name staffId category")
       .sort({ createdAt: -1 });
 
@@ -96,15 +107,39 @@ module.exports.getMyTasks = async (req, res) => {
       success: true,
       count: tasks.length,
       data: tasks,
-      
     });
   } catch (error) {
+    console.log("Get my tasks error:", error);
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
+
+// module.exports.getMyTasks = async (req, res) => {
+//   try {
+//     const tasks = await Task.find({
+//       assignedTo: req.user.id,
+//     })
+//       .populate("assignedTo", "name email staffId category")
+//       .populate("workLogs.staff", "name staffId category")
+//       .sort({ createdAt: -1 });
+
+//     res.status(200).json({
+//       success: true,
+//       count: tasks.length,
+//       data: tasks,
+      
+//     });
+//   } catch (error) {
+//     res.status(500).json({
+//       success: false,
+//       message: error.message,
+//     });
+//   }
+// };
 
 module.exports.addTaskProgress = async (req, res) => {
   try {

@@ -25,6 +25,7 @@ const attendanceRouter = require("./routes/AttendanceRouter");
 const dailyProgressRouter = require("./routes/dailyProgressRouter");
 const leaveRouter = require("./routes/leaveRouter");
 const careerRouter = require("./routes/careerRouter");
+const galleryRoutes = require("./routes/GalleryRouter");
 const PORT = process.env.PORT || 5011;
 
 // ==============================
@@ -92,7 +93,7 @@ app.use("/api", attendanceRouter);
 app.use("/api", dailyProgressRouter);
 app.use("/api", leaveRouter);
 app.use("/api/careers", careerRouter);
-
+app.use("/api", galleryRoutes);
 // ==============================
 // Health Check Route
 // ==============================

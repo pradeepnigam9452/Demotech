@@ -37,14 +37,15 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
   // Updated menu items with better icons & colors
   const menuItems = [
     { id: "Dashboard", label: "Dashboard", icon: Home, color: "text-blue-600" },
-    { id: "Projects", label: "Projects", icon: FolderKanban, color: "text-emerald-600" },
-    { id: "Staff", label: "Staff", icon: UserRound , color: "text-rose-600" },
-    { id: "Clients", label: "Clients", icon: Users, color: "text-indigo-600" },
-    { id: "Quotation", label: "Quotation", icon: FileText, color: "text-amber-600" },
-     { id: "Careers", label: "Careers", icon: BarChart3, color: "text-rose-600" },
-    { id: "AdminLeaveRequests", label: "LeaveRequests", icon: Calendar, color: "text-rose-600" },
-    { id: "AdminSetLeave", label: "AdminSetLeave", icon: BarChart3, color: "text-rose-600" },
-    { id: "AdminTaskManager", label: "Task Manager", icon: ClipboardList , color: "text-rose-600" },
+    { id: "Projects", label: "Projects", icon: FolderKanban, color: "text-blue-600" },
+    { id: "Staff", label: "Staff", icon: UserRound , color: "text-blue-600" },
+    { id: "Clients", label: "Clients", icon: Users, color: "text-blue-600" },
+    { id: "Quotation", label: "Quotation", icon: FileText, color: "text-blue-600" },
+     { id: "Careers", label: "Careers", icon: BarChart3, color: "text-blue-600" },
+    { id: "AdminLeaveRequests", label: "LeaveRequests", icon: Calendar, color: "text-blue-600" },
+    { id: "AdminSetLeave", label: "AdminSetLeave", icon: BarChart3, color: "text-blue-600" },
+    { id: "AdminTaskManager", label: "Task Manager", icon: ClipboardList , color: "text-blue-600" },
+    { id: "Gallery", label: "Gallery", icon: FolderKanban, color: "text-blue-600" }
     
 
   ];
