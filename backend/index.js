@@ -20,12 +20,11 @@ const clientProjectRouter = require("./routes/clientProjectRouter");
 const quotationRouter = require("./routes/quotationRouter");
 const enquiryRouter = require("./routes/EnquiryRouter");
 const staffRouter = require("./routes/StaffRouter");
-const taskRouter = require("./routes/taskRouter");
 const attendanceRouter = require("./routes/AttendanceRouter");
-const dailyProgressRouter = require("./routes/dailyProgressRouter");
 const leaveRouter = require("./routes/leaveRouter");
 const careerRouter = require("./routes/careerRouter");
 const galleryRoutes = require("./routes/GalleryRouter");
+const RunningProject = require("./routes/RunningProjectRouter");
 const PORT = process.env.PORT || 5011;
 
 // ==============================
@@ -33,6 +32,10 @@ const PORT = process.env.PORT || 5011;
 // ==============================
 app.use(helmet());
 
+
+ const dns = require("dns");
+
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 
 
@@ -73,26 +76,20 @@ app.use(express.urlencoded({ extended: true }));
 // Static Files
 // ==============================
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
-
-
-
 // ==============================
 // API Routes
 // ==============================
-
 app.use("/api/admin", adminRouter);
 app.use("/api/projects", projectRouter);
 app.use("/api/client-projects", clientProjectRouter);
 app.use("/api/quotations", quotationRouter);
-
 app.use("/api", enquiryRouter);
 app.use("/api", staffRouter);
-app.use("/api", taskRouter);
 app.use("/api", attendanceRouter);
-app.use("/api", dailyProgressRouter);
 app.use("/api", leaveRouter);
 app.use("/api/careers", careerRouter);
 app.use("/api", galleryRoutes);
+app.use("/api", RunningProject);
 // ==============================
 // Health Check Route
 // ==============================
@@ -108,6 +105,7 @@ app.get("/", (req, res) => {
 // ==============================
 // 404 Handler
 // ==============================
+
 app.use((req, res) => {
   res.status(404).json({
     success: false,

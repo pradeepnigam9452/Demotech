@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -20,6 +16,8 @@ import {
   CalendarCheck2,
   Plus,
   Edit,
+  Eye,
+  Image as ImageIcon,
 } from "lucide-react";
 
 const AdminStaffMembers = () => {
@@ -35,11 +33,11 @@ const AdminStaffMembers = () => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [editingId, setEditingId] = useState(null);
 
-  // Attendance states
+  // Detail Modal states
   const [selectedStaff, setSelectedStaff] = useState(null);
-  const [attendanceLoading, setAttendanceLoading] = useState(false);
-  const [isAttendanceOpen, setIsAttendanceOpen] = useState(false);
-
+  const [isDetailOpen, setIsDetailOpen] = useState(false);
+  const [detailLoading, setDetailLoading] = useState(false);
+  const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [attendanceSummary, setAttendanceSummary] = useState({
     totalRecords: 0,
     totalWorkingDays: 0,
@@ -47,11 +45,10 @@ const AdminStaffMembers = () => {
     adminLeaveDays: 0,
     absentDays: 0,
   });
+  const [monthWiseAttendanceSummary, setMonthWiseAttendanceSummary] = useState([]);
+  const [selectedAttendanceRecord, setSelectedAttendanceRecord] = useState(null);
 
-  const [monthWiseAttendance, setMonthWiseAttendance] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState("");
-
-  // Form state (including profileImage)
+  // Form state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -130,6 +127,65 @@ const AdminStaffMembers = () => {
     return new Date(date).toISOString().split("T")[0];
   };
 
+  const formatDisplayDate = (date) => {
+    if (!date) return "N/A";
+    const parsedDate = new Date(date);
+    if (Number.isNaN(parsedDate.getTime())) return "N/A";
+    const day = String(parsedDate.getDate()).padStart(2, "0");
+    const month = String(parsedDate.getMonth() + 1).padStart(2, "0");
+    const year = parsedDate.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
+
+  const formatMonthLabel = (monthData, index) => {
+    if (monthData?.monthName) {
+      return monthData.year
+        ? `${monthData.monthName} ${monthData.year}`
+        : monthData.monthName;
+    }
+    if (typeof monthData?.month === "string" && Number.isNaN(Number(monthData.month))) {
+      return monthData.year
+        ? `${monthData.month} ${monthData.year}`
+        : monthData.month;
+    }
+    const numericMonth = Number(monthData?.month);
+    const numericYear = Number(monthData?.year);
+    if (
+      Number.isInteger(numericMonth) &&
+      numericMonth >= 1 &&
+      numericMonth <= 12 &&
+      Number.isInteger(numericYear)
+    ) {
+      return new Date(numericYear, numericMonth - 1, 1).toLocaleString("en-IN", {
+        month: "long",
+        year: "numeric",
+      });
+    }
+    return monthData?.label || `Month ${index + 1}`;
+  };
+
+  const formatAttendanceLocation = (location) => {
+    if (!location) return "N/A";
+    if (typeof location === "string") return location;
+    if (typeof location === "object") {
+      if (location.address) return location.address;
+      if (location.name) return location.name;
+      const latitude = location.latitude ?? location.lat ?? location.coordinates?.[1];
+      const longitude = location.longitude ?? location.lng ?? location.lon ?? location.coordinates?.[0];
+      if (latitude !== undefined && longitude !== undefined) {
+        return `${latitude}, ${longitude}`;
+      }
+    }
+    return "N/A";
+  };
+
+  const getAttendanceImage = (item) =>
+    item?.image ||
+    item?.selfie ||
+    item?.selfieImage ||
+    item?.photo ||
+    null;
+
   const resetForm = () => {
     setFormData({
       name: "",
@@ -204,7 +260,7 @@ const AdminStaffMembers = () => {
       aadharNumber: staff.aadharNumber || staff.aadhaarNumber || "",
       remarks: staff.remarks || "",
       github: staff.github || "",
-      profileImage: staff.profileImage , // existing URL string, not a File
+      profileImage: staff.profileImage,
     });
     setIsModalOpen(true);
   };
@@ -224,7 +280,7 @@ const AdminStaffMembers = () => {
           return;
         }
         if (key === "password" && isEditMode && !value) {
-          return; // don't overwrite password if left blank
+          return;
         }
         payload.append(key, value ?? "");
       });
@@ -238,7 +294,7 @@ const AdminStaffMembers = () => {
         method,
         url,
         data: payload,
-        headers: { ...authHeaders }, // do NOT set Content-Type manually
+        headers: { ...authHeaders },
       });
 
       Swal.fire({
@@ -305,13 +361,16 @@ const AdminStaffMembers = () => {
     }
   };
 
-  const handleViewAttendance = async (staff) => {
-    if (!staff) {
-      Swal.fire("Error", "No staff selected", "error");
-      return;
-    }
+  // ----- Open Detail Modal with attendance -----
+  const handleRowClick = async (staff) => {
+    if (!staff) return;
+
     setSelectedStaff(staff);
-    setIsAttendanceOpen(true);
+    setIsDetailOpen(true);
+    setDetailLoading(true);
+
+    setAttendanceRecords([]);
+    setMonthWiseAttendanceSummary([]);
 
     setAttendanceSummary({
       totalRecords: 0,
@@ -320,41 +379,88 @@ const AdminStaffMembers = () => {
       adminLeaveDays: 0,
       absentDays: 0,
     });
-    setMonthWiseAttendance([]);
-    setSelectedMonth("");
 
     try {
-      setAttendanceLoading(true);
-      const url = `/api/admin/attendance/${staff._id}`;
-      const res = await axios.get(url, { headers: authHeaders });
+      const res = await axios.get(
+        `/api/admin/attendance/${staff._id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${adminToken}`,
+          },
+        }
+      );
 
-      const summary = res.data?.summary || {};
+      console.log("ATTENDANCE RESPONSE:", res.data);
+
+      // ========================
+      // OVERALL SUMMARY
+      // ========================
+
       setAttendanceSummary({
-        totalRecords: summary.totalRecords ?? 0,
-        totalWorkingDays: summary.totalWorkingDays ?? 0,
-        presentDays: summary.presentDays ?? 0,
-        adminLeaveDays: summary.adminLeaveDays ?? 0,
-        absentDays: summary.absentDays ?? 0,
+        totalRecords: res.data?.summary?.totalRecords ?? 0,
+        totalWorkingDays: res.data?.summary?.totalWorkingDays ?? 0,
+        presentDays: res.data?.summary?.presentDays ?? 0,
+        adminLeaveDays: res.data?.summary?.adminLeaveDays ?? res.data?.summary?.leaveDays ?? 0,
+        absentDays: res.data?.summary?.absentDays ?? 0,
       });
 
-      const months = res.data?.monthWiseAttendance || [];
-      setMonthWiseAttendance(months);
-      if (months.length > 0) setSelectedMonth(months[0].month);
+      // ========================
+      // ATTENDANCE RECORDS
+      // ========================
+
+      const records = Array.isArray(res.data?.attendance) ? res.data.attendance : [];
+      const formattedRecords = records.map((item) => ({
+        ...item,
+        location: item.location?.fullAddress || item.location?.address || item.location?.name || formatAttendanceLocation(item.location),
+        selfie: item.selfie || item.image || item.selfieImage || item.photo || null,
+      }));
+
+      setAttendanceRecords(formattedRecords);
+
+      // ========================
+      // MONTH-WISE SUMMARY
+      // ========================
+
+      const monthData = Array.isArray(res.data?.monthWiseAttendance)
+        ? res.data.monthWiseAttendance
+        : [];
+
+      const formattedMonthSummary = monthData.map((month, index) => {
+        const dates = Array.isArray(month?.dates) ? month.dates : [];
+        const presentDays = month.presentDays ?? dates.filter((item) => item.status === "Present").length;
+        const leaveDays = month.leaveDays ?? month.adminLeaveDays ?? dates.filter((item) => item.status === "Leave").length;
+        const absentDays = month.absentDays ?? dates.filter((item) => item.status === "Absent").length;
+        const totalRecords = month.totalRecords ?? dates.length;
+        const totalWorkingDays = month.totalWorkingDays ?? presentDays + leaveDays + absentDays;
+        const attendancePercentage = totalWorkingDays > 0 ? Math.round((presentDays / totalWorkingDays) * 100) : 0;
+
+        return {
+          key: month._id || month.monthKey || `${month.year}-${month.month}-${index}`,
+          label: formatMonthLabel(month, index),
+          totalWorkingDays,
+          presentDays,
+          leaveDays,
+          absentDays,
+          totalRecords,
+          attendancePercentage,
+        };
+      });
+
+      console.log("MONTH SUMMARY:", formattedMonthSummary);
+      setMonthWiseAttendanceSummary(formattedMonthSummary);
     } catch (error) {
       console.error("Attendance fetch error:", error);
       Swal.fire({
         icon: "error",
         title: "Error",
-        text:
-          error.response?.data?.message ||
-          "Failed to load staff attendance details",
+        text: error.response?.data?.message || "Failed to load attendance",
       });
     } finally {
-      setAttendanceLoading(false);
+      setDetailLoading(false);
     }
   };
 
-  // Filtered staff (skip invalid entries)
+  // Filtered staff
   const filteredStaff = useMemo(() => {
     const text = search.toLowerCase().trim();
     return staffList
@@ -371,19 +477,13 @@ const AdminStaffMembers = () => {
       });
   }, [search, staffList]);
 
-  // Attendance helpers
-  const selectedMonthData =
-    monthWiseAttendance.find((item) => item.month === selectedMonth) || null;
-
-  const getStatusClass = (status) => {
-    const value = status?.toLowerCase();
-    if (value === "present")
-      return { box: "bg-green-50 border-green-200", text: "text-green-700", icon: "✅" };
-    if (value === "leave")
-      return { box: "bg-yellow-50 border-yellow-200", text: "text-yellow-700", icon: "📅" };
-    if (value === "absent")
-      return { box: "bg-red-50 border-red-200", text: "text-red-700", icon: "❌" };
-    return { box: "bg-gray-50 border-gray-200", text: "text-gray-400", icon: "—" };
+  // Helper for status badge
+  const getStatusBadge = (status) => {
+    const val = status?.toLowerCase();
+    if (val === "present") return "bg-green-100 text-green-700";
+    if (val === "leave") return "bg-yellow-100 text-yellow-700";
+    if (val === "absent") return "bg-red-100 text-red-700";
+    return "bg-gray-100 text-gray-500";
   };
 
   // ---------- Render ----------
@@ -398,21 +498,16 @@ const AdminStaffMembers = () => {
                 <Users size={26} />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-slate-800">
-                  Staff Members
-                </h1>
+                <h1 className="text-2xl font-bold text-slate-800">Staff Members</h1>
                 <p className="text-sm text-slate-500">
-                  Create, update, delete, and check staff attendance.
+                  Manage staff, view attendance details, and take actions.
                 </p>
               </div>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
               <div className="relative w-full sm:w-80">
-                <Search
-                  size={18}
-                  className="absolute left-3 top-3 text-slate-400"
-                />
+                <Search size={18} className="absolute left-3 top-3 text-slate-400" />
                 <input
                   type="text"
                   placeholder="Search staff..."
@@ -432,7 +527,7 @@ const AdminStaffMembers = () => {
           </div>
         </div>
 
-        {/* Staff Cards */}
+        {/* ---------- TABLE ---------- */}
         {loading ? (
           <div className="flex items-center justify-center py-24">
             <Loader2 size={42} className="animate-spin text-blue-600" />
@@ -442,117 +537,98 @@ const AdminStaffMembers = () => {
             No staff members found.
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-            {filteredStaff.map((staff) => (
-              <div
-                key={staff._id}
-                className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition overflow-hidden"
-              >
-                <div className="p-5">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex items-center gap-3">
-                      {/* <div className="h-14 w-14 rounded-2xl overflow-hidden bg-blue-100 flex items-center justify-center border border-slate-200">
-                        {staff.profileImage ? (
-                          <img
-                            src={staff.profileImage}
-                            alt={staff.name || "Staff"}
-                            className="h-full w-full object-cover"
-                          />
-                        ) : (
-                          <span className="text-blue-600 font-bold text-lg">
-                            {staff.name ? staff.name.charAt(0).toUpperCase() : "S"}
-                          </span>
-                        )}
-                      </div> */}
-                      <div className="h-14 w-14 rounded-2xl overflow-hidden bg-blue-100 flex items-center justify-center border border-slate-200">
-  {staff.profileImage ? (
-    <img
-      src={staff.profileImage}
-      alt={staff.name || "Staff"}
-      className="h-full w-full object-cover"
-    />
-  ) : (
-    <span className="text-blue-600 font-bold text-lg">
-      {staff.profileImage ? staff.profileImage.charAt(0).toUpperCase() : "S"}
-    </span>
-  )}
-</div>
-                      <div>
-                        <h2 className="font-bold text-slate-800 text-lg">
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm text-left">
+                <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
+                  <tr>
+                    <th className="px-4 py-3">#</th>
+                    <th className="px-4 py-3">Staff ID</th>
+                    <th className="px-4 py-3">Name</th>
+                    <th className="px-4 py-3">Email</th>
+                    <th className="px-4 py-3">Phone</th>
+                    <th className="px-4 py-3">Category</th>
+                    <th className="px-4 py-3">Designation</th>
+                    <th className="px-4 py-3">Status</th>
+                    <th className="px-4 py-3 text-center">Actions</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {filteredStaff.map((staff, index) => (
+                    <tr
+                      key={staff._id}
+                      className="hover:bg-blue-50/30 cursor-pointer transition"
+                      onClick={() => handleRowClick(staff)}
+                    >
+                      <td className="px-4 py-3 text-slate-500">{index + 1}</td>
+                      <td className="px-4 py-3 font-mono text-xs">{staff.staffId || "N/A"}</td>
+                      <td className="px-4 py-3 font-medium text-slate-800">
+                        <div className="flex items-center gap-2">
+                          {staff.profileImage ? (
+                            <img
+                              src={staff.profileImage}
+                              alt={staff.name}
+                              className="h-8 w-8 rounded-full object-cover border border-slate-200"
+                            />
+                          ) : (
+                            <div className="h-8 w-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm">
+                              {staff.name?.charAt(0).toUpperCase() || "S"}
+                            </div>
+                          )}
                           {staff.name || "N/A"}
-                        </h2>
-                        <p className="text-sm text-slate-500">
-                          {staff.designation || staff.category || "Staff"}
-                        </p>
-                      </div>
-                    </div>
-                    <span className="px-3 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">
-                      {staff.status || "Active"}
-                    </span>
-                  </div>
-
-                  <div className="mt-5 space-y-3">
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                      <IdCard size={16} className="text-blue-500" />
-                      <span>{staff.staffId || "N/A"}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                      <Mail size={16} className="text-blue-500" />
-                      <span className="truncate">{staff.email || "N/A"}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                      <Phone size={16} className="text-blue-500" />
-                      <span>{staff.number || staff.mobile || "N/A"}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                      <Briefcase size={16} className="text-blue-500" />
-                      <span>{staff.category || "N/A"}</span>
-                    </div>
-                    <div className="flex items-center gap-2 text-sm text-slate-600">
-                      <MapPin size={16} className="text-blue-500" />
-                      <span>
-                        {staff.city || "N/A"}
-                        {staff.state ? `, ${staff.state}` : ""}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="mt-5 grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => handleViewAttendance(staff)}
-                      className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 transition text-sm font-semibold"
-                    >
-                      <CalendarDays size={17} />
-                      Attendance
-                    </button>
-                    <button
-                      onClick={() => handleEdit(staff)}
-                      className="flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition text-sm font-semibold"
-                    >
-                      <Edit size={17} />
-                      Edit
-                    </button>
-                    <button
-                      onClick={() => handleDelete(staff._id)}
-                      disabled={deleteLoadingId === staff._id}
-                      className="col-span-2 flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl bg-red-50 text-red-600 hover:bg-red-100 transition text-sm font-semibold disabled:opacity-60"
-                    >
-                      {deleteLoadingId === staff._id ? (
-                        <Loader2 size={17} className="animate-spin" />
-                      ) : (
-                        <Trash2 size={17} />
-                      )}
-                      Delete Staff
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3 text-slate-600 truncate max-w-[150px]">
+                        {staff.email || "N/A"}
+                      </td>
+                      <td className="px-4 py-3 text-slate-600">{staff.number || staff.mobile || "N/A"}</td>
+                      <td className="px-4 py-3 text-slate-600">{staff.category || "N/A"}</td>
+                      <td className="px-4 py-3 text-slate-600">{staff.designation || "N/A"}</td>
+                      <td className="px-4 py-3">
+                        <span
+                          className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(
+                            staff.status || "Active"
+                          )}`}
+                        >
+                          {staff.status || "Active"}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <div
+                          className="flex items-center justify-center gap-1"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <button
+                            onClick={() => handleEdit(staff)}
+                            className="p-1.5 rounded-lg hover:bg-indigo-50 text-indigo-600 transition"
+                            title="Edit"
+                          >
+                            <Edit size={16} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(staff._id)}
+                            disabled={deleteLoadingId === staff._id}
+                            className="p-1.5 rounded-lg hover:bg-red-50 text-red-600 transition disabled:opacity-50"
+                            title="Delete"
+                          >
+                            {deleteLoadingId === staff._id ? (
+                              <Loader2 size={16} className="animate-spin" />
+                            ) : (
+                              <Trash2 size={16} />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
       </div>
 
-      {/* ---------- Create/Edit Modal ---------- */}
+      {/* ---------- Create/Edit Modal (unchanged) ---------- */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
@@ -576,16 +652,10 @@ const AdminStaffMembers = () => {
             <form onSubmit={handleSubmit} className="p-6 space-y-6">
               {/* Personal Information */}
               <div>
-                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
-                  Personal Information
-                </h3>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Personal Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="md:col-span-3">
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Profile Image
-                    </label>
-
-                    {/* Show existing image preview in edit mode */}
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Profile Image</label>
                     {isEditMode &&
                       typeof formData.profileImage === "string" &&
                       formData.profileImage && (
@@ -595,12 +665,9 @@ const AdminStaffMembers = () => {
                             alt="Current profile"
                             className="h-14 w-14 rounded-xl object-cover border border-slate-200"
                           />
-                          <span className="text-xs text-slate-500">
-                            Current image (upload a new one to replace it)
-                          </span>
+                          <span className="text-xs text-slate-500">Current image (upload a new one to replace it)</span>
                         </div>
                       )}
-
                     <input
                       type="file"
                       accept="image/*"
@@ -608,9 +675,7 @@ const AdminStaffMembers = () => {
                       className="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                     />
                     {formData.profileImage instanceof File && (
-                      <p className="text-sm text-slate-500 mt-1">
-                        Selected: {formData.profileImage.name}
-                      </p>
+                      <p className="text-sm text-slate-500 mt-1">Selected: {formData.profileImage.name}</p>
                     )}
                   </div>
 
@@ -629,9 +694,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Date of Birth
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Date of Birth</label>
                     <input
                       type="date"
                       name="dateOfBirth"
@@ -641,9 +704,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Gender
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Gender</label>
                     <select
                       name="gender"
                       value={formData.gender}
@@ -657,9 +718,7 @@ const AdminStaffMembers = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Marital Status
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Marital Status</label>
                     <select
                       name="maritalStatus"
                       value={formData.maritalStatus}
@@ -672,9 +731,7 @@ const AdminStaffMembers = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      City
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">City</label>
                     <input
                       type="text"
                       name="city"
@@ -685,9 +742,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      State
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">State</label>
                     <input
                       type="text"
                       name="state"
@@ -698,9 +753,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Pincode
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Pincode</label>
                     <input
                       type="text"
                       name="pincode"
@@ -715,9 +768,7 @@ const AdminStaffMembers = () => {
 
               {/* Contact Information */}
               <div>
-                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
-                  Contact Information
-                </h3>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Contact Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -748,9 +799,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      GitHub
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">GitHub</label>
                     <input
                       type="text"
                       name="github"
@@ -761,9 +810,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Emergency Contact
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Emergency Contact</label>
                     <input
                       type="text"
                       name="emergencyContact"
@@ -774,9 +821,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div className="md:col-span-2">
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Address
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Address</label>
                     <input
                       type="text"
                       name="address"
@@ -791,9 +836,7 @@ const AdminStaffMembers = () => {
 
               {/* Professional Information */}
               <div>
-                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
-                  Professional Information
-                </h3>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Professional Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -815,9 +858,7 @@ const AdminStaffMembers = () => {
                     </select>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Designation
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Designation</label>
                     <input
                       type="text"
                       name="designation"
@@ -828,9 +869,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Joining Date
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Joining Date</label>
                     <input
                       type="date"
                       name="joiningDate"
@@ -840,9 +879,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Salary
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Salary</label>
                     <input
                       type="number"
                       name="salary"
@@ -853,9 +890,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Experience (years)
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Experience (years)</label>
                     <input
                       type="number"
                       name="experience"
@@ -867,9 +902,7 @@ const AdminStaffMembers = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-slate-700 mb-2">
-                      Aadhar Number
-                    </label>
+                    <label className="block text-sm font-semibold text-slate-700 mb-2">Aadhar Number</label>
                     <input
                       type="text"
                       name="aadharNumber"
@@ -884,9 +917,7 @@ const AdminStaffMembers = () => {
 
               {/* Password */}
               <div>
-                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">
-                  Login Information
-                </h3>
+                <h3 className="text-lg font-bold text-slate-800 mb-4 border-b pb-2">Login Information</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-semibold text-slate-700 mb-2">
@@ -912,9 +943,7 @@ const AdminStaffMembers = () => {
 
               {/* Remarks */}
               <div>
-                <label className="block text-sm font-semibold text-slate-700 mb-2">
-                  Remarks
-                </label>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">Remarks</label>
                 <textarea
                   name="remarks"
                   value={formData.remarks}
@@ -956,144 +985,376 @@ const AdminStaffMembers = () => {
         </div>
       )}
 
-      {/* ---------- Attendance Modal ---------- */}
-      {isAttendanceOpen && selectedStaff && (
+      {/* ---------- Detail Modal (Staff + Attendance) ---------- */}
+      {isDetailOpen && selectedStaff && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div
             className="absolute inset-0 bg-black/40"
-            onClick={() => setIsAttendanceOpen(false)}
+            onClick={() => setIsDetailOpen(false)}
           />
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
             <div className="sticky top-0 z-10 bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between rounded-t-2xl">
-              <div>
-                <h2 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                  <CalendarCheck2 size={24} className="text-blue-600" />
-                  Attendance Details
-                </h2>
-                <p className="text-sm text-slate-500">
-                  {selectedStaff.name || "N/A"} - {selectedStaff.staffId || "N/A"}
-                </p>
+              <div className="flex items-center gap-3">
+                <div className="h-12 w-12 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center border border-slate-200">
+                  {selectedStaff.profileImage ? (
+                    <img
+                      src={selectedStaff.profileImage}
+                      alt={selectedStaff.name}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-blue-600 font-bold text-lg">
+                      {selectedStaff.name?.charAt(0).toUpperCase() || "S"}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <h2 className="text-xl font-bold text-slate-800">
+                    {selectedStaff.name || "N/A"}
+                  </h2>
+                  <p className="text-sm text-slate-500">
+                    {selectedStaff.staffId || "N/A"} •{" "}
+                    {selectedStaff.designation || selectedStaff.category || "Staff"}
+                  </p>
+                </div>
               </div>
               <button
-                onClick={() => setIsAttendanceOpen(false)}
+                onClick={() => setIsDetailOpen(false)}
                 className="p-2 rounded-xl hover:bg-slate-100 text-slate-500"
               >
                 <X size={22} />
               </button>
             </div>
 
-            <div className="p-6">
-              {attendanceLoading ? (
-                <div className="flex items-center justify-center py-20 text-blue-600">
-                  <Loader2 size={36} className="animate-spin" />
+            <div className="p-6 space-y-6">
+              {/* Staff Details Grid */}
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 bg-slate-50 rounded-2xl p-4 border border-slate-200">
+                <div>
+                  <p className="text-xs text-slate-500">Email</p>
+                  <p className="font-medium">{selectedStaff.email || "N/A"}</p>
                 </div>
-              ) : (
-                <>
-                  <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-                    <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                      <p className="text-xs text-slate-500">Records</p>
-                      <h3 className="text-2xl font-bold text-slate-800">
-                        {attendanceSummary.totalRecords}
-                      </h3>
-                    </div>
-                    <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
-                      <p className="text-xs text-slate-500">Working Days</p>
-                      <h3 className="text-2xl font-bold text-blue-700">
-                        {attendanceSummary.totalWorkingDays}
-                      </h3>
-                    </div>
-                    <div className="bg-green-50 border border-green-100 rounded-xl p-4">
-                      <p className="text-xs text-slate-500">Present</p>
-                      <h3 className="text-2xl font-bold text-green-700">
-                        {attendanceSummary.presentDays}
-                      </h3>
-                    </div>
-                    <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-4">
-                      <p className="text-xs text-slate-500">Leave</p>
-                      <h3 className="text-2xl font-bold text-yellow-700">
-                        {attendanceSummary.adminLeaveDays}
-                      </h3>
-                    </div>
-                    <div className="bg-red-50 border border-red-100 rounded-xl p-4">
-                      <p className="text-xs text-slate-500">Absent</p>
-                      <h3 className="text-2xl font-bold text-red-700">
-                        {attendanceSummary.absentDays}
-                      </h3>
-                    </div>
+                <div>
+                  <p className="text-xs text-slate-500">Phone</p>
+                  <p className="font-medium">{selectedStaff.number || selectedStaff.mobile || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Category</p>
+                  <p className="font-medium">{selectedStaff.category || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Designation</p>
+                  <p className="font-medium">{selectedStaff.designation || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Joining Date</p>
+                  <p className="font-medium">{formatDisplayDate(selectedStaff.joiningDate)}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Status</p>
+                  <span
+                    className={`inline-block px-2 py-1 rounded-full text-xs font-semibold ${getStatusBadge(
+                      selectedStaff.status || "Active"
+                    )}`}
+                  >
+                    {selectedStaff.status || "Active"}
+                  </span>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">City</p>
+                  <p className="font-medium">{selectedStaff.city || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">State</p>
+                  <p className="font-medium">{selectedStaff.state || "N/A"}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-slate-500">Pincode</p>
+                  <p className="font-medium">{selectedStaff.pincode || "N/A"}</p>
+                </div>
+                <div className="col-span-2">
+                  <p className="text-xs text-slate-500">Address</p>
+                  <p className="font-medium">{selectedStaff.address || "N/A"}</p>
+                </div>
+              </div>
+
+              {/* Attendance Summary */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+                  <CalendarDays size={20} className="text-blue-600" />
+                  Attendance Summary
+                </h3>
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
+                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-3">
+                    <p className="text-xs text-slate-500">Records</p>
+                    <h4 className="text-xl font-bold text-slate-800">
+                      {attendanceSummary.totalRecords}
+                    </h4>
                   </div>
+                  <div className="bg-blue-50 border border-blue-100 rounded-xl p-3">
+                    <p className="text-xs text-slate-500">Working Days</p>
+                    <h4 className="text-xl font-bold text-blue-700">
+                      {attendanceSummary.totalWorkingDays}
+                    </h4>
+                  </div>
+                  <div className="bg-green-50 border border-green-100 rounded-xl p-3">
+                    <p className="text-xs text-slate-500">Present</p>
+                    <h4 className="text-xl font-bold text-green-700">
+                      {attendanceSummary.presentDays}
+                    </h4>
+                  </div>
+                  <div className="bg-yellow-50 border border-yellow-100 rounded-xl p-3">
+                    <p className="text-xs text-slate-500">Leave</p>
+                    <h4 className="text-xl font-bold text-yellow-700">
+                      {attendanceSummary.adminLeaveDays}
+                    </h4>
+                  </div>
+                  <div className="bg-red-50 border border-red-100 rounded-xl p-3">
+                    <p className="text-xs text-slate-500">Absent</p>
+                    <h4 className="text-xl font-bold text-red-700">
+                      {attendanceSummary.absentDays}
+                    </h4>
+                  </div>
+                </div>
+              </div>
 
-                  {monthWiseAttendance.length > 0 && (
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-bold text-slate-800">
-                        Monthly Calendar
-                      </h3>
-                      <select
-                        value={selectedMonth}
-                        onChange={(e) => setSelectedMonth(e.target.value)}
-                        className="px-4 py-2 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        {monthWiseAttendance.map((item) => (
-                          <option key={item.month} value={item.month}>
-                            {item.monthName}
-                          </option>
+              {/* Month-wise Attendance Summary */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+                  <CalendarDays size={20} className="text-indigo-600" />
+                  Month-wise Attendance Summary
+                </h3>
+
+                {detailLoading ? (
+                  <div className="flex items-center justify-center py-8 text-blue-600">
+                    <Loader2 size={26} className="animate-spin" />
+                  </div>
+                ) : monthWiseAttendanceSummary.length === 0 ? (
+                  <div className="rounded-xl border border-slate-200 bg-slate-50 p-6 text-center text-sm text-slate-500">
+                    No month-wise attendance summary found.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto rounded-xl border border-slate-200">
+                    <table className="w-full min-w-[760px] text-sm">
+                      <thead className="border-b border-slate-200 bg-slate-50">
+                        <tr>
+                          <th className="px-4 py-3 text-left font-semibold text-slate-700">Month</th>
+                          <th className="px-4 py-3 text-center font-semibold text-slate-700">Working Days</th>
+                          <th className="px-4 py-3 text-center font-semibold text-green-700">Present</th>
+                          <th className="px-4 py-3 text-center font-semibold text-yellow-700">Leave</th>
+                          <th className="px-4 py-3 text-center font-semibold text-red-700">Absent</th>
+                          <th className="px-4 py-3 text-center font-semibold text-slate-700">Records</th>
+                          <th className="px-4 py-3 text-center font-semibold text-blue-700">Attendance</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-slate-100">
+                        {monthWiseAttendanceSummary.map((month) => (
+                          <tr key={month.key} className="hover:bg-slate-50">
+                            <td className="px-4 py-3 font-semibold text-slate-800">{month.label}</td>
+                            <td className="px-4 py-3 text-center text-slate-700">{month.totalWorkingDays}</td>
+                            <td className="px-4 py-3 text-center">
+                              <span className="inline-flex min-w-9 justify-center rounded-lg bg-green-50 px-2 py-1 font-bold text-green-700">
+                                {month.presentDays}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              <span className="inline-flex min-w-9 justify-center rounded-lg bg-yellow-50 px-2 py-1 font-bold text-yellow-700">
+                                {month.leaveDays}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-center">
+                              <span className="inline-flex min-w-9 justify-center rounded-lg bg-red-50 px-2 py-1 font-bold text-red-700">
+                                {month.absentDays}
+                              </span>
+                            </td>
+                            <td className="px-4 py-3 text-center text-slate-700">{month.totalRecords}</td>
+                            <td className="px-4 py-3 text-center">
+                              <span className="inline-flex rounded-full bg-blue-50 px-3 py-1 font-bold text-blue-700">
+                                {month.attendancePercentage}%
+                              </span>
+                            </td>
+                          </tr>
                         ))}
-                      </select>
-                    </div>
-                  )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
 
-                  {selectedMonthData ? (
-                    <div className="border border-slate-200 rounded-2xl overflow-hidden">
-                      <div className="grid grid-cols-7 bg-slate-100 text-slate-700 text-sm font-semibold">
-                        {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
-                          (day) => (
-                            <div key={day} className="p-3 text-center">
-                              {day}
-                            </div>
-                          )
-                        )}
-                      </div>
-                      <div className="grid grid-cols-7 gap-px bg-slate-200">
-                        {selectedMonthData.dates?.map((item) => {
-                          const dateObj = new Date(item.date);
-                          const day = dateObj.getDate();
-                          const status = item.status || "No Record";
-                          const style = getStatusClass(status);
-                          return (
-                            <div
-                              key={item.date}
-                              title={`${dateObj.toLocaleDateString()} - ${status}`}
-                              className={`${style.box} border min-h-[78px] p-2 flex flex-col items-center justify-center`}
-                            >
-                              <span className={`font-bold ${style.text}`}>
-                                {day}
-                              </span>
-                              <span className="text-lg">{style.icon}</span>
+              {/* Attendance Records Table with Location & Selfie */}
+              <div>
+                <h3 className="text-lg font-bold text-slate-800 mb-3 flex items-center gap-2">
+                  <CalendarCheck2 size={20} className="text-blue-600" />
+                  Attendance Log
+                </h3>
+                {detailLoading ? (
+                  <div className="flex items-center justify-center py-10 text-blue-600">
+                    <Loader2 size={28} className="animate-spin" />
+                  </div>
+                ) : attendanceRecords.length === 0 ? (
+                  <div className="text-center py-8 text-slate-500 bg-slate-50 rounded-xl border border-slate-200">
+                    No attendance records found.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto border border-slate-200 rounded-xl">
+                    <table className="w-full text-sm">
+                      <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
+                        <tr>
+                          <th className="px-4 py-2 text-left">Date & Time</th>
+                          <th className="px-4 py-2 text-left">Status</th>
+                          <th className="px-4 py-2 text-left">Location</th>
+                          <th className="px-4 py-2 text-left">Selfie</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {attendanceRecords.map((record) => (
+                          <tr key={record._id}>
+                            {/* DATE & TIME */}
+                            <td className="px-4 py-3">
+                              {record.date
+                                ? new Date(record.date).toLocaleString("en-GB", {
+                                    day: "2-digit",
+                                    month: "2-digit",
+                                    year: "numeric",
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  })
+                                : "N/A"}
+                            </td>
+
+                            {/* STATUS */}
+                            <td className="px-4 py-3">
                               <span
-                                className={`text-[10px] font-semibold ${style.text}`}
+                                className={`inline-block px-2 py-0.5 rounded-full text-xs font-semibold ${getStatusBadge(
+                                  record.status
+                                )}`}
                               >
-                                {status}
+                                {record.status}
                               </span>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-center py-10 text-slate-500 bg-slate-50 rounded-2xl border border-slate-200">
-                      No attendance data found.
-                    </div>
-                  )}
-                </>
-              )}
+                            </td>
+
+                            {/* LOCATION – now using the formatted string */}
+                            <td className="px-4 py-3">
+                              <div className="flex items-center gap-2">
+                                <MapPin size={15} />
+                                <span>{record.location || "N/A"}</span>
+                              </div>
+                            </td>
+
+                            {/* SELFIE */}
+                            <td className="px-4 py-3">
+                              {record.selfie ? (
+                                <img
+                                  src={record.selfie}
+                                  alt="Attendance Selfie"
+                                  className="h-12 w-12 cursor-pointer rounded-xl object-cover"
+                                  onClick={() => setSelectedAttendanceRecord(record)}
+                                />
+                              ) : (
+                                <span className="text-xs text-gray-400">No Selfie</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="px-6 py-4 border-t border-slate-200 flex justify-end">
               <button
-                onClick={() => setIsAttendanceOpen(false)}
+                onClick={() => setIsDetailOpen(false)}
                 className="px-5 py-2.5 rounded-xl bg-blue-600 text-white hover:bg-blue-700 font-semibold"
               >
                 Close
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Attendance Proof Modal (without location) */}
+      {selectedAttendanceRecord && (
+        <div className="fixed inset-0 z-[70] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
+            onClick={() => setSelectedAttendanceRecord(null)}
+          />
+
+          <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+              <div>
+                <h3 className="flex items-center gap-2 text-lg font-bold text-slate-800">
+                  <ImageIcon size={20} className="text-blue-600" />
+                  Attendance Proof
+                </h3>
+                <p className="mt-1 text-sm text-slate-500">
+                  {selectedAttendanceRecord.date
+                    ? new Date(selectedAttendanceRecord.date).toLocaleString("en-GB", {
+                        day: "2-digit",
+                        month: "2-digit",
+                        year: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })
+                    : "N/A"}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setSelectedAttendanceRecord(null)}
+                className="rounded-xl p-2 text-slate-500 hover:bg-slate-100"
+              >
+                <X size={21} />
+              </button>
+            </div>
+
+            <div className="grid gap-5 p-5 md:grid-cols-2">
+              <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100">
+                {selectedAttendanceRecord.selfie ? (
+                  <img
+                    src={selectedAttendanceRecord.selfie}
+                    alt="Attendance selfie"
+                    className="h-full max-h-[480px] min-h-[300px] w-full object-contain"
+                  />
+                ) : (
+                  <div className="flex min-h-[300px] items-center justify-center text-slate-400">
+                    No selfie available
+                  </div>
+                )}
+              </div>
+
+              <div className="space-y-4">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Date & Time</p>
+                  <p className="mt-1 font-bold text-slate-800">
+                    {selectedAttendanceRecord.date
+                      ? new Date(selectedAttendanceRecord.date).toLocaleString("en-GB", {
+                          day: "2-digit",
+                          month: "2-digit",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })
+                      : "N/A"}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Status</p>
+                  <span
+                    className={`mt-2 inline-block rounded-full px-3 py-1 text-xs font-semibold ${getStatusBadge(
+                      selectedAttendanceRecord.status
+                    )}`}
+                  >
+                    {selectedAttendanceRecord.status}
+                  </span>
+                </div>
+
+                {/* Location removed from here */}
+              </div>
             </div>
           </div>
         </div>

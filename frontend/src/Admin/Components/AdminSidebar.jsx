@@ -44,10 +44,10 @@ const AdminSidebar = ({ activeView, setActiveView }) => {
      { id: "Careers", label: "Careers", icon: BarChart3, color: "text-blue-600" },
     { id: "AdminLeaveRequests", label: "LeaveRequests", icon: Calendar, color: "text-blue-600" },
     { id: "AdminSetLeave", label: "AdminSetLeave", icon: BarChart3, color: "text-blue-600" },
-    { id: "AdminTaskManager", label: "Task Manager", icon: ClipboardList , color: "text-blue-600" },
+    { id: "AdminTaskManager", label: "Running Projects", icon: ClipboardList , color: "text-blue-600" },
     { id: "Gallery", label: "Gallery", icon: FolderKanban, color: "text-blue-600" }
     
-
+    
   ];
 
   return (
