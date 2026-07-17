@@ -127,20 +127,31 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ==============================
-// MongoDB Connection & Server Start
-// ==============================
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB Connected");
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
+const connectDB = async () => {
+  if (mongoose.connection.readyState >= 1) return;
+
+  await mongoose.connect(process.env.MONGO_URI);
+};
+
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Database connection failed",
     });
-  })
-  .catch((err) => {
-    console.error("❌ MongoDB Connection Failed:", err);
-    process.exit(1);
-  });
+  }
+});
 
+if (require.main === module) {
+  connectDB().then(() => {
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  });
+}
+
+module.exports = app;
