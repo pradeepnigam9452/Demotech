@@ -346,7 +346,7 @@ const AdminGallery = () => {
                     name="imageAlt"
                     value={formData.imageAlt}
                     onChange={handleChange}
-                    placeholder="Example: Binarylogix logo"
+                    placeholder="Example: demoteck logo"
                     className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
                   />
                 </div>

@@ -542,7 +542,7 @@ const AdminStaffMembers = () => {
               <table className="w-full text-sm text-left">
                 <thead className="bg-slate-50 border-b border-slate-200 text-slate-700 font-semibold">
                   <tr>
-                    <th className="px-4 py-3">#</th>
+                    <th className="px-4 py-3">Sr.</th>
                     <th className="px-4 py-3">Staff ID</th>
                     <th className="px-4 py-3">Name</th>
                     <th className="px-4 py-3">Email</th>

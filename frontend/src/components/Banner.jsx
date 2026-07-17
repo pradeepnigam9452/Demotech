@@ -74,7 +74,7 @@ export default function HeroSection() {
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] text-gray-900">
                 Build Your Digital Future
                 <br />
-                <span className="text-[#378af9]">With Binarylogix</span> Technology LLP
+                <span className="text-[#378af9]">With Demoteck</span> Technology LLP
               </h1>
             </motion.div>
 

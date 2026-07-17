@@ -29,20 +29,20 @@ const HomeContact = () => {
   const contactInfo = [
     {
       title: "Address",
-      value: "110 D, Sagar High Street, Ayodhya Bypass, Bhopal M.P",
+      value: " Bhopal M.P",
       icon: MapPin,
     },
     {
       title: "Phone",
-      value: "+91 96171 89757",
+      value: "+91 830572XXXX",
       icon: Phone,
-      link: "tel:+919617189757",
+      link: "tel:+9bhjbj",
     },
     {
       title: "Email",
-      value: "binarylogixofficial@gmail.com",
+      value: "sndjs@gmail.com",
       icon: Mail,
-      link: "mailto:binarylogixofficial@gmail.com",
+      link: ".00000com",
     },
     {
       title: "Working Hours",
@@ -55,22 +55,19 @@ const HomeContact = () => {
     {
       icon: Facebook,
       label: "Facebook",
-      link: "https://www.linkedin.com/company/binarylogix-technologies-llp/",
+      
     },
     {
       icon: Twitter,
       label: "Twitter",
-      link: "https://www.linkedin.com/company/binarylogix-technologies-llp/",
     },
     {
       icon: Linkedin,
       label: "LinkedIn",
-      link: "https://www.linkedin.com/company/binarylogix-technologies-llp/",
     },
     {
       icon: Instagram,
       label: "Instagram",
-      link: "https://www.linkedin.com/company/binarylogix-technologies-llp/",
     },
   ];
 
@@ -215,7 +212,7 @@ const HomeContact = () => {
               </h3>
 
               <p className="mt-3 text-sm leading-7 text-slate-600">
-                Reach out to Binarylogix Technologies LLP for websites, apps,
+                Reach out to Demotech Technologies LLP for websites, apps,
                 SEO, marketing, branding, and custom digital solutions.
               </p>
             </div>

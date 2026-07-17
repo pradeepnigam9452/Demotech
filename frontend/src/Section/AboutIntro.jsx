@@ -168,7 +168,7 @@ const AboutIntro = () => {
               <h2 className="max-w-3xl text-3xl font-black leading-tight text-slate-950 sm:text-4xl lg:text-5xl">
                 About{" "}
                 <span className="relative inline-block text-[#378af9]">
-                  Binarylogix
+                  
                   <motion.span
                     className="absolute -bottom-2 left-0 h-1 w-full rounded-full bg-[#378af9]"
                     initial={{ scaleX: 0 }}

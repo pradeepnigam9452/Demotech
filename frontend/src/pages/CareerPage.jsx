@@ -236,11 +236,11 @@ const CareerPage = () => {
 
               <h2 className="text-4xl font-bold leading-tight tracking-tight text-gray-900 sm:text-3xl lg:text-5xl">
                 Grow Your Career With{" "}
-                <span className="text-[#378af9]">Binarylogix</span>
+                <span className="text-[#378af9]">Demotech</span>
               </h2>
 
               <p className="mt-5 max-w-xl text-lg leading-8 text-gray-500">
-                Join Binarylogix Technology LLP and work with a team that builds
+                Join Demotech Technology  and work with a team that builds
                 modern websites, applications, dashboards, and digital solutions
                 for real businesses.
               </p>
@@ -294,7 +294,7 @@ const CareerPage = () => {
 
                     <div>
                       <h3 className="font-bold text-gray-900">
-                        Binarylogix Technology LLP
+                        Demotech Technology 
                       </h3>
                       <p className="text-sm text-gray-500">
                         Smart solutions for smarter businesses

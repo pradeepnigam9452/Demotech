@@ -140,7 +140,7 @@ const Navbar = () => {
                 {/* Drawer Header */}
                 <div className="flex items-center justify-between mb-8">
                   <span className="text-lg font-black tracking-wider text-slate-900">
-                    Binarylogix
+                    
                   </span>
                   <button
                     onClick={() => setMobileMenuOpen(false)}

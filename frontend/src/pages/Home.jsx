@@ -15,7 +15,6 @@ function Home() {
     <>
       <Navbar />
       <Banner />
-      <ClientsSlider/>
       <AboutIntro />
       
       <Service limit={3} Button={true} />

@@ -15,7 +15,7 @@ import {
   ClipboardList 
 } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
-import Logo from '../../../public/logo.png';
+import Logo from '../../assets/logo.png'
 
 const AdminSidebar = ({ activeView, setActiveView }) => {
   const navigate = useNavigate();

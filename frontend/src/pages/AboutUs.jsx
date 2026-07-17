@@ -156,7 +156,7 @@ alt="Binarylogix office work"
 >
   <div className="lg:pl-10 xl:pl-16">
     <h2 className="max-w-2xl text-2xl font-black leading-tight text-slate-900 sm:text-3xl md:text-4xl lg:text-[44px] xl:text-[48px]">
-      Binarylogix Technologies LLP —{" "}
+      Demotech Technologies  —{" "}
       <span className="text-[#3C83F6]">
         Smart Solutions for a Smarter Business
       </span>

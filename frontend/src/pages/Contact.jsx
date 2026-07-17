@@ -161,8 +161,8 @@ const Contact = () => {
                   </h3>
 
                   <p className="text-base text-gray-800">
-                    110 D, Sagar High Street, <br />
-                    Ayodhya Bypass, Bhopal M.P
+                     <br />
+                    Bhopal M.P
                   </p>
                 </div>
               </div>
@@ -179,10 +179,10 @@ const Contact = () => {
                   </h3>
 
                   <a
-                    href="tel:+919617189757"
+                    href="#"
                     className="text-base text-gray-800 transition-colors hover:text-[#378af9]"
                   >
-                    +91 96171 89757
+                    +91 830572XXXX
                   </a>
                 </div>
               </div>
@@ -199,10 +199,10 @@ const Contact = () => {
                   </h3>
 
                   <a
-                    href="mailto:binarylogixofficial@gmail.com"
+                    href="mailt@gmail.com"
                     className="text-base text-gray-800 transition-colors hover:text-[#378af9]"
                   >
-                    binarylogixofficial@gmail.com
+                    demo@gmail.com
                   </a>
                 </div>
               </div>
@@ -230,14 +230,14 @@ const Contact = () => {
     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white shadow-sm ring-1 ring-gray-100">
       <img
         src={logo}
-        alt="Binarylogix logo"
+        alt="demo logo"
         className="h-12 w-12 object-contain"
       />
     </div>
 
     <div>
       <p className="text-sm font-semibold text-gray-800">
-        © Binarylogix Technology LLP
+        © Demotech Technology LLP
       </p>
 
       <p className="text-xs text-gray-500">
@@ -266,8 +266,7 @@ const Contact = () => {
                 </a>
 
                 <a
-                  href="https://www.linkedin.com/company/binarylogix-technologies-llp/"
-                  aria-label="LinkedIn"
+href="#"                  aria-label="LinkedIn"
                   className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-100 text-gray-600 transition-colors hover:bg-[#378af9] hover:text-white"
                 >
                   <Linkedin className="h-4 w-4" />
@@ -325,7 +324,7 @@ const Contact = () => {
                       required
                       maxLength="10"
                       className="w-full rounded-xl border border-gray-300 px-4 py-2.5 text-gray-800 outline-none transition-colors focus:border-[#378af9] focus:ring-2 focus:ring-[#378af9]/20"
-                      placeholder="9876543210"
+                      placeholder="98582565"
                     />
                   </div>
 
