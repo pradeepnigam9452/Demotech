@@ -1,4 +1,3 @@
-
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import OurServices from "./pages/Services";
@@ -30,8 +29,8 @@ function App() {
                 <Route path="/careers" element={<CareerPage />} />
           <Route path="/quotation/:id" element={<QuotationDetail />} />
 
-        <Route path="/binarylogix/staff/login" element ={<StaffLogin />} />
-        <Route path="/binarylogix/staffDashboard" element ={<StaffDashboard />} />
+        <Route path="/staff/login" element ={<StaffLogin />} />
+        <Route path="/staffDashboard" element ={<StaffDashboard />} />
 
 
         <Route path="*" element = {<NotFound/>} />

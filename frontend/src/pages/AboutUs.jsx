@@ -107,7 +107,7 @@ const AboutUs = () => {
 <div className="relative overflow-hidden rounded-tl-[55px] rounded-br-[55px] shadow-2xl md:rounded-tl-[70px] md:rounded-br-[70px]">
   <img
     src={aboutmain}
-    alt="Binarylogix team meeting"
+    alt="demotech team meeting"
     className="h-[300px] w-full object-cover transition-transform duration-700 hover:scale-105 sm:h-[360px] md:h-[430px] lg:h-[480px]"
   />
 
@@ -141,7 +141,7 @@ const AboutUs = () => {
             >
               <img
               src={seo}
-alt="Binarylogix office work"
+alt="demotech office work"
                 className="h-60 w-80 rounded-xl object-cover"
               />
             </motion.div>
@@ -163,7 +163,7 @@ alt="Binarylogix office work"
     </h2>
 
     <p className="mt-8 max-w-2xl text-lg leading-8 text-slate-600">
-      At Binarylogix Technologies LLP, we specialize in delivering intelligent
+      At demotech Technologies LLP, we specialize in delivering intelligent
       digital solutions that help businesses grow online, reach the right
       audience, and improve overall performance. Whether you're a startup or an
       established brand, our mission is to turn your ideas into scalable digital

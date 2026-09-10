@@ -27,7 +27,7 @@ const StaffHome = ({ setActiveView }) => {
   useEffect(() => {
     const token = localStorage.getItem('staffToken');
     if (!token) {
-      navigate('/binarylogix/staff/login');
+      navigate('/demotech/staff/login');
       return;
     }
 

@@ -195,7 +195,7 @@ const AboutIntro = () => {
               <p>
                 With over a year of industry experience,{" "}
                 <strong className="font-bold text-[#378af9]">
-                  Binarylogix Technologies LLP
+                  demotech Technologies LLP
                 </strong>{" "}
                 specializes in delivering innovative and result-driven solutions
                 in website development, mobile application development, software
@@ -272,7 +272,7 @@ const AboutIntro = () => {
               whileHover={{ x: 6 }}
               className="rounded-2xl border-l-4 border-[#378af9] bg-blue-50 px-5 py-4 text-sm font-semibold leading-7 text-slate-700"
             >
-              Let Binarylogix be your trusted partner in digital transformation.
+              Let demotech be your trusted partner in digital transformation.
             </motion.p>
 
             {/* CTA */}
@@ -369,7 +369,7 @@ const AboutIntro = () => {
                 <div className="relative overflow-hidden rounded-[24px]">
                   <img
                   src={aboutintro}
-alt="About Binarylogix"
+alt="About demotech"
                     className="h-[360px] w-full object-cover transition-transform duration-700 hover:scale-110 sm:h-[440px] lg:h-[520px]"
                   />
 

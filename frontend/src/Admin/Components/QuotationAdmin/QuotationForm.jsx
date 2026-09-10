@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import logo from '../../../assets/BinaryLogixLogo.jpg';
+import logo from '../../../assets/demologo.png';
 import { FiEdit, FiX } from 'react-icons/fi';
 import QuotationDetail from './QuotationDetails';
 
@@ -171,11 +171,11 @@ By accepting this quotation, the customer agrees to our terms and conditions.`);
                     </div>
                     <div className="mb-4">
                         <label>Company Name:</label>
-                        <input type="text" value="Binarylogix Technologies" readOnly className="w-full border-b border-gray-400 bg-gray-100 py-1" />
+                        <input type="text" value="demotech Technologies" readOnly className="w-full border-b border-gray-400 bg-gray-100 py-1" />
                     </div>
                     <div className="mb-4">
                         <label>Email:</label>
-                        <input type="email" value="binarylogixofficial@gmail.com" readOnly className="w-full border-b border-gray-400 bg-gray-100 py-1" />
+                        <input type="email" value="demotechofficial@gmail.com" readOnly className="w-full border-b border-gray-400 bg-gray-100 py-1" />
                     </div>
                     <div>
                         <label>Contact No:</label>

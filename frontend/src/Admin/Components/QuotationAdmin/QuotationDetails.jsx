@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import logo from '../../../assets/BinaryLogixLogo.jpg';
+import logo from '../../../assets/demologo.png';
 import logo2 from '../../../assets/waterMark.jpg';
 import qrcode from '../../../assets/QrCode.jpg';
 import { Phone, Mail, MapPin } from 'lucide-react';

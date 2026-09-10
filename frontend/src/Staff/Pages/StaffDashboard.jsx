@@ -22,7 +22,7 @@ const StaffDashboard = () => {
     localStorage.removeItem("staffId");
     localStorage.removeItem("staffRole");
 
-    navigate("/binarylogix/staff/login");
+    navigate("/demotech/staff/login");
   };
 
   const renderView = () => {

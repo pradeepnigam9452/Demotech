@@ -76,11 +76,11 @@ const Navbar = () => {
       >
         <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
           {/* --- Logo --- */}
-           <NavLink to="https://binarylogix.in/" className="flex-shrink-0">
+           <NavLink to="https://demotech.in/" className="flex-shrink-0">
             <img
               className="w-32 md:w-40 h-auto rounded-xl"
               src={logo}
-              alt="Binarylogix Logo"
+              alt="demotech Logo"
             />
           </NavLink>
 

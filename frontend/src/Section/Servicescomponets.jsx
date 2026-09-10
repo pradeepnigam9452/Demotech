@@ -123,7 +123,7 @@ const Servicescomponets = () => {
           </h2>
 
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            Binarylogix Technologies LLP provides smart digital solutions to
+            demotech Technologies LLP provides smart digital solutions to
             help businesses build strong online presence, attract customers, and
             grow faster.
           </p>

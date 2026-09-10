@@ -33,7 +33,7 @@
 //   //   localStorage.removeItem("staffName");
 //   //   localStorage.removeItem("staffId");
 //   //   localStorage.removeItem("staffRole");
-//   //   navigate("/binarylogix/staff/login");
+//   //   navigate("/demotech/staff/login");
 //   // };
 
 //   const handleItemClick = (id) => {
@@ -64,7 +64,7 @@
 //         {/* Logo Section */}
 //         <div className="bg-white border-b border-gray-100 p-5 sticky top-0 z-8">
 //           <div className="flex items-center justify-center cursor-pointer" onClick={() => navigate("/")}>
-//             <img src={logo} alt="Binarylogix" className="h-10 object-contain" />
+//             <img src={logo} alt="demotech" className="h-10 object-contain" />
 //           </div>
 //         </div>
 
@@ -152,7 +152,7 @@ const StaffSidebar = ({ activeView, setActiveView }) => {
   //   localStorage.removeItem("staffName");
   //   localStorage.removeItem("staffId");
   //   localStorage.removeItem("staffRole");
-  //   navigate("/binarylogix/staff/login");
+  //   navigate("/demotech/staff/login");
   // };
 
   const handleItemClick = (id) => {
@@ -189,7 +189,7 @@ const StaffSidebar = ({ activeView, setActiveView }) => {
         {/* Logo Section – subtle border */}
         <div className="bg-transparent border-b border-gray-200/60 p-5 sticky top-0 z-8">
           <div className="flex items-center justify-center cursor-pointer" onClick={() => navigate("/")}>
-            <img src={logo} alt="Binarylogix" className="h-10 object-contain" />
+            <img src={logo} alt="demotech" className="h-10 object-contain" />
           </div>
         </div>
 

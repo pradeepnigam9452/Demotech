@@ -42,7 +42,7 @@ const StaffLogin = () => {
       localStorage.setItem("staffId", data.staffId);
       localStorage.setItem("staffRole", data.role);
 
-      navigate("/binarylogix/staffdashboard");
+      navigate("/demotech/staffdashboard");
     } catch (error) {
       console.error("Login error:", error);
       const msg =
@@ -103,7 +103,7 @@ const StaffLogin = () => {
             <div className="bg-white rounded-2xl p-2 mb-6 flex items-center justify-center shadow-lg border border-white/20">
               <img
                 src={logo}
-                alt="Binarylogix"
+                alt="demotech"
                 onClick={() => navigate("/")}
                 className="w-full max-h-14 object-contain cursor-pointer"
               />
