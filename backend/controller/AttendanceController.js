@@ -578,7 +578,7 @@ const getLocationDetails = async (
 
         headers: {
           "User-Agent":
-            "BinarylogixAttendanceSystem/1.0",
+            "demotechAttendanceSystem/1.0",
 
           "Accept-Language": "en",
         },

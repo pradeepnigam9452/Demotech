@@ -109,7 +109,7 @@ const cardsData = [
     title: "Robo Fintech Pvt Ltd",
     description: "Robo Fintech Pvt Ltd is a financial technology website built to represent modern fintech services, investment tools, and consultancy features. It includes a user-centric design with call-to-actions, interactive components, and secure data management practices. The site is built with scalability and speed in mind for better user experience.",
     image: "proj3.png",
-    link: "https://robo.binarylogix.in/",
+    link: "https://robo.demotech.in/",
     features: [
       "Interactive Dashboard UI",
       "Secure Login and Client Portal",
